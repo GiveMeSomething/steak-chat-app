@@ -13,3 +13,6 @@ package-lock.json
 
 .vscode
 .env
+
+_app.tsx
+_document.tsx
