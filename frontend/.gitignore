@@ -1,0 +1,15 @@
+# npm
+node_modules
+# next.js build files
+.next
+# environment variables
+.env
+.env.*
+!.env.example
+
+package-lock.json
+*.log
+*.gz
+
+.vscode
+.env
