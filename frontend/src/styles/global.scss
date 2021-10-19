@@ -27,3 +27,11 @@ body {
 .container {
     @apply w-4/5 mx-auto;
 }
+
+.fullscreen {
+  @apply w-screen h-screen max-h-screen min-h-screen
+}
+
+.fullsize {
+  @apply w-full h-full
+}
