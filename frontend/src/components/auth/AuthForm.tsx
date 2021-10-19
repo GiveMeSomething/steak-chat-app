@@ -1,31 +1,30 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import FormInput from './FormInput'
-import { firebaseApp, database } from '@firebase/firebase'
-import md5 from 'md5'
+import { useRouter } from 'next/dist/client/router'
+import { useAppDispatch, useAppSelector } from '@redux/hooks'
 import {
-    createUserWithEmailAndPassword,
-    signInWithEmailAndPassword,
-    getAuth,
-    updateProfile,
-    Auth,
-    User,
-} from 'firebase/auth'
-import { ref, set } from '@firebase/database'
+    logInAndSaveUser,
+    removeUserError,
+    selectCurrentUser,
+    signUpAndSaveUser,
+} from './user.slice'
+
 interface AuthFormProps {
     label: string
     action: 'login' | 'signup'
 }
 
-type FormValues = {
-    userEmail: string
-    userPassword: string
+interface FormValues {
+    email: string
+    password: string
 }
 
 const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
     const [requestError, setError] = useState('')
     const [isLoading, setIsLoading] = useState(false)
 
+    // react-hook-form setup
     const {
         register,
         handleSubmit,
@@ -33,72 +32,49 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
         formState: { errors },
     } = useForm<FormValues>()
 
-    useEffect(() => setFocus('userEmail'), [])
+    const router = useRouter()
+    const currentUser = useAppSelector(selectCurrentUser)
+    const dispatch = useAppDispatch()
 
-    async function updateUserToDatabase(createdUser: User) {
-        await set(ref(database, 'users/' + createdUser.uid), {
-            username: createdUser.displayName,
-            email: createdUser.email,
-            photoUrl: createdUser.photoURL,
-        })
-    }
-
-    async function signUp(auth: Auth, data: FormValues) {
-        try {
-            await createUserWithEmailAndPassword(
-                auth,
-                data.userEmail,
-                data.userPassword,
-            )
-
-            // Log the user for ease of development, will be deleted later
-            console.log(auth.currentUser)
-
-            if (auth.currentUser) {
-                await updateProfile(auth.currentUser, {
-                    displayName:
-                        auth.currentUser.email?.split('@')[0] ||
-                        'defaultUsername',
-                    photoURL: `https://gravatar.com/avatar/${md5(
-                        auth.currentUser.email,
-                    )}?d=identicon`,
-                })
-
-                await updateUserToDatabase(auth.currentUser)
-            }
-        } catch (error: any) {
-            console.log(error)
-            error.message && setError(error.message)
-        } finally {
-            setIsLoading(false)
+    // Redirect if user have already logged in
+    useEffect(() => {
+        if (currentUser.user) {
+            router.push('/')
         }
-    }
+    }, [])
 
-    async function logIn(auth: Auth, data: FormValues) {
-        try {
-            const user = await signInWithEmailAndPassword(
-                auth,
-                data.userEmail,
-                data.userPassword,
-            )
-
-            console.log(user)
-        } catch (error: any) {
-            console.log(error)
-            error.message && setError(error.message)
-        } finally {
-            setIsLoading(false)
-        }
-    }
+    // Set focus to input onload
+    useEffect(() => setFocus('email'), [])
 
     async function onSubmit(data: FormValues) {
+        // Diable login/signup button
         setIsLoading(true)
 
-        const auth = getAuth(firebaseApp)
-        if (props.action === 'signup') {
-            await signUp(auth, data)
-        } else {
-            await logIn(auth, data)
+        let user
+        // Run handle submit based on props.action passed from parents
+        try {
+            if (props.action === 'signup') {
+                user = await dispatch(signUpAndSaveUser(data)).unwrap()
+            } else {
+                user = await dispatch(logInAndSaveUser(data)).unwrap()
+            }
+
+            // Redirect to home after register(auto login) or login
+            if (user) {
+                // Remove last user-related error (wrong-password, user-not-found, etc...)
+                dispatch(removeUserError)
+                router.push('/')
+            }
+        } catch (error: any) {
+            // If not Firebase Authentication Error => assume it's network issue
+            if (error && error.code) {
+                setError('Wrong email and password combination!')
+            } else {
+                setError('Service unavailable. Please try again later')
+            }
+        } finally {
+            // Enable the login/signup button
+            setIsLoading(false)
         }
     }
 
@@ -114,7 +90,7 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
                 <div className="bg-white w-full h-full">
                     <div className="flex flex-col items-start justify-start p-2 w-full">
                         <FormInput
-                            {...register('userEmail', {
+                            {...register('email', {
                                 required: 'Email is required',
                                 pattern: {
                                     value: /^[^@]+@[^@]+\.[^@]+$/,
@@ -124,15 +100,15 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
                             label="email"
                             type="text"
                         />
-                        {errors.userEmail && (
+                        {errors.email && (
                             <p className="text-red-600 font-light text-sm">
-                                {errors.userEmail.message}
+                                {errors.email.message}
                             </p>
                         )}
                     </div>
                     <div className="flex flex-col items-start justify-start p-2 w-full">
                         <FormInput
-                            {...register('userPassword', {
+                            {...register('password', {
                                 required: 'Password is required',
                                 minLength: {
                                     value: 6,
@@ -143,9 +119,9 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
                             label="password"
                             type="password"
                         />
-                        {errors.userPassword && props.action !== 'login' && (
+                        {errors.password && (
                             <p className="text-red-600 font-light text-sm">
-                                {errors.userPassword.message}
+                                {errors.password.message}
                             </p>
                         )}
                     </div>
