@@ -42,6 +42,12 @@
       ],
       "@redux": [
         "src/redux"
+      ],
+      "@firebase": [
+        "src/firebase"
+      ],
+      "@firebase/*": [
+        "src/firebase/*"
       ]
     }
   },
