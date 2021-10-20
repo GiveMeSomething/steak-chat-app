@@ -1,14 +1,14 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import FormInput from './FormInput'
-import { useRouter } from 'next/dist/client/router'
-import { useAppDispatch, useAppSelector } from '@redux/hooks'
+import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
 import {
     logInAndSaveUser,
     removeUserError,
     selectCurrentUser,
     signUpAndSaveUser,
 } from './user.slice'
+import { Redirect } from 'react-router'
 
 interface AuthFormProps {
     label: string
@@ -32,16 +32,8 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
         formState: { errors },
     } = useForm<FormValues>()
 
-    const router = useRouter()
     const currentUser = useAppSelector(selectCurrentUser)
     const dispatch = useAppDispatch()
-
-    // Redirect if user have already logged in
-    useEffect(() => {
-        if (currentUser.user) {
-            router.push('/')
-        }
-    }, [])
 
     // Set focus to input onload
     useEffect(() => setFocus('email'), [])
@@ -63,7 +55,6 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
             if (user) {
                 // Remove last user-related error (wrong-password, user-not-found, etc...)
                 dispatch(removeUserError)
-                router.push('/')
             }
         } catch (error: any) {
             // If not Firebase Authentication Error => assume it's network issue
@@ -76,6 +67,10 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
             // Enable the login/signup button
             setIsLoading(false)
         }
+    }
+
+    if (currentUser.user) {
+        return <Redirect to="/" />
     }
 
     return (

@@ -1,4 +1,4 @@
-import userSlice from '@components/auth/user.slice'
+import userSlice from '../pages/auth/components/user.slice'
 import { configureStore } from '@reduxjs/toolkit'
 
 export const store = configureStore({
