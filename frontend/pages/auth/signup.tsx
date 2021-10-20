@@ -8,7 +8,11 @@ const Signup = () => {
         <div className="w-screen h-screen">
             <div className="grid grid-cols-10 h-full">
                 <div className="col-span-6 relative">
-                    <Image src="/image/sub-banner-2.jpg" layout="fill" objectFit="cover" />
+                    <Image
+                        src="/image/sub-banner-2.jpg"
+                        layout="fill"
+                        objectFit="cover"
+                    />
                 </div>
                 <div className="col-span-4 grid m-2">
                     <div className="row-span-2">
