@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import FormInput from './FormInput'
-import { useAppDispatch, useAppSelector } from '../../../redux/hooks'
+import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import {
     logInAndSaveUser,
     removeUserError,

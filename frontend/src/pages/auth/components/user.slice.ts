@@ -6,8 +6,8 @@ import {
     User,
 } from '@firebase/auth'
 import { ref, set } from '@firebase/database'
-import { database, firebaseApp } from '../../../firebase/firebase'
-import { RootState } from '../../../redux/store'
+import { database, firebaseApp } from 'firebase/firebase'
+import { RootState } from 'redux/store'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import md5 from 'md5'
 

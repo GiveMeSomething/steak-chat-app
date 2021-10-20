@@ -4,15 +4,15 @@ import AuthForm from './components/AuthForm'
 
 const Login = () => {
     return (
-        <div className="fullscreen">
-            <div className="grid grid-cols-10 h-full">
-                <div className="col-span-6 relative">
+        <div className="h-screen max-h-screen overflow-hidden">
+            <div className="grid grid-cols-10 max-h-full">
+                <div className="col-span-6">
                     <img
-                        className="object-cover"
                         src="/image/sub-banner-1.webp"
+                        className="object-contain w-full h-auto"
                     />
                 </div>
-                <div className="col-span-4 grid m-2">
+                <div className="col-span-4 grid m-2 h-screen">
                     <div className="row-span-2">
                         <AuthForm label="Log in" action="login" />
                     </div>
