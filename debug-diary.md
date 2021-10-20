@@ -10,3 +10,11 @@
     - Add index.html to public folder (with a div with id="root"?)
     - Check import statements
     - Run the react-scripts/craco 
+
+3. Working with Semantic UI
+    - Well-integrated with TailwindCSS
+    - Note for using Dropdown
+      - The outer element when use 'trigger' attribute is the 'trigger'
+      - Should wrap Dropdown in a 'div' to easily move things around
+      - The Dropdown.Menu can be expand by using padding/margin to push the size
+      - Depends on the layout, add the className="left" (right by default) to orient the dropdown orientation (note that this will also applied to all the child drop down)
