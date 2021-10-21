@@ -23,15 +23,17 @@
     ],
     "plugins": ["react", "@typescript-eslint"],
     "rules": {
+        // note you must disable the base rule as it can report incorrect errors
         "indent": "off",
         "@typescript-eslint/indent": ["error", 4, { "SwitchCase": 1 }],
         "comma-dangle": "off",
-        // note you must disable the base rule as it can report incorrect errors
         "no-use-before-define": "off",
         "@typescript-eslint/no-use-before-define": ["off"],
         "space-before-function-paren": "off",
         "react/display-name": "off",
         "react/prop-types": "off",
-        "react/no-unescaped-entities": [1]
+        "react/no-unescaped-entities": [1],
+        "no-unused-vars": "off",
+        "@typescript-eslint/no-unused-vars": "error"
     }
 }

@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 import AuthForm from './components/AuthForm'
 
-const Login = () => {
+const Signin = () => {
     return (
         <div className="h-screen max-h-screen overflow-hidden">
             <div className="grid grid-cols-10 max-h-full">
@@ -14,7 +14,7 @@ const Login = () => {
                 </div>
                 <div className="col-span-4 grid m-2 h-screen">
                     <div className="row-span-2">
-                        <AuthForm label="Log in" action="login" />
+                        <AuthForm label="Sign in" action="signin" />
                     </div>
                     <div className="flex flex-col items-center justify-center border-t-2 w-4/5 mx-auto row-span-1">
                         <h4 className="font-bold">
@@ -32,4 +32,4 @@ const Login = () => {
     )
 }
 
-export default Login
+export default Signin

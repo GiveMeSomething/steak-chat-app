@@ -1,22 +1,22 @@
 import React from 'react'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 
-import Login from 'pages/auth/Login'
+import Signin from 'pages/auth/Signin'
 import Signup from 'pages/auth/Signup'
-import ChatServer from 'pages/server/ChatServer'
+import ServersPage from 'pages/server/Server'
 
 const Routes = () => {
     return (
         <Router>
             <Switch>
-                <Route path="/auth/login">
-                    <Login />
+                <Route path="/auth/signin" exact>
+                    <Signin />
                 </Route>
-                <Route path="/auth/signup">
+                <Route path="/auth/signup" exact>
                     <Signup />
                 </Route>
-                <Route path="/server/:id">
-                    <ChatServer />
+                <Route path="/servers">
+                    <ServersPage />
                 </Route>
             </Switch>
         </Router>

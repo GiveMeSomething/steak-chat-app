@@ -3,16 +3,24 @@ import {
     getAuth,
     signInWithEmailAndPassword,
     updateProfile,
+    signOut,
     User,
 } from '@firebase/auth'
-import { ref, set } from '@firebase/database'
+import { get, ref, set } from '@firebase/database'
 import { database, firebaseApp } from 'firebase/firebase'
 import { RootState } from 'redux/store'
 import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import md5 from 'md5'
+interface UserInfo {
+    uid: string,
+    displayName: string,
+    photoUrl: string,
+    email: string,
+    status?: 'Online' | 'Away'
+}
 
 interface UserSliceState {
-    user: User | null
+    user: UserInfo | null
     userError: any
 }
 
@@ -21,27 +29,27 @@ const initialState: UserSliceState = {
     userError: null,
 }
 
+const auth = getAuth(firebaseApp)
+
 // Login to existed user
-export const logInAndSaveUser = createAsyncThunk(
-    'user/logIn',
-    async (data: { email: string; password: string }, thunkAPI) => {
-        const auth = getAuth(firebaseApp)
-        const user = await signInWithEmailAndPassword(
+export const signInAndSaveUser = createAsyncThunk(
+    'user/signIn',
+    async (data: { email: string; password: string }) => {
+        const { user } = await signInWithEmailAndPassword(
             auth,
             data.email,
             data.password,
         )
 
-        return user.user
+        return getUserFromDatabase(user)
     },
 )
 
 // Create new user with display name and avatar from gravatar, and then save the info to database (Firebase's Realtime Database)
 export const signUpAndSaveUser = createAsyncThunk(
     'user/signUp',
-    async (data: { email: string; password: string }, thunkAPI) => {
-        const auth = getAuth(firebaseApp)
-        const user = await createUserWithEmailAndPassword(
+    async (data: { email: string; password: string }) => {
+        const { user } = await createUserWithEmailAndPassword(
             auth,
             data.email,
             data.password,
@@ -59,8 +67,15 @@ export const signUpAndSaveUser = createAsyncThunk(
             await updateUserToDatabase(auth.currentUser)
         }
 
-        return user.user
+        return getUserFromDatabase(user)
     },
+)
+
+export const signOutAndRemoveUser = createAsyncThunk(
+    'user/signOut',
+    async () => {
+        await signOut(getAuth(firebaseApp))
+    }
 )
 
 async function updateUserToDatabase(createdUser: User) {
@@ -71,11 +86,24 @@ async function updateUserToDatabase(createdUser: User) {
     })
 }
 
+async function getUserFromDatabase(user: User) {
+    const userSnapshot = await get(ref(database, 'users/' + user.uid))
+    const userInfo: UserInfo = {
+        uid: user.uid,
+        email: userSnapshot.child('email').val(),
+        photoUrl: userSnapshot.child('photoUrl').val(),
+        displayName: userSnapshot.child('username').val(),
+        status: 'Online'
+    }
+
+    return userInfo
+}
+
 export const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        setCurrentUser: (state, action: PayloadAction<User>) => {
+        setCurrentUser: (state, action: PayloadAction<any>) => {
             state.user = action.payload
         },
         removeCurrentUser: (state) => {
@@ -88,18 +116,31 @@ export const userSlice = createSlice({
             state.userError = null
         },
     },
+    // TODO: See if this part can be refactored
     extraReducers: (builder) => {
         builder
-            .addCase(logInAndSaveUser.fulfilled, (state, action) => {
+            .addCase(signInAndSaveUser.fulfilled, (state, action) => {
                 state.user = action.payload
             })
-            .addCase(logInAndSaveUser.rejected, (state, action) => {
+            .addCase(signInAndSaveUser.rejected, (state, action) => {
                 state.userError = action.error
             })
 
-        builder.addCase(signUpAndSaveUser.fulfilled, (state, action) => {
-            state.user = action.payload
-        })
+        builder
+            .addCase(signUpAndSaveUser.fulfilled, (state, action) => {
+                state.user = action.payload
+            })
+            .addCase(signUpAndSaveUser.rejected, (state, action) => {
+                state.userError = action.error
+            })
+
+        builder
+            .addCase(signOutAndRemoveUser.fulfilled, (state) => {
+                state.user = null
+            })
+            .addCase(signOutAndRemoveUser.rejected, (state, action) => {
+                state.userError = action.error
+            })
     },
 })
 

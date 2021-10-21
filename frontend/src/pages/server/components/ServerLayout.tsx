@@ -1,8 +1,12 @@
+import { signOutAndRemoveUser } from 'pages/auth/components/user.slice'
 import React, { FunctionComponent } from 'react'
+import { useAppDispatch } from 'redux/hooks'
 import { Dropdown } from 'semantic-ui-react'
 import { DropdownOptions } from 'types/semantic-ui-type'
 
 const ServerLayout: FunctionComponent = () => {
+    const dispatch = useAppDispatch()
+
     const userSettings: DropdownOptions[] = [
         {
             key: 'profile',
@@ -21,6 +25,10 @@ const ServerLayout: FunctionComponent = () => {
             value: 'signout',
         },
     ]
+
+    const handleSignout = async () => {
+        await dispatch(signOutAndRemoveUser())
+    }
 
     return (
         <div className="fullscreen text-white overflow-hidden">
@@ -55,7 +63,10 @@ const ServerLayout: FunctionComponent = () => {
                                 <Dropdown.Item {...userSettings[0]} />
                                 <Dropdown.Item {...userSettings[1]} />
                                 <Dropdown.Divider />
-                                <Dropdown.Item {...userSettings[2]} />
+                                <Dropdown.Item
+                                    {...userSettings[2]}
+                                    onClick={handleSignout}
+                                />
                             </Dropdown.Menu>
                         </Dropdown>
                     </div>
