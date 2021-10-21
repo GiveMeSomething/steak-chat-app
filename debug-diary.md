@@ -13,11 +13,16 @@
 
 3. Working with Semantic UI
     - Well-integrated with TailwindCSS
+  
     - Note for using Dropdown
       - The outer element when use 'trigger' attribute is the 'trigger'
       - Should wrap Dropdown in a 'div' to easily move things around
       - The Dropdown.Menu can be expand by using padding/margin to push the size
       - Depends on the layout, add the className="left" (right by default) to orient the dropdown orientation (note that this will also applied to all the child drop down)
+  
+    - Note for using <i>
+      - The <i> (icon tag) is kinda hard to use and position because the icon is actually put in ::before
+      - Try using <Icon /> 
 
 4. Working with React Router
     - Use Router once to map all basic routes (usually in index.tsx or seperate into a routes file)
