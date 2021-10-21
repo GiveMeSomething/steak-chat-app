@@ -18,3 +18,10 @@
       - Should wrap Dropdown in a 'div' to easily move things around
       - The Dropdown.Menu can be expand by using padding/margin to push the size
       - Depends on the layout, add the className="left" (right by default) to orient the dropdown orientation (note that this will also applied to all the child drop down)
+
+4. Working with React Router
+    - Use Router once to map all basic routes (usually in index.tsx or seperate into a routes file)
+    - Nesting more specific route in each basic route main page using <Switch> and <Route> (don't use <Router> / <BrowserRouter>)
+    - Redirect can use path, or object if needs more specific options (pathName, state, search)
+    - withRouter provide {match, location, history} for components through 'props'
+    - useRouteMatch hooks provide {path, url} to use in further routing
