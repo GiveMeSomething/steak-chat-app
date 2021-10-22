@@ -23,6 +23,8 @@
     - Note for using \<i\>
       - The \<i\> (icon tag) is kinda hard to use and position because the icon is actually put in ::before
       - Try using \<Icon\> 
+      - Tips found (22/10/2021):
+        - When using icon, make sure to use flex with items-baseline. This will render the icon center of the text (as the icon is a little bit off center from the top)
 
 4. Working with React Router
     - Use Router once to map all basic routes (usually in index.tsx or seperate into a routes file)
@@ -30,3 +32,15 @@
     - Redirect can use path, or object if needs more specific options (pathName, state, search)
     - withRouter provide {match, location, history} for components through 'props'
     - useRouteMatch hooks provide {path, url} to use in further routing
+
+5. React array of data to list of element
+    - Remember to wrap the map() in a JSX Element
+    - Add key to each element (maybe another wrap layer to put the key in)
+
+6. How to position element correctly (my ways)
+    - Make sure the parent box is in the right size. This will help with later hover:bg and easier positioning
+    - Use flex or flex-col to display to your needs
+    - Useful combination: flex + ml-auto:
+      - 2 elements of a same parent, one use flex, the later use ml-auto
+      - The later will be push to the end of the container ✔
+      - Still be able to apply margin/padding ✔
