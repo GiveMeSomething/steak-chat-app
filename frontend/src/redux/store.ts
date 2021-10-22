@@ -1,9 +1,11 @@
 import userSlice from '../pages/auth/components/user.slice'
 import { configureStore } from '@reduxjs/toolkit'
+import channelSlice from 'pages/server/components/channel.slice'
 
 export const store = configureStore({
     reducer: {
         user: userSlice,
+        channels: channelSlice,
     },
 })
 

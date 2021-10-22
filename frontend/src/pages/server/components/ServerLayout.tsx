@@ -1,19 +1,52 @@
+import { onChildAdded, onValue, ref } from '@firebase/database'
+import { database } from 'firebase/firebase'
 import {
+    fetchUser,
     selectCurrentUser,
     signOutAndRemoveUser,
 } from 'pages/auth/components/user.slice'
-import React, { FunctionComponent, useState } from 'react'
+import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
-import AddChannelModal from './AddChannelModal'
+import { addChannel, setChannels } from './channel.slice'
+
+import AddChannelModal from './modal/AddChannelModal'
 import ProfileDropdown from './ProfileDropdown'
+import ServerSidebar from './ServerSidebar'
 
 const ServerLayout: FunctionComponent = () => {
     const [isChannelModalOpen, setChannelModalOpen] = useState(false)
     const currentUser = useAppSelector(selectCurrentUser)
     const dispatch = useAppDispatch()
 
+    useEffect(() => {
+        // Get user info when load
+        fetchUserInfo()
+
+        // Get channels' info when load
+        const unsubscribe = onValue(
+            ref(database, 'channels'),
+            async (data) => {
+                dispatch(setChannels(data.val()))
+            },
+            { onlyOnce: true },
+        )
+
+        // Place listener for database changed
+        onChildAdded(ref(database, 'channels'), (data) => {
+            dispatch(addChannel(data.val()))
+        })
+
+        return () => unsubscribe()
+    }, [])
+
     const handleSignout = async () => {
         await dispatch(signOutAndRemoveUser())
+    }
+
+    const fetchUserInfo = async () => {
+        if (currentUser.user) {
+            await dispatch(fetchUser({ uid: currentUser.user?.uid }))
+        }
     }
 
     return (
@@ -22,7 +55,7 @@ const ServerLayout: FunctionComponent = () => {
                 <div className="flex items-center justify-center">
                     <input
                         type="text"
-                        className="bg-slack-searchbar w-2/5 text-slack-text-light col-start-2 absolute placeholder-white px-4"
+                        className="bg-slack-searchbar w-2/5 text-slack-text-focus col-start-2 absolute placeholder-white px-4"
                         placeholder="Search something in ..."
                     />
                     <ProfileDropdown
@@ -35,23 +68,7 @@ const ServerLayout: FunctionComponent = () => {
             </div>
             <div className="grid grid-cols-12 fullsize">
                 <div className="col-span-2 fullsize bg-slack-sidebar-normal">
-                    <div className="flex items-center justify-between p-2 border-t-2 border-b-2 border-opacity-90 border-gray-700">
-                        <h2>#ServerName</h2>
-                        <h2>Gear</h2>
-                    </div>
-                    <div className="py-4">
-                        <div className="flex h-full items-center justify-between py-2 px-4 hover:bg-slack-sidebar-hover">
-                            <div>
-                                <h4>Channels</h4>
-                            </div>
-                            <div
-                                className="flex items-center justify-center hover:bg-slack-sidebar-focus leading-6 align-middle px-2 rounded-md cursor-pointer"
-                                onClick={() => setChannelModalOpen(true)}
-                            >
-                                <h3>+</h3>
-                            </div>
-                        </div>
-                    </div>
+                    <ServerSidebar setChannelModalOpen={setChannelModalOpen} />
                 </div>
                 <div className="col-span-10 w-full h-full bg-white text-gray-800">
                     Messages

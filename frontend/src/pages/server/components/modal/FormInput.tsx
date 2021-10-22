@@ -3,6 +3,7 @@ import React, { HTMLInputTypeAttribute } from 'react'
 interface FormInputProps {
     label: string
     type: HTMLInputTypeAttribute
+    autoComplete: 'off' | 'on'
 }
 
 // Using forwardRef() to pass react-hook-form's ref into component ref

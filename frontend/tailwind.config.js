@@ -58,7 +58,8 @@ module.exports = {
                     blur: '#BCABBC',
                 },
                 text: {
-                    light: '#FFFFFF',
+                    focus: '#FFFFFF',
+                    blur: '#755775',
                     dark: '#1D1C1D',
                 },
                 searchbar: '#644565',
