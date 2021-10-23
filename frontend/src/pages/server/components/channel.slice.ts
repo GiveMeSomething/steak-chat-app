@@ -16,12 +16,14 @@ interface ChannelInfo {
 
 interface channelSliceInitialState {
     channels: ChannelInfo[]
-    channelError: any
+    channelError: any,
+    currentChannel: string,
 }
 
 const initalState: channelSliceInitialState = {
     channels: [],
     channelError: '',
+    currentChannel: ''
 }
 
 export const addNewChannel = createAsyncThunk<
@@ -73,10 +75,18 @@ const channelSlice = createSlice({
     reducers: {
         setChannels: (state, action) => {
             state.channels = action.payload
+
+            // Set current channel to first channel (if have any)
+            if (state.channels[0].id) {
+                state.currentChannel = state.channels[0].id
+            }
         },
         addChannel: (state, action) => {
             state.channels = [...state.channels, action.payload]
         },
+        setCurrentChannel: (state, action) => {
+            state.currentChannel = action.payload
+        }
     },
     extraReducers: (builder) => {
         builder.addMatcher(isRejected, (state, action) => {
@@ -85,7 +95,7 @@ const channelSlice = createSlice({
     },
 })
 
-export const { setChannels, addChannel } = channelSlice.actions
+export const { setChannels, addChannel, setCurrentChannel } = channelSlice.actions
 
 export const selectChannels = (state: RootState) => state.channels
 
