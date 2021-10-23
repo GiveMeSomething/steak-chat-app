@@ -48,6 +48,7 @@ export const signInAndSaveUser = createAsyncThunk(
             return signInWithEmailAndPassword(auth, data.email, data.password)
         })
 
+        // This will have currentUser as it's waiting for above signIn
         if (auth.currentUser) {
             return getUserFromDatabase(auth.currentUser?.uid)
         }
@@ -68,6 +69,7 @@ export const signUpAndSaveUser = createAsyncThunk(
             )
         })
 
+        // This will have currentUser as it's waiting for above signIn
         // Save the user to Firebase Realtime Database
         if (auth.currentUser && auth.currentUser.email) {
             await updateProfile(auth.currentUser, {

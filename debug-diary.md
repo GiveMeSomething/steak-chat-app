@@ -33,14 +33,31 @@
     - withRouter provide {match, location, history} for components through 'props'
     - useRouteMatch hooks provide {path, url} to use in further routing
 
-5. React array of data to list of element
+5. Working with React array (mapping data to elements)
     - Remember to wrap the map() in a JSX Element
     - Add key to each element (maybe another wrap layer to put the key in)
 
-6. How to position element correctly (my ways)
+6. Working with TailwindCSS correctly (my ways)
     - Make sure the parent box is in the right size. This will help with later hover:bg and easier positioning
     - Use flex or flex-col to display to your needs
     - Useful combination: flex + ml-auto:
       - 2 elements of a same parent, one use flex, the later use ml-auto
       - The later will be push to the end of the container ✔
       - Still be able to apply margin/padding ✔
+
+7. Working with Firebase Authentication
+    - Use async/await for all auth actions
+    - Avoid using getAuth().currentUser because it's unreliable. currentUser refer to the 'right now' user in the app, which might not be initialized or existed at the call time
+    - Use onAuthStateChanged() to listen to auth changed (Recommended way to get currentUser)
+    - Call unsubscribe (the function return by some auth function) in componentWillUnmount
+
+8. Working with Firebase Realtime Database
+    - onChildAdded() will also be called on first load. Each child will have 1 onChildAdded() correspond call
+    - My ways to solve this: 
+        - Call onValue() to fetch all data at once, add onlyOnce option to remove the listener (without having to call unsubscribe)
+        - Use a state to indicate first load or not
+        - Use onChildAdded() but not call anything till the first load state is 'false'
+
+    - More notes:
+        - set() will overwrites all data at the given destination
+        - Continue...
