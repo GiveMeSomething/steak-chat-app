@@ -74,15 +74,21 @@ const channelSlice = createSlice({
     initialState: initalState,
     reducers: {
         setChannels: (state, action) => {
-            state.channels = action.payload
+            // Get property value as a channelInfo object
+            // Firebase return object with channelId as property name
+            state.channels = Object.values(action.payload)
 
             // Set current channel to first channel (if have any)
             if (state.channels[0].id) {
+                // TODO: Find a better way to solve this problem
                 state.currentChannel = state.channels[0].id
             }
         },
+        removeChannels: (state) => {
+            state.channels = []
+        },
         addChannel: (state, action) => {
-            state.channels = [...state.channels, action.payload]
+            state.channels.push(action.payload)
         },
         setCurrentChannel: (state, action) => {
             state.currentChannel = action.payload
@@ -95,7 +101,7 @@ const channelSlice = createSlice({
     },
 })
 
-export const { setChannels, addChannel, setCurrentChannel } = channelSlice.actions
+export const { setChannels, removeChannels, addChannel, setCurrentChannel } = channelSlice.actions
 
 export const selectChannels = (state: RootState) => state.channels
 

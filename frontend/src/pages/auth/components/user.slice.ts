@@ -44,15 +44,15 @@ const auth = getAuth(firebaseApp)
 export const signInAndSaveUser = createAsyncThunk(
     'user/signIn',
     async (data: { email: string; password: string }) => {
-        setPersistence(auth, browserSessionPersistence).then(() => {
+        await setPersistence(auth, browserSessionPersistence).then(() => {
             return signInWithEmailAndPassword(auth, data.email, data.password)
         })
 
         if (auth.currentUser) {
             return getUserFromDatabase(auth.currentUser?.uid)
-        } else {
-            throw new Error('Cannot create new user')
         }
+
+        return null
     },
 )
 
@@ -60,7 +60,7 @@ export const signInAndSaveUser = createAsyncThunk(
 export const signUpAndSaveUser = createAsyncThunk(
     'user/signUp',
     async (data: { email: string; password: string }) => {
-        setPersistence(auth, browserSessionPersistence).then(() => {
+        await setPersistence(auth, browserSessionPersistence).then(() => {
             return createUserWithEmailAndPassword(
                 auth,
                 data.email,
@@ -82,9 +82,9 @@ export const signUpAndSaveUser = createAsyncThunk(
 
         if (auth.currentUser) {
             return getUserFromDatabase(auth.currentUser?.uid)
-        } else {
-            throw new Error('Cannot create new user')
         }
+
+        return null
     },
 )
 

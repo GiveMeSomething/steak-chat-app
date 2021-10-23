@@ -6,6 +6,7 @@ import { getAuth } from 'firebase/auth'
 import { firebaseApp } from 'firebase/firebase'
 import { useAppDispatch } from 'redux/hooks'
 import { fetchUser } from 'pages/auth/components/user.slice'
+import { removeChannels } from 'pages/server/components/channel.slice'
 
 // This will redirect to login page if there are no signed in user
 // Wrap this outside of need-to-authenticate components
@@ -19,7 +20,7 @@ const withAuthRedirect = (WrappedComponent: any) => (props: any) => {
         useEffect(() => {
             const auth = getAuth(firebaseApp)
 
-            auth.onAuthStateChanged((user) => {
+            const unsubscribe = auth.onAuthStateChanged((user) => {
                 if (!user) {
                     setNeed(true)
                 } else {
@@ -27,6 +28,10 @@ const withAuthRedirect = (WrappedComponent: any) => (props: any) => {
                     fetchUserInfo(uid)
                 }
             })
+
+            dispatch(removeChannels())
+
+            return () => unsubscribe()
         }, [])
 
         const fetchUserInfo = async (uid: string) => {

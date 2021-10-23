@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { Accordion, Icon } from 'semantic-ui-react'
-import { selectChannels, setCurrentChannel } from './channel.slice'
+import { selectChannels, setCurrentChannel } from '../channel.slice'
 
 interface SidebarProps {
     setChannelModalOpen: Function
@@ -23,9 +23,10 @@ const ServerSidebar: FunctionComponent<SidebarProps> = (props) => {
 
     return (
         <>
-            <div className="flex items-center justify-between p-2 border-t-2 border-b-2 border-opacity-90 border-gray-700">
-                <h2>#ServerName</h2>
-                <h2>Gear</h2>
+            <div className="flex items-center justify-between px-3 py-2 border-t-2 border-b-2 border-opacity-90 border-gray-700">
+                <div className="flex items-baseline h-full">
+                    <h3 className="font-bold"># ServerName</h3>
+                </div>
             </div>
             <div className="py-4">
                 <Accordion>
@@ -68,7 +69,7 @@ const ServerSidebar: FunctionComponent<SidebarProps> = (props) => {
                                         </h4>
                                     </div>
                                     <div className="ml-auto pr-4">
-                                        <div className="flex items-baseline hover:scale-150 cursor-pointer">
+                                        <div className="flex items-baseline cursor-pointer">
                                             <Icon name="ellipsis horizontal" />
                                         </div>
                                     </div>

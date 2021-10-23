@@ -43,7 +43,7 @@ const ProfileDropdown: FunctionComponent<ProfileDropdownProps> = ({
             <Dropdown
                 trigger={
                     <span className="flex">
-                        <img src={avatarUrl} alt="avt" />
+                        <img src={avatarUrl} alt="avt" className="rounded-md" />
                     </span>
                 }
                 icon={null}

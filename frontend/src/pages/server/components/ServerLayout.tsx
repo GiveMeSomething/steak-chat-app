@@ -10,11 +10,13 @@ import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { addChannel, setChannels } from './channel.slice'
 
 import AddChannelModal from './modal/AddChannelModal'
-import ProfileDropdown from './ProfileDropdown'
-import ServerSidebar from './ServerSidebar'
+import ServerSidebar from './sidebar/ServerSidebar'
+import ServerNavbar from './navbar/ServerNavbar'
 
 const ServerLayout: FunctionComponent = () => {
+    const [isFirstLoad, setIsFirstLoad] = useState(true)
     const [isChannelModalOpen, setChannelModalOpen] = useState(false)
+
     const currentUser = useAppSelector(selectCurrentUser)
     const dispatch = useAppDispatch()
 
@@ -23,7 +25,7 @@ const ServerLayout: FunctionComponent = () => {
         fetchUserInfo()
 
         // Get channels' info when load
-        const unsubscribe = onValue(
+        onValue(
             ref(database, 'channels'),
             async (data) => {
                 dispatch(setChannels(data.val()))
@@ -32,9 +34,13 @@ const ServerLayout: FunctionComponent = () => {
         )
 
         // Place listener for database changed
-        onChildAdded(ref(database, 'channels'), (data) => {
-            dispatch(addChannel(data.val()))
+        const unsubscribe = onChildAdded(ref(database, 'channels'), (data) => {
+            if (!isFirstLoad) {
+                dispatch(addChannel(data.val()))
+            }
         })
+
+        setIsFirstLoad(false)
 
         return () => unsubscribe()
     }, [])
@@ -51,21 +57,7 @@ const ServerLayout: FunctionComponent = () => {
 
     return (
         <div className="fullscreen text-white overflow-hidden">
-            <div className="w-full bg-slack-navbar py-3 max-h-15">
-                <div className="flex items-center justify-center">
-                    <input
-                        type="text"
-                        className="bg-slack-searchbar w-2/5 text-slack-text-focus col-start-2 absolute placeholder-white px-4"
-                        placeholder="Search something in ..."
-                    />
-                    <ProfileDropdown
-                        username={currentUser.user?.displayName}
-                        avatarUrl={currentUser.user?.photoUrl}
-                        status={currentUser.user?.status}
-                        handleSignout={handleSignout}
-                    />
-                </div>
-            </div>
+            <ServerNavbar handleSignout={handleSignout} />
             <div className="grid grid-cols-12 fullsize">
                 <div className="col-span-2 fullsize bg-slack-sidebar-normal">
                     <ServerSidebar setChannelModalOpen={setChannelModalOpen} />

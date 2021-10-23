@@ -9,6 +9,8 @@ import {
 } from './user.slice'
 import { Redirect } from 'react-router'
 import { FirebaseError } from '@firebase/util'
+import { getAuth, onAuthStateChanged } from '@firebase/auth'
+import { firebaseApp } from 'firebase/firebase'
 
 interface AuthFormProps {
     label: string
@@ -35,8 +37,23 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
 
     const dispatch = useAppDispatch()
 
+    const auth = getAuth(firebaseApp)
+
     // Set focus to input onload
-    useEffect(() => setFocus('email'), [])
+    useEffect(() => {
+        // Listen to auth changed to redirect to servers page
+        setFocus('email')
+
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
+            if (user) {
+                setWillBeDirect(true)
+            }
+        })
+
+        return () => {
+            unsubscribe()
+        }
+    }, [])
 
     async function onSubmit(data: FormValues) {
         // Diable Signin/signup button
@@ -55,13 +72,13 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
                 // Remove last user-related error (wrong-password, user-not-found, etc...)
                 dispatch(removeUserError)
             }
-
-            setWillBeDirect(true)
         } catch (error: any) {
             // If not Firebase Authentication Error => assume it's network issue
             if (typeof error === typeof FirebaseError) {
                 setError('Wrong email and password combination!')
             } else {
+                console.log(error)
+
                 setError('Service unavailable. Please try again later')
             }
         } finally {
