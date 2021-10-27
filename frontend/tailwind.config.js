@@ -49,6 +49,21 @@ module.exports = {
                     500: '#FAF8DA',
                 },
             },
+            slack: {
+                navbar: '#350D36',
+                sidebar: {
+                    normal: '#3F0E40',
+                    hover: '#350D36',
+                    focus: '#1164A3',
+                    blur: '#BCABBC',
+                },
+                text: {
+                    focus: '#FFFFFF',
+                    blur: '#755775',
+                    dark: '#1D1C1D',
+                },
+                searchbar: '#644565',
+            },
         },
         extend: {
             colors: {

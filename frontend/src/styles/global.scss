@@ -24,6 +24,19 @@ body {
         "Noto Color Emoji";
 }
 
+i .icon {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
 .container {
     @apply w-4/5 mx-auto;
+}
+
+.fullscreen {
+  @apply w-screen h-screen max-h-screen min-h-screen
+}
+
+.fullsize {
+  @apply w-full h-full
 }

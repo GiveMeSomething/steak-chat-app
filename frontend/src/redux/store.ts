@@ -1,10 +1,12 @@
-import userSlice from '@components/auth/user.slice'
+import userSlice from '../pages/auth/components/user.slice'
 import { configureStore } from '@reduxjs/toolkit'
+import channelSlice from 'pages/server/components/channel.slice'
 
 export const store = configureStore({
     reducer: {
-        user: userSlice
-    }
+        user: userSlice,
+        channels: channelSlice,
+    },
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself
