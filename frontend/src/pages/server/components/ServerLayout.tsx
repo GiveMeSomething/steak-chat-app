@@ -1,49 +1,29 @@
-import { onChildAdded, onValue, ref } from '@firebase/database'
-import { database } from 'firebase/firebase'
+import React, { FunctionComponent, useEffect, useState } from 'react'
+import { useAppDispatch, useAppSelector } from 'redux/hooks'
+
 import {
     fetchUser,
     selectCurrentUser,
     signOutAndRemoveUser,
 } from 'pages/auth/components/user.slice'
-import React, { FunctionComponent, useEffect, useState } from 'react'
-import { useAppDispatch, useAppSelector } from 'redux/hooks'
-import { addChannel, setChannels } from './channel.slice'
+import { selectCurrentChannel } from './channel.slice'
 
-import AddChannelModal from './modal/AddChannelModal'
+import AddChannelModal from './sidebar/AddChannelModal'
 import ServerSidebar from './sidebar/ServerSidebar'
 import ServerNavbar from './navbar/ServerNavbar'
 import Messages from './message/Messages'
 
 const ServerLayout: FunctionComponent = () => {
-    const [isFirstLoad, setIsFirstLoad] = useState(true)
     const [isChannelModalOpen, setChannelModalOpen] = useState(false)
 
     const currentUser = useAppSelector(selectCurrentUser)
+    const currentChannel = useAppSelector(selectCurrentChannel)
+
     const dispatch = useAppDispatch()
 
     useEffect(() => {
         // Get user info when load
         fetchUserInfo()
-
-        // Get channels' info when load
-        onValue(
-            ref(database, 'channels'),
-            async (data) => {
-                dispatch(setChannels(data.val()))
-            },
-            { onlyOnce: true },
-        )
-
-        // Place listener for database changed
-        const unsubscribe = onChildAdded(ref(database, 'channels'), (data) => {
-            if (!isFirstLoad) {
-                dispatch(addChannel(data.val()))
-            }
-        })
-
-        setIsFirstLoad(false)
-
-        return () => unsubscribe()
     }, [])
 
     const handleSignout = async () => {
@@ -64,7 +44,7 @@ const ServerLayout: FunctionComponent = () => {
                     <ServerSidebar setChannelModalOpen={setChannelModalOpen} />
                 </div>
                 <div className="col-span-10 w-full h-full bg-white text-gray-800">
-                    <Messages />
+                    <Messages currentChannel={currentChannel} />
                 </div>
             </div>
             <AddChannelModal

@@ -1,20 +1,52 @@
-import React, { FunctionComponent, useState } from 'react'
+import { onChildAdded, onValue } from '@firebase/database'
+import { ref } from 'firebase/database'
+import { database } from 'firebase/firebase'
+import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { Accordion, Icon } from 'semantic-ui-react'
-import { selectChannels, setCurrentChannel } from '../channel.slice'
+import {
+    addChannel,
+    selectChannels,
+    setChannels,
+    setCurrentChannel,
+} from '../channel.slice'
 
 interface SidebarProps {
     setChannelModalOpen: Function
 }
 
 const ServerSidebar: FunctionComponent<SidebarProps> = (props) => {
-    const [isActive, setActive] = useState(false)
+    // Always open channels menu on mount
+    const [isActive, setActive] = useState(true)
 
     const channels = useAppSelector(selectChannels)
     const dispatch = useAppDispatch()
 
+    useEffect(() => {
+        onValue(
+            ref(database, 'channels'),
+            (data) => {
+                dispatch(setChannels(data.val()))
+            },
+            {
+                onlyOnce: true,
+            },
+        )
+        // Place listener for database changed
+        const unsubscribe = onChildAdded(ref(database, 'channels'), (data) => {
+            dispatch(addChannel(data.val()))
+        })
+
+        return () => unsubscribe()
+    }, [])
+
     const handleOnChannelsClick = () => {
         setActive(!isActive)
+    }
+
+    const handleOnAddClick = (e: any) => {
+        e.stopPropagation()
+        props.setChannelModalOpen(true)
     }
 
     const handleOnSingleChannelClick = (channelId: any) => {
@@ -41,7 +73,7 @@ const ServerSidebar: FunctionComponent<SidebarProps> = (props) => {
                             </div>
                             <div
                                 className="flex items-baseline justify-center hover:bg-slack-sidebar-focus leading-6 align-middle px-2 rounded-md cursor-pointer"
-                                onClick={() => props.setChannelModalOpen(true)}
+                                onClick={(e) => handleOnAddClick(e)}
                             >
                                 <h3>+</h3>
                             </div>

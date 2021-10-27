@@ -50,9 +50,7 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
             }
         })
 
-        return () => {
-            unsubscribe()
-        }
+        return () => unsubscribe()
     }, [])
 
     async function onSubmit(data: FormValues) {

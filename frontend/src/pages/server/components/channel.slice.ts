@@ -16,14 +16,14 @@ interface ChannelInfo {
 
 interface channelSliceInitialState {
     channels: ChannelInfo[]
-    channelError: any,
-    currentChannel: string,
+    channelError: any
+    currentChannel: string
 }
 
 const initalState: channelSliceInitialState = {
     channels: [],
     channelError: '',
-    currentChannel: ''
+    currentChannel: '',
 }
 
 export const addNewChannel = createAsyncThunk<
@@ -76,12 +76,14 @@ const channelSlice = createSlice({
         setChannels: (state, action) => {
             // Get property value as a channelInfo object
             // Firebase return object with channelId as property name
-            state.channels = Object.values(action.payload)
+            if (action.payload) {
+                state.channels = Object.values(action.payload)
 
-            // Set current channel to first channel (if have any)
-            if (state.channels[0].id) {
-                // TODO: Find a better way to solve this problem
-                state.currentChannel = state.channels[0].id
+                // Set current channel to first channel (if have any)
+                if (state.channels[0].id) {
+                    // TODO: Find a better way to solve this problem
+                    state.currentChannel = state.channels[0].id
+                }
             }
         },
         removeChannels: (state) => {
@@ -92,7 +94,7 @@ const channelSlice = createSlice({
         },
         setCurrentChannel: (state, action) => {
             state.currentChannel = action.payload
-        }
+        },
     },
     extraReducers: (builder) => {
         builder.addMatcher(isRejected, (state, action) => {
@@ -101,8 +103,12 @@ const channelSlice = createSlice({
     },
 })
 
-export const { setChannels, removeChannels, addChannel, setCurrentChannel } = channelSlice.actions
+export const { setChannels, removeChannels, addChannel, setCurrentChannel } =
+    channelSlice.actions
 
 export const selectChannels = (state: RootState) => state.channels
+
+export const selectCurrentChannel = (state: RootState) =>
+    state.channels.currentChannel
 
 export default channelSlice.reducer
