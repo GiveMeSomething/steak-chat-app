@@ -23,9 +23,9 @@ const ServerSidebar: FunctionComponent<SidebarProps> = (props) => {
 
     return (
         <>
-            <div className="flex items-center justify-between px-3 py-2 border-t-2 border-b-2 border-opacity-90 border-gray-700">
+            <div className="flex items-center justify-between px-3 py-2 border-t-2 border-b-2 border-gray-700">
                 <div className="flex items-baseline h-full">
-                    <h3 className="font-bold"># ServerName</h3>
+                    <h2 className="font-bold"># ServerName</h2>
                 </div>
             </div>
             <div className="py-4">

@@ -1,11 +1,20 @@
 import React, { FunctionComponent } from 'react'
+import { Button, Popup } from 'semantic-ui-react'
 
 interface MessagesInputProps {}
 
 const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
     return (
-        <div className="flex px-2 pb-2 items-start justify-center w-full absolute">
-            <input placeholder="Message #name" className="w-full" />
+        <div className="flex items-baseline justify-center mb-4 mx-4">
+            <Popup
+                content="Attach file"
+                trigger={<Button basic icon="paperclip" color="blue" />}
+            />
+
+            <input
+                placeholder="Message #name"
+                className="w-full px-4 py-2 rounded-md border-2 border-slack-text-blur"
+            />
         </div>
     )
 }

@@ -12,6 +12,7 @@ import { addChannel, setChannels } from './channel.slice'
 import AddChannelModal from './modal/AddChannelModal'
 import ServerSidebar from './sidebar/ServerSidebar'
 import ServerNavbar from './navbar/ServerNavbar'
+import Messages from './message/Messages'
 
 const ServerLayout: FunctionComponent = () => {
     const [isFirstLoad, setIsFirstLoad] = useState(true)
@@ -63,7 +64,7 @@ const ServerLayout: FunctionComponent = () => {
                     <ServerSidebar setChannelModalOpen={setChannelModalOpen} />
                 </div>
                 <div className="col-span-10 w-full h-full bg-white text-gray-800">
-                    Messages
+                    <Messages />
                 </div>
             </div>
             <AddChannelModal
