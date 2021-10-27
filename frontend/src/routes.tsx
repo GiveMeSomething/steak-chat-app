@@ -18,6 +18,9 @@ const Routes = () => {
                 <Route path="/servers">
                     <ServersPage />
                 </Route>
+                <Route path="/">
+                    <Signin />
+                </Route>
             </Switch>
         </Router>
     )

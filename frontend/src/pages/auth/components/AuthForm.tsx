@@ -99,7 +99,7 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
             className="flex flex-col items-center justify-center w-full min-h-full"
         >
             <div className="flex justify-center items-center">
-                <h1 className="text-4xl uppercase">{props.label}</h1>
+                <h1 className="text-4xl capitalize">{props.label}</h1>
             </div>
             <div className="container text-xl m-2 flex flex-col items-start justify-start">
                 <div className="bg-white w-full h-full">
@@ -143,7 +143,7 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
                     <div className="flex flex-col items-center justify-center w-full mt-8">
                         <button
                             type="submit"
-                            className="px-10 py-2 rounded-full uppercase text-white bg-fresh-2-500 disabled:opacity-50"
+                            className="px-10 py-2 rounded-full uppercase text-white bg-fresh-2-500 hover:bg-yellow-700 cursor-pointer disabled:opacity-50"
                             disabled={isLoading}
                         >
                             {props.label}
