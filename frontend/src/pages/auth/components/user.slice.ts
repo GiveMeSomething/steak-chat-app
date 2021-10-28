@@ -20,7 +20,7 @@ import {
 import md5 from 'md5'
 
 // TODO: Maybe functions need to be in async/await
-interface UserInfo {
+export interface UserInfo {
     uid: string
     displayName: string
     photoUrl: string
@@ -99,8 +99,12 @@ export const signOutAndRemoveUser = createAsyncThunk(
 
 export const fetchUser = createAsyncThunk(
     'user/fetchInfo',
-    async (data: { uid: string }) => {
-        return getUserFromDatabase(data.uid)
+    async () => {
+        if (auth.currentUser) {
+            return getUserFromDatabase(auth.currentUser?.uid)
+        }
+
+        return null
     },
 )
 

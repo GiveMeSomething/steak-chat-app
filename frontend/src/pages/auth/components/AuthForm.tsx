@@ -1,16 +1,19 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
+import { Redirect } from 'react-router'
 import { useForm } from 'react-hook-form'
-import FormInput from './FormInput'
 import { useAppDispatch } from 'redux/hooks'
+
+import { FirebaseError } from '@firebase/util'
+import { firebaseApp } from 'firebase/firebase'
+import { getAuth, onAuthStateChanged } from '@firebase/auth'
+
 import {
     signInAndSaveUser,
     removeUserError,
     signUpAndSaveUser,
 } from './user.slice'
-import { Redirect } from 'react-router'
-import { FirebaseError } from '@firebase/util'
-import { getAuth, onAuthStateChanged } from '@firebase/auth'
-import { firebaseApp } from 'firebase/firebase'
+
+import FormInput from './FormInput'
 
 interface AuthFormProps {
     label: string
@@ -44,7 +47,7 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
         // Listen to auth changed to redirect to servers page
         setFocus('email')
 
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
+        const unsubscribe = onAuthStateChanged(auth, async (user) => {
             if (user) {
                 setWillBeDirect(true)
             }
@@ -53,7 +56,7 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
         return () => unsubscribe()
     }, [])
 
-    async function onSubmit(data: FormValues) {
+    const onSubmit = async (data: FormValues) => {
         // Diable Signin/signup button
         setIsLoading(true)
 

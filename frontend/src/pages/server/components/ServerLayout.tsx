@@ -1,39 +1,23 @@
-import React, { FunctionComponent, useEffect, useState } from 'react'
+import React, { FunctionComponent, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
-import {
-    fetchUser,
-    selectCurrentUser,
-    signOutAndRemoveUser,
-} from 'pages/auth/components/user.slice'
+import { signOutAndRemoveUser } from 'pages/auth/components/user.slice'
 import { selectCurrentChannel } from './channel.slice'
 
 import AddChannelModal from './sidebar/AddChannelModal'
 import ServerSidebar from './sidebar/ServerSidebar'
 import ServerNavbar from './navbar/ServerNavbar'
-import Messages from './message/Messages'
+import Messages from './message/ServerMessages'
 
 const ServerLayout: FunctionComponent = () => {
     const [isChannelModalOpen, setChannelModalOpen] = useState(false)
 
-    const currentUser = useAppSelector(selectCurrentUser)
     const currentChannel = useAppSelector(selectCurrentChannel)
 
     const dispatch = useAppDispatch()
 
-    useEffect(() => {
-        // Get user info when load
-        fetchUserInfo()
-    }, [])
-
     const handleSignout = async () => {
         await dispatch(signOutAndRemoveUser())
-    }
-
-    const fetchUserInfo = async () => {
-        if (currentUser.user) {
-            await dispatch(fetchUser({ uid: currentUser.user?.uid }))
-        }
     }
 
     return (

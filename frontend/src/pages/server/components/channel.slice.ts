@@ -1,10 +1,11 @@
 import { RootState } from 'redux/store'
-import { createAsyncThunk, createSlice, isRejected } from '@reduxjs/toolkit'
+import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { database } from 'firebase/firebase'
 import { v4 as uuid } from 'uuid'
 import { ref, set } from '@firebase/database'
+import { UserInfo } from 'pages/auth/components/user.slice'
 
-interface ChannelInfo {
+export interface ChannelInfo {
     id?: string
     name?: string
     desc?: string
@@ -12,6 +13,11 @@ interface ChannelInfo {
         uid?: string
         username?: string
     }
+}
+
+interface ChannelInfoPayload {
+    channelName: string,
+    channelDesc: string
 }
 
 interface channelSliceInitialState {
@@ -26,40 +32,12 @@ const initalState: channelSliceInitialState = {
     currentChannel: '',
 }
 
-export const addNewChannel = createAsyncThunk<
-    ChannelInfo,
-    any,
-    { state: RootState }
->(
-    'channels/create',
-    async (
-        data: { channelName: string; channelDesc: string },
-        { getState },
-    ) => {
-        const state = getState().user
-
-        const channelInfo: ChannelInfo = {
-            id: uuid(),
-            name: data.channelName,
-            desc: data.channelDesc,
-            createdBy: {
-                uid: state.user?.uid,
-                username: state.user?.displayName,
-            },
-        }
-
-        await addChannelToDatabase(channelInfo)
-
-        return channelInfo
-    },
-)
-
-async function addChannelToDatabase({
+const addChannelToDatabase = async ({
     id,
     name,
     desc,
     createdBy,
-}: ChannelInfo) {
+}: ChannelInfo) => {
     // This will overwrite data at the specified location
     await set(ref(database, `channels/${id}`), {
         id,
@@ -68,6 +46,28 @@ async function addChannelToDatabase({
         createdBy,
     })
 }
+
+const channelInfoFromUser = (data: ChannelInfoPayload, user: UserInfo | null): ChannelInfo => ({
+    id: uuid(),
+    name: data.channelName,
+    desc: data.channelDesc,
+    createdBy: {
+        uid: user?.uid,
+        username: user?.displayName,
+    },
+})
+
+export const addNewChannel = createAsyncThunk<any, any, { state: RootState }>(
+    'channels/create',
+    async (
+        data: { channelName: string; channelDesc: string },
+        { getState },
+    ) => {
+        const channelInfo = channelInfoFromUser(data, getState().user.user)
+
+        await addChannelToDatabase(channelInfo)
+    },
+)
 
 const channelSlice = createSlice({
     name: 'channel',
@@ -95,12 +95,7 @@ const channelSlice = createSlice({
         setCurrentChannel: (state, action) => {
             state.currentChannel = action.payload
         },
-    },
-    extraReducers: (builder) => {
-        builder.addMatcher(isRejected, (state, action) => {
-            state.channelError = action.error
-        })
-    },
+    }
 })
 
 export const { setChannels, removeChannels, addChannel, setCurrentChannel } =

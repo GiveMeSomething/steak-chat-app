@@ -9,8 +9,9 @@ interface Message {
     content: string
     timestamp: object
     createdBy: {
-        uid?: string
-        username?: string
+        uid?: string,
+        username?: string,
+        photoUrl?: string
     }
 }
 
@@ -32,6 +33,7 @@ export const sendMessage = createAsyncThunk<any, any, { state: RootState }>(
         if (currentUser) {
             const createdBy = {
                 uid: currentUser.uid,
+                username: currentUser.displayName,
                 photoUrl: currentUser.photoUrl,
             }
 
@@ -49,6 +51,8 @@ export const sendMessage = createAsyncThunk<any, any, { state: RootState }>(
                 message,
             )
 
+            console.log(message)
+
             return message
         }
 
@@ -62,10 +66,12 @@ const messageSlice = createSlice({
     reducers: {
         setMessages: (state, action) => {
             // Get message objects from action payload and convert to array
-            const messages: Message[] = Object.values(action.payload)
+            if (action.payload) {
+                const messages: Message[] = Object.values(action.payload)
 
-            if (messages.length > 0) {
-                state.messages = messages
+                if (messages.length > 0) {
+                    state.messages = messages
+                }
             } else {
                 state.messageError = 'EMPTY'
             }
@@ -77,15 +83,6 @@ const messageSlice = createSlice({
                 state.messages = [action.payload]
             }
         },
-    },
-    extraReducers: (builder) => {
-        builder.addCase(sendMessage.fulfilled, (state, action) => {
-            if (state.messages) {
-                state.messages = [...state.messages, action.payload]
-            } else {
-                state.messages = [action.payload]
-            }
-        })
     },
 })
 

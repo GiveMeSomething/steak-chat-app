@@ -1,15 +1,7 @@
-import { onChildAdded, onValue } from '@firebase/database'
-import { ref } from 'firebase/database'
-import { database } from 'firebase/firebase'
-import React, { FunctionComponent, useEffect, useState } from 'react'
+import React, { FunctionComponent, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
-import { Accordion, Icon } from 'semantic-ui-react'
-import {
-    addChannel,
-    selectChannels,
-    setChannels,
-    setCurrentChannel,
-} from '../channel.slice'
+import { Accordion, Icon, Popup } from 'semantic-ui-react'
+import { selectChannels, setCurrentChannel } from '../channel.slice'
 
 interface SidebarProps {
     setChannelModalOpen: Function
@@ -22,34 +14,20 @@ const ServerSidebar: FunctionComponent<SidebarProps> = (props) => {
     const channels = useAppSelector(selectChannels)
     const dispatch = useAppDispatch()
 
-    useEffect(() => {
-        onValue(
-            ref(database, 'channels'),
-            (data) => {
-                dispatch(setChannels(data.val()))
-            },
-            {
-                onlyOnce: true,
-            },
-        )
-        // Place listener for database changed
-        const unsubscribe = onChildAdded(ref(database, 'channels'), (data) => {
-            dispatch(addChannel(data.val()))
-        })
-
-        return () => unsubscribe()
-    }, [])
-
-    const handleOnChannelsClick = () => {
+    const handleOnChannelMenuClick = () => {
         setActive(!isActive)
     }
 
     const handleOnAddClick = (e: any) => {
+        // Stop the add button trigger close channels menu
         e.stopPropagation()
+
+        // Open add new channel modal
         props.setChannelModalOpen(true)
     }
 
-    const handleOnSingleChannelClick = (channelId: any) => {
+    // Select current channel
+    const handleOnChannelClick = (channelId: any) => {
         dispatch(setCurrentChannel(channelId))
     }
 
@@ -64,19 +42,25 @@ const ServerSidebar: FunctionComponent<SidebarProps> = (props) => {
                 <Accordion>
                     <Accordion.Title
                         active={isActive}
-                        onClick={handleOnChannelsClick}
+                        onClick={handleOnChannelMenuClick}
                     >
                         <div className="flex h-full items-center justify-between px-4 hover:bg-slack-sidebar-hover text-white">
                             <div className="flex items-baseline">
                                 <Icon name="dropdown" />
                                 <h4>Channels</h4>
                             </div>
-                            <div
-                                className="flex items-baseline justify-center hover:bg-slack-sidebar-focus leading-6 align-middle px-2 rounded-md cursor-pointer"
-                                onClick={(e) => handleOnAddClick(e)}
-                            >
-                                <h3>+</h3>
-                            </div>
+
+                            <Popup
+                                content="Add new channel"
+                                trigger={
+                                    <div
+                                        className="flex items-baseline justify-center hover:bg-slack-sidebar-focus leading-6 align-middle px-2 rounded-md cursor-pointer"
+                                        onClick={(e) => handleOnAddClick(e)}
+                                    >
+                                        <h3>+</h3>
+                                    </div>
+                                }
+                            />
                         </div>
                     </Accordion.Title>
                     <Accordion.Content active={isActive}>
@@ -91,7 +75,7 @@ const ServerSidebar: FunctionComponent<SidebarProps> = (props) => {
                                     }`}
                                     key={channel.id}
                                     onClick={() =>
-                                        handleOnSingleChannelClick(channel.id)
+                                        handleOnChannelClick(channel.id)
                                     }
                                 >
                                     <div className="flex items-baseline px-4 py-2">
