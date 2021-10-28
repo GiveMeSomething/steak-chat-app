@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { useParams } from 'react-router'
 
 import { database } from 'firebase/firebase'
-import { onChildAdded, onValue, ref } from '@firebase/database'
+import { onChildAdded, onValue, query, ref } from '@firebase/database'
 
 import { addMessage, setMessages } from './components/message.slice'
 import {
@@ -14,11 +14,14 @@ import {
 
 import ServerLayout from './components/ServerLayout'
 import withAuthRedirect from 'components/middleware/withAuthRedirect'
+import { orderByChild } from 'firebase/database'
 
 interface ChatServerProps {}
 
 const ChatServer: FunctionComponent<ChatServerProps> = () => {
+    const [isLoading, setIsLoading] = useState(true)
     const [isFirstLoad, setIsFirstLoad] = useState(true)
+
     const { id } = useParams<{ id: string }>()
 
     const dispatch = useAppDispatch()
@@ -33,7 +36,7 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     useEffect(() => {
         // Fetch channels in current server
         onValue(
-            channelsRef,
+            query(channelsRef, orderByChild('name')),
             (data) => {
                 dispatch(setChannels(data.val()))
             },
@@ -51,10 +54,17 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
         if (currentChannel) {
             // Fetch message of current channel
             // This will guarantee currentChannel value is provided to messageRef
+
             onValue(
-                messagesRef,
+                query(messagesRef, orderByChild('timestamp')),
                 (data) => {
-                    dispatch(setMessages(data.val()))
+                    const result: any[] = []
+                    data.forEach((message) => {
+                        result.push(message.val())
+                    })
+
+                    dispatch(setMessages(result))
+                    setIsLoading(false)
                 },
                 { onlyOnce: true },
             )
@@ -80,7 +90,17 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
         }
     }, [isFirstLoad])
 
-    return <ServerLayout />
+    if (isLoading) {
+        return (
+            <div className="h-screen w-screen max-h-screen flex items-center justify-center">
+                <div className="ui active inverted dimmer">
+                    <div className="ui text loader">Loading</div>
+                </div>
+            </div>
+        )
+    } else {
+        return <ServerLayout />
+    }
 }
 
 export default withAuthRedirect(ChatServer)

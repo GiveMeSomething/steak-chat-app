@@ -22,19 +22,23 @@ const ServerLayout: FunctionComponent = () => {
 
     return (
         <div className="fullscreen text-white overflow-hidden">
-            <ServerNavbar handleSignout={handleSignout} />
-            <div className="grid grid-cols-12 fullsize">
-                <div className="col-span-2 fullsize bg-slack-sidebar-normal">
-                    <ServerSidebar setChannelModalOpen={setChannelModalOpen} />
+            <div className="flex flex-col w-ful h-full">
+                <ServerNavbar handleSignout={handleSignout} />
+                <div className="grid grid-cols-12 w-full h-full">
+                    <div className="col-span-2 w-full h-full bg-slack-sidebar-normal">
+                        <ServerSidebar
+                            setChannelModalOpen={setChannelModalOpen}
+                        />
+                    </div>
+                    <div className="col-span-10 w-full h-full bg-white text-gray-800">
+                        <Messages currentChannel={currentChannel} />
+                    </div>
                 </div>
-                <div className="col-span-10 w-full h-full bg-white text-gray-800">
-                    <Messages currentChannel={currentChannel} />
-                </div>
+                <AddChannelModal
+                    isOpen={isChannelModalOpen}
+                    setOpen={setChannelModalOpen}
+                />
             </div>
-            <AddChannelModal
-                isOpen={isChannelModalOpen}
-                setOpen={setChannelModalOpen}
-            />
         </div>
     )
 }

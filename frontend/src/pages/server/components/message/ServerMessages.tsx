@@ -14,7 +14,7 @@ const Messages: FunctionComponent<MessagesProps> = ({ currentChannel }) => {
                 <MessagesHeader />
             </div>
             <MessagesPanel />
-            <div className="absolute bottom-10 w-full">
+            <div className="absolute -bottom-0 w-full bg-white z-10">
                 <MessagesInput channel={currentChannel} />
             </div>
         </div>

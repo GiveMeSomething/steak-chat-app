@@ -34,9 +34,13 @@ i .icon {
 }
 
 .fullscreen {
-  @apply w-screen h-screen max-h-screen min-h-screen
+  @apply w-screen h-screen min-h-screen
 }
 
 .fullsize {
   @apply w-full h-full
+}
+
+.message-panel {
+  height: 90%;
 }
