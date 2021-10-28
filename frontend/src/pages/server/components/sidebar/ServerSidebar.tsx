@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react'
+import React, { FunctionComponent, MouseEvent, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { Accordion, Icon, Popup } from 'semantic-ui-react'
 import { selectChannels, setCurrentChannel } from '../channel.slice'
@@ -9,7 +9,7 @@ interface SidebarProps {
 
 const ServerSidebar: FunctionComponent<SidebarProps> = (props) => {
     // Always open channels menu on mount
-    const [isActive, setActive] = useState(true)
+    const [isActive, setActive] = useState<boolean>(true)
 
     const channels = useAppSelector(selectChannels)
     const dispatch = useAppDispatch()
@@ -18,7 +18,7 @@ const ServerSidebar: FunctionComponent<SidebarProps> = (props) => {
         setActive(!isActive)
     }
 
-    const handleOnAddClick = (e: any) => {
+    const handleOnAddClick = (e: MouseEvent<HTMLDivElement>) => {
         // Stop the add button trigger close channels menu
         e.stopPropagation()
 
@@ -55,7 +55,7 @@ const ServerSidebar: FunctionComponent<SidebarProps> = (props) => {
                                 trigger={
                                     <div
                                         className="flex items-baseline justify-center hover:bg-slack-sidebar-focus leading-6 align-middle px-2 rounded-md cursor-pointer"
-                                        onClick={(e) => handleOnAddClick(e)}
+                                        onClick={handleOnAddClick}
                                     >
                                         <h3>+</h3>
                                     </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { FunctionComponent, useEffect, useState } from 'react'
 import { Redirect } from 'react-router'
 // import { useAppSelector } from 'redux/hooks'
 // import { selectCurrentUser } from 'pages/auth/components/user.slice'
@@ -10,22 +10,27 @@ import { fetchUser } from 'pages/auth/components/user.slice'
 
 // This will redirect to login page if there are no signed in user
 // Wrap this outside of need-to-authenticate components
-const withAuthRedirect = (WrappedComponent: any) => (props: any) => {
-    const WithAuthRedirect = (props: any) => {
-        const [needToRedirect, setNeedToRedirect] = useState(false)
-        const [isLoading, setIsLoading] = useState(true)
+function withAuthRedirect<PropsType>(
+    WrappedComponent: FunctionComponent<PropsType>,
+) {
+    return (props: PropsType) => {
+        const [needToRedirect, setNeedToRedirect] = useState<boolean>(false)
+        const [isLoading, setIsLoading] = useState<boolean>(true)
+
         const dispatch = useAppDispatch()
 
         const auth = getAuth(firebaseApp)
 
         const fetchUserInfo = async () => {
+            // The page will wait for fetchUser to finish before display anything
+            setIsLoading(true)
+
             await dispatch(fetchUser())
+
             setIsLoading(false)
         }
 
         useEffect(() => {
-            setIsLoading(true)
-
             const unsubscribe = auth.onAuthStateChanged((user) => {
                 if (!user) {
                     setNeedToRedirect(true)
@@ -39,6 +44,7 @@ const withAuthRedirect = (WrappedComponent: any) => (props: any) => {
             return () => unsubscribe()
         }, [])
 
+        // Redirect based on authState
         if (needToRedirect) {
             return (
                 <Redirect
@@ -62,8 +68,6 @@ const withAuthRedirect = (WrappedComponent: any) => (props: any) => {
             }
         }
     }
-
-    return <WithAuthRedirect {...props} />
 }
 
 export default withAuthRedirect

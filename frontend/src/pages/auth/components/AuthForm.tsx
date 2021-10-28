@@ -26,9 +26,9 @@ interface FormValues {
 }
 
 const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
-    const [willBeRedirect, setWillBeDirect] = useState(false)
-    const [requestError, setError] = useState('')
-    const [isLoading, setIsLoading] = useState(false)
+    const [willBeRedirect, setWillBeDirect] = useState<boolean>(false)
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [requestError, setError] = useState<string>('')
 
     // react-hook-form setup
     const {

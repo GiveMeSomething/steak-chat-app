@@ -17,10 +17,10 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = ({ channel }) => {
     const { register, handleSubmit, reset } = useForm<Message>()
 
     const onSubmit = async (data: Message) => {
-        console.log(data)
-
+        // Clear user input onSubmit
         reset()
 
+        // Call dispatch to send message to database
         dispatch(setMessageLoading(true))
         await dispatch(sendMessage({ channel, content: data.content }))
     }

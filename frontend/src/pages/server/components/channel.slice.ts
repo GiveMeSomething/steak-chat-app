@@ -16,7 +16,7 @@ export interface ChannelInfo {
 }
 
 interface ChannelInfoPayload {
-    channelName: string,
+    channelName: string
     channelDesc: string
 }
 
@@ -47,7 +47,10 @@ const addChannelToDatabase = async ({
     })
 }
 
-const channelInfoFromUser = (data: ChannelInfoPayload, user: UserInfo | null): ChannelInfo => ({
+const channelInfoFromUser = (
+    data: ChannelInfoPayload,
+    user: UserInfo | null,
+): ChannelInfo => ({
     id: uuid(),
     name: data.channelName,
     desc: data.channelDesc,
@@ -95,7 +98,7 @@ const channelSlice = createSlice({
         setCurrentChannel: (state, action) => {
             state.currentChannel = action.payload
         },
-    }
+    },
 })
 
 export const { setChannels, removeChannels, addChannel, setCurrentChannel } =

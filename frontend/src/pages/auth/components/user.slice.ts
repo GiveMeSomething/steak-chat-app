@@ -97,16 +97,13 @@ export const signOutAndRemoveUser = createAsyncThunk(
     },
 )
 
-export const fetchUser = createAsyncThunk(
-    'user/fetchInfo',
-    async () => {
-        if (auth.currentUser) {
-            return getUserFromDatabase(auth.currentUser?.uid)
-        }
+export const fetchUser = createAsyncThunk('user/fetchInfo', async () => {
+    if (auth.currentUser) {
+        return getUserFromDatabase(auth.currentUser?.uid)
+    }
 
-        return null
-    },
-)
+    return null
+})
 
 async function updateUserToDatabase(createdUser: User) {
     await set(ref(database, 'users/' + createdUser.uid), {

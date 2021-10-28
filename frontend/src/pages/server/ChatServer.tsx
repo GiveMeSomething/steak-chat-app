@@ -1,9 +1,14 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
-import { useParams } from 'react-router'
 
 import { database } from 'firebase/firebase'
-import { onChildAdded, onValue, query, ref } from '@firebase/database'
+import {
+    onChildAdded,
+    onValue,
+    query,
+    ref,
+    orderByChild,
+} from '@firebase/database'
 
 import { addMessage, setMessages } from './components/message.slice'
 import {
@@ -14,23 +19,18 @@ import {
 
 import ServerLayout from './components/ServerLayout'
 import withAuthRedirect from 'components/middleware/withAuthRedirect'
-import { orderByChild } from 'firebase/database'
 
 interface ChatServerProps {}
 
 const ChatServer: FunctionComponent<ChatServerProps> = () => {
-    const [isLoading, setIsLoading] = useState(true)
-    const [isFirstLoad, setIsFirstLoad] = useState(true)
-
-    const { id } = useParams<{ id: string }>()
+    const [isLoading, setIsLoading] = useState<boolean>(true)
+    const [isFirstLoad, setIsFirstLoad] = useState<boolean>(true)
 
     const dispatch = useAppDispatch()
     const currentChannel = useAppSelector(selectCurrentChannel)
 
     const channelsRef = ref(database, 'channels')
     const messagesRef = ref(database, `channels/${currentChannel}/messages`)
-
-    console.log('Server ID: ' + id)
 
     // Get all data needed here
     useEffect(() => {
@@ -103,4 +103,4 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     }
 }
 
-export default withAuthRedirect(ChatServer)
+export default withAuthRedirect<ChatServerProps>(ChatServer)

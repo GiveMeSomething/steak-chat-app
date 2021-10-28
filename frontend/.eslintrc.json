@@ -27,6 +27,7 @@
         "indent": "off",
         // "@typescript-eslint/indent": ["error", 4, { "SwitchCase": 1 }],
         "comma-dangle": "off",
+        "comma-spacing": "off",
         "no-use-before-define": "off",
         "@typescript-eslint/no-use-before-define": ["off"],
         "space-before-function-paren": "off",

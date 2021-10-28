@@ -9,16 +9,16 @@ interface Message {
     content: string
     timestamp: object
     createdBy: {
-        uid?: string,
-        username?: string,
+        uid?: string
+        username?: string
         photoUrl?: string
     }
 }
 
 interface MessagesState {
     messages: Message[] | null
-    messageError: string | 'EMPTY',
-    isMessageLoading: boolean,
+    messageError: string | 'EMPTY'
+    isMessageLoading: boolean
 }
 
 const initialState: MessagesState = {
@@ -47,7 +47,10 @@ export const sendMessage = createAsyncThunk<any, any, { state: RootState }>(
                 createdBy,
             }
 
-            const messageRef = ref(database, `channels/${data.channel}/messages/${message.id}`)
+            const messageRef = ref(
+                database,
+                `channels/${data.channel}/messages/${message.id}`,
+            )
             // Set object to database, this will trigger child_added to re-render page
             await set(messageRef, message)
 
@@ -89,7 +92,7 @@ const messageSlice = createSlice({
         },
         setMessageLoading: (state, action) => {
             state.isMessageLoading = action.payload
-        }
+        },
     },
     extraReducers: (builder) => {
         builder.addCase(sendMessage.fulfilled, (state, action) => {
@@ -99,13 +102,16 @@ const messageSlice = createSlice({
                 state.messages = [action.payload]
             }
         })
-    }
+    },
 })
 
-export const { setMessages, addMessage, setMessageLoading } = messageSlice.actions
+export const { setMessages, addMessage, setMessageLoading } =
+    messageSlice.actions
 
 export const selectMessages = (state: RootState) => state.messages.messages
-export const selectMessagesError = (state: RootState) => state.messages.messageError
-export const isMessageLoading = (state: RootState) => state.messages.isMessageLoading
+export const selectMessagesError = (state: RootState) =>
+    state.messages.messageError
+export const isMessageLoading = (state: RootState) =>
+    state.messages.isMessageLoading
 
 export default messageSlice.reducer

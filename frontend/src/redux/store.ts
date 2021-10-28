@@ -7,7 +7,7 @@ export const store = configureStore({
     reducer: {
         user: userSlice,
         channels: channelSlice,
-        messages: messageSlice
+        messages: messageSlice,
     },
 })
 
