@@ -4,7 +4,7 @@ import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { signOutAndRemoveUser } from 'pages/auth/components/user.slice'
 import { selectCurrentChannel } from './channel.slice'
 
-import AddChannelModal from './sidebar/AddChannelModal'
+import AddChannelModal from './modal/AddChannelModal'
 import ServerSidebar from './sidebar/ServerSidebar'
 import ServerNavbar from './navbar/ServerNavbar'
 import ServerMessages from './message/ServerMessages'

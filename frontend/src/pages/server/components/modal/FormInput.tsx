@@ -13,7 +13,7 @@ const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
         const inputPlaceholder = 'Enter ' + props.label.toLowerCase()
         return (
             <>
-                <label htmlFor={inputId} className="capitalize font-normal">
+                <label htmlFor={inputId} className="capitalize font-semibold">
                     {props.label}
                 </label>
                 <input
