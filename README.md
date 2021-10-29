@@ -25,6 +25,7 @@ Then you can go to:
   - https://localhost:3000/auth/signin - Signin Page
   - https://localhost:3000/auth/signup - Signup Page
   - https://localhost:3000/servers/1 - Example Chat Server
+  - Change between channels on sidebar to see its messages
 
 ## Repository Structure (top-level directories)
 
