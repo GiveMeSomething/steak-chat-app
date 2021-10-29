@@ -21,13 +21,8 @@ const Signin = () => {
                             Don&apos;t have an account?
                         </h4>
                         <div className="flex items-center justify-center w-full mt-8 text-xl">
-                            <div className="px-10 py-2 rounded-full capitalize text-white bg-fresh-2-500 hover:bg-yellow-700 cursor-pointer">
-                                <Link
-                                    to="/auth/signup"
-                                    className="no-underline hover:text-white"
-                                >
-                                    Sign up
-                                </Link>
+                            <div className="px-10 py-2 rounded-full uppercase text-white bg-fresh-2-500">
+                                <Link to="/auth/signup">Sign up</Link>
                             </div>
                         </div>
                     </div>

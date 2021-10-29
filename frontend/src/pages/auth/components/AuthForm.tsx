@@ -1,19 +1,16 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
-import { Redirect } from 'react-router'
 import { useForm } from 'react-hook-form'
+import FormInput from './FormInput'
 import { useAppDispatch } from 'redux/hooks'
-
-import { FirebaseError } from '@firebase/util'
-import { firebaseApp } from 'firebase/firebase'
-import { getAuth, onAuthStateChanged } from '@firebase/auth'
-
 import {
     signInAndSaveUser,
     removeUserError,
     signUpAndSaveUser,
 } from './user.slice'
-
-import FormInput from './FormInput'
+import { Redirect } from 'react-router'
+import { FirebaseError } from '@firebase/util'
+import { getAuth, onAuthStateChanged } from '@firebase/auth'
+import { firebaseApp } from 'firebase/firebase'
 
 interface AuthFormProps {
     label: string
@@ -26,9 +23,9 @@ interface FormValues {
 }
 
 const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
-    const [willBeRedirect, setWillBeDirect] = useState<boolean>(false)
-    const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [requestError, setError] = useState<string>('')
+    const [willBeRedirect, setWillBeDirect] = useState(false)
+    const [requestError, setError] = useState('')
+    const [isLoading, setIsLoading] = useState(false)
 
     // react-hook-form setup
     const {
@@ -47,16 +44,18 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
         // Listen to auth changed to redirect to servers page
         setFocus('email')
 
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 setWillBeDirect(true)
             }
         })
 
-        return () => unsubscribe()
+        return () => {
+            unsubscribe()
+        }
     }, [])
 
-    const onSubmit = async (data: FormValues) => {
+    async function onSubmit(data: FormValues) {
         // Diable Signin/signup button
         setIsLoading(true)
 
@@ -100,7 +99,7 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
             className="flex flex-col items-center justify-center w-full min-h-full"
         >
             <div className="flex justify-center items-center">
-                <h1 className="text-4xl capitalize">{props.label}</h1>
+                <h1 className="text-4xl uppercase">{props.label}</h1>
             </div>
             <div className="container text-xl m-2 flex flex-col items-start justify-start">
                 <div className="bg-white w-full h-full">
@@ -144,7 +143,7 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
                     <div className="flex flex-col items-center justify-center w-full mt-8">
                         <button
                             type="submit"
-                            className="px-10 py-2 rounded-full uppercase text-white bg-fresh-2-500 hover:bg-yellow-700 cursor-pointer disabled:opacity-50"
+                            className="px-10 py-2 rounded-full uppercase text-white bg-fresh-2-500 disabled:opacity-50"
                             disabled={isLoading}
                         >
                             {props.label}
