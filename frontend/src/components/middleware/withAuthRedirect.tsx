@@ -1,41 +1,31 @@
-import React, { FunctionComponent, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Redirect } from 'react-router'
 // import { useAppSelector } from 'redux/hooks'
 // import { selectCurrentUser } from 'pages/auth/components/user.slice'
-import { useAppDispatch } from 'redux/hooks'
-import { removeChannels } from 'pages/server/components/channel.slice'
-import { getAuth } from '@firebase/auth'
+import { getAuth } from 'firebase/auth'
 import { firebaseApp } from 'firebase/firebase'
+import { useAppDispatch } from 'redux/hooks'
 import { fetchUser } from 'pages/auth/components/user.slice'
+import { removeChannels } from 'pages/server/components/channel.slice'
 
 // This will redirect to login page if there are no signed in user
 // Wrap this outside of need-to-authenticate components
-function withAuthRedirect<PropsType>(
-    WrappedComponent: FunctionComponent<PropsType>,
-) {
-    return (props: PropsType) => {
-        const [needToRedirect, setNeedToRedirect] = useState<boolean>(false)
-        const [isLoading, setIsLoading] = useState<boolean>(true)
-
+const withAuthRedirect = (WrappedComponent: any) => (props: any) => {
+    const WithAuthRedirect = (props: any) => {
+        const [needToRedirect, setNeed] = useState(false)
+        const [isLoading, setLoading] = useState(true)
         const dispatch = useAppDispatch()
-
-        const auth = getAuth(firebaseApp)
-
-        const fetchUserInfo = async () => {
-            // The page will wait for fetchUser to finish before display anything
-            setIsLoading(true)
-
-            await dispatch(fetchUser())
-
-            setIsLoading(false)
-        }
+        // const user = useAppSelector(selectCurrentUser)
 
         useEffect(() => {
+            const auth = getAuth(firebaseApp)
+
             const unsubscribe = auth.onAuthStateChanged((user) => {
                 if (!user) {
-                    setNeedToRedirect(true)
+                    setNeed(true)
                 } else {
-                    fetchUserInfo()
+                    const uid = user.uid
+                    fetchUserInfo(uid)
                 }
             })
 
@@ -44,7 +34,11 @@ function withAuthRedirect<PropsType>(
             return () => unsubscribe()
         }, [])
 
-        // Redirect based on authState
+        const fetchUserInfo = async (uid: string) => {
+            await dispatch(fetchUser({ uid }))
+            setLoading(false)
+        }
+
         if (needToRedirect) {
             return (
                 <Redirect
@@ -68,6 +62,8 @@ function withAuthRedirect<PropsType>(
             }
         }
     }
+
+    return <WithAuthRedirect {...props} />
 }
 
 export default withAuthRedirect
