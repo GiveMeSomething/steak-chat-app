@@ -22,7 +22,7 @@ const ServerLayout: FunctionComponent = () => {
 
     return (
         <div className="fullscreen text-white overflow-hidden">
-            <div className="flex flex-col w-ful h-full">
+            <div className="flex flex-col w-full h-full">
                 <ServerNavbar handleSignout={handleSignout} />
                 <div className="grid grid-cols-12 w-full h-full">
                     <div className="col-span-2 w-full h-full bg-slack-sidebar-normal">
