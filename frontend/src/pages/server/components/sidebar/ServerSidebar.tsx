@@ -1,6 +1,6 @@
-import React, { FunctionComponent, useState } from 'react'
+import React, { FunctionComponent, MouseEvent, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
-import { Accordion, Icon } from 'semantic-ui-react'
+import { Accordion, Icon, Popup } from 'semantic-ui-react'
 import { selectChannels, setCurrentChannel } from '../channel.slice'
 
 interface SidebarProps {
@@ -8,43 +8,59 @@ interface SidebarProps {
 }
 
 const ServerSidebar: FunctionComponent<SidebarProps> = (props) => {
-    const [isActive, setActive] = useState(false)
+    // Always open channels menu on mount
+    const [isActive, setActive] = useState<boolean>(true)
 
     const channels = useAppSelector(selectChannels)
     const dispatch = useAppDispatch()
 
-    const handleOnChannelsClick = () => {
+    const handleOnChannelMenuClick = () => {
         setActive(!isActive)
     }
 
-    const handleOnSingleChannelClick = (channelId: any) => {
+    const handleOnAddClick = (e: MouseEvent<HTMLDivElement>) => {
+        // Stop the add button trigger close channels menu
+        e.stopPropagation()
+
+        // Open add new channel modal
+        props.setChannelModalOpen(true)
+    }
+
+    // Select current channel
+    const handleOnChannelClick = (channelId: any) => {
         dispatch(setCurrentChannel(channelId))
     }
 
     return (
         <>
-            <div className="flex items-center justify-between px-3 py-2 border-t-2 border-b-2 border-opacity-90 border-gray-700">
+            <div className="flex items-center justify-between px-3 py-2 border-t-2 border-b-2 border-gray-700">
                 <div className="flex items-baseline h-full">
-                    <h3 className="font-bold"># ServerName</h3>
+                    <h2 className="font-bold"># ServerName</h2>
                 </div>
             </div>
             <div className="py-4">
                 <Accordion>
                     <Accordion.Title
                         active={isActive}
-                        onClick={handleOnChannelsClick}
+                        onClick={handleOnChannelMenuClick}
                     >
                         <div className="flex h-full items-center justify-between px-4 hover:bg-slack-sidebar-hover text-white">
                             <div className="flex items-baseline">
                                 <Icon name="dropdown" />
                                 <h4>Channels</h4>
                             </div>
-                            <div
-                                className="flex items-baseline justify-center hover:bg-slack-sidebar-focus leading-6 align-middle px-2 rounded-md cursor-pointer"
-                                onClick={() => props.setChannelModalOpen(true)}
-                            >
-                                <h3>+</h3>
-                            </div>
+
+                            <Popup
+                                content="Add new channel"
+                                trigger={
+                                    <div
+                                        className="flex items-baseline justify-center hover:bg-slack-sidebar-focus leading-6 align-middle px-2 rounded-md cursor-pointer"
+                                        onClick={handleOnAddClick}
+                                    >
+                                        <h3>+</h3>
+                                    </div>
+                                }
+                            />
                         </div>
                     </Accordion.Title>
                     <Accordion.Content active={isActive}>
@@ -59,7 +75,7 @@ const ServerSidebar: FunctionComponent<SidebarProps> = (props) => {
                                     }`}
                                     key={channel.id}
                                     onClick={() =>
-                                        handleOnSingleChannelClick(channel.id)
+                                        handleOnChannelClick(channel.id)
                                     }
                                 >
                                     <div className="flex items-baseline px-4 py-2">

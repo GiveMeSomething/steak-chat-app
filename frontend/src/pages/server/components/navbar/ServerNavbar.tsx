@@ -13,8 +13,8 @@ const ServerNavbar: FunctionComponent<ServerNavbarProps> = ({
     const currentUser = useAppSelector(selectCurrentUser)
 
     return (
-        <div className="w-full bg-slack-navbar py-3 max-h-15">
-            <div className="flex items-center justify-center">
+        <div className="w-full bg-slack-navbar py-2">
+            <div className="flex items-center justify-center relative">
                 <input
                     type="text"
                     className="bg-slack-searchbar rounded-md w-2/5 text-slack-text-focus col-start-2 absolute placeholder-white px-4"
