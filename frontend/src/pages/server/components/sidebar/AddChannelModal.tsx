@@ -19,7 +19,7 @@ const AddChannelModal: FunctionComponent<AddChannelModalProps> = ({
     isOpen,
     setOpen,
 }) => {
-    const [isLoading, setLoading] = useState(false)
+    const [isLoading, setLoading] = useState<boolean>(false)
     const {
         register,
         handleSubmit,
