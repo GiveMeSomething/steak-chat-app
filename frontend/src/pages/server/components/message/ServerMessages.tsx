@@ -3,11 +3,13 @@ import MessagesHeader from './MessagesHeader'
 import MessagesInput from './MessagesInput'
 import MessagesPanel from './MessagesPanel'
 
-interface MessagesProps {
+interface ServerMessagesProps {
     currentChannel: string
 }
 
-const Messages: FunctionComponent<MessagesProps> = ({ currentChannel }) => {
+const ServerMessages: FunctionComponent<ServerMessagesProps> = ({
+    currentChannel,
+}) => {
     return (
         <div className="flex flex-col h-full relative">
             <div className="">
@@ -21,4 +23,4 @@ const Messages: FunctionComponent<MessagesProps> = ({ currentChannel }) => {
     )
 }
 
-export default Messages
+export default ServerMessages

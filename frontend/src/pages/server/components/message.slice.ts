@@ -90,6 +90,9 @@ const messageSlice = createSlice({
                 state.messages = [action.payload]
             }
         },
+        clearMessages: (state) => {
+            state.messages = null
+        },
         setMessageLoading: (state, action) => {
             state.isMessageLoading = action.payload
         },
@@ -105,7 +108,7 @@ const messageSlice = createSlice({
     },
 })
 
-export const { setMessages, addMessage, setMessageLoading } =
+export const { setMessages, addMessage, clearMessages, setMessageLoading } =
     messageSlice.actions
 
 export const selectMessages = (state: RootState) => state.messages.messages

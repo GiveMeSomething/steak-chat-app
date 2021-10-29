@@ -7,10 +7,10 @@ import { selectCurrentChannel } from './channel.slice'
 import AddChannelModal from './sidebar/AddChannelModal'
 import ServerSidebar from './sidebar/ServerSidebar'
 import ServerNavbar from './navbar/ServerNavbar'
-import Messages from './message/ServerMessages'
+import ServerMessages from './message/ServerMessages'
 
 const ServerLayout: FunctionComponent = () => {
-    const [isChannelModalOpen, setChannelModalOpen] = useState(false)
+    const [isChannelModalOpen, setChannelModalOpen] = useState<boolean>(false)
 
     const currentChannel = useAppSelector(selectCurrentChannel)
 
@@ -31,7 +31,7 @@ const ServerLayout: FunctionComponent = () => {
                         />
                     </div>
                     <div className="col-span-10 w-full h-full bg-white text-gray-800">
-                        <Messages currentChannel={currentChannel} />
+                        <ServerMessages currentChannel={currentChannel} />
                     </div>
                 </div>
                 <AddChannelModal

@@ -10,7 +10,11 @@ import {
     orderByChild,
 } from '@firebase/database'
 
-import { addMessage, setMessages } from './components/message.slice'
+import {
+    addMessage,
+    clearMessages,
+    setMessages,
+} from './components/message.slice'
 import {
     addChannel,
     selectCurrentChannel,
@@ -51,6 +55,9 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     // Only run when currentChannel changed
     // To fetch all messages of currentChannel
     useEffect(() => {
+        // Clear current channel messages
+        dispatch(clearMessages())
+
         if (currentChannel) {
             // Fetch message of current channel
             // This will guarantee currentChannel value is provided to messageRef
