@@ -71,11 +71,12 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
                     })
 
                     dispatch(setMessages(result))
-                    setIsLoading(false)
                 },
                 { onlyOnce: true },
             )
         }
+
+        setIsLoading(false)
     }, [currentChannel])
 
     // This will be trigger when isFirstLoad changed (after the first data load is done)
@@ -110,4 +111,4 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     }
 }
 
-export default withAuthRedirect<ChatServerProps>(ChatServer)
+export default withAuthRedirect(ChatServer)

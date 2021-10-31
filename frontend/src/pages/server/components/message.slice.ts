@@ -2,17 +2,24 @@ import { get, ref, serverTimestamp, set } from '@firebase/database'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { database } from 'firebase/firebase'
 import { RootState } from 'redux/store'
+import { Undefinable } from 'types/commonType'
 import { v4 as uuid } from 'uuid'
 
 interface Message {
     id: string
     content: string
     timestamp: object
+    media: Undefinable<string>
     createdBy: {
         uid?: string
         username?: string
         photoUrl?: string
     }
+}
+
+interface SendMessagePayload {
+    content: string
+    mediaPath?: string
 }
 
 interface MessagesState {
@@ -27,10 +34,16 @@ const initialState: MessagesState = {
     isMessageLoading: false,
 }
 
-export const sendMessage = createAsyncThunk<any, any, { state: RootState }>(
-    'message/send',
-    async (data, { getState, dispatch }) => {
-        const currentUser = getState().user.user
+export const sendMessage = createAsyncThunk<
+    any,
+    SendMessagePayload,
+    { state: RootState }
+>(
+    'message/sendMessage',
+    async ({ content, mediaPath = '' }, { getState, dispatch }) => {
+        const appState = getState()
+        const currentUser = appState.user.user
+        const currentChannel = appState.channels.currentChannel
 
         if (currentUser) {
             const createdBy = {
@@ -43,14 +56,16 @@ export const sendMessage = createAsyncThunk<any, any, { state: RootState }>(
             const message: Message = {
                 id: uuid(),
                 timestamp: serverTimestamp(),
-                content: data.content,
+                content: content,
+                media: mediaPath,
                 createdBy,
             }
 
             const messageRef = ref(
                 database,
-                `channels/${data.channel}/messages/${message.id}`,
+                `channels/${currentChannel}/messages/${message.id}`,
             )
+
             // Set object to database, this will trigger child_added to re-render page
             await set(messageRef, message)
 

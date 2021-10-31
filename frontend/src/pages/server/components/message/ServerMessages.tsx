@@ -3,13 +3,9 @@ import MessagesHeader from './MessagesHeader'
 import MessagesInput from './MessagesInput'
 import MessagesPanel from './MessagesPanel'
 
-interface ServerMessagesProps {
-    currentChannel: string
-}
+interface ServerMessagesProps {}
 
-const ServerMessages: FunctionComponent<ServerMessagesProps> = ({
-    currentChannel,
-}) => {
+const ServerMessages: FunctionComponent<ServerMessagesProps> = () => {
     const [isAddMediaModalOpen, setAddMediaModalOpen] = useState<boolean>(false)
     return (
         <div className="flex flex-col h-full relative">
@@ -19,7 +15,6 @@ const ServerMessages: FunctionComponent<ServerMessagesProps> = ({
             <MessagesPanel />
             <div className="absolute -bottom-0 w-full bg-white z-10">
                 <MessagesInput
-                    channel={currentChannel}
                     isAddMediaModalOpen={isAddMediaModalOpen}
                     setAddMediaModalOpen={setAddMediaModalOpen}
                 />

@@ -6,30 +6,28 @@ import { sendMessage, setMessageLoading } from '../message.slice'
 import AddMediaModal from '../modal/AddMediaModal'
 
 interface MessagesInputProps {
-    channel: string
     isAddMediaModalOpen: boolean
     setAddMediaModalOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
-interface Message {
+interface FormValues {
     content: string
 }
 
 const MessagesInput: FunctionComponent<MessagesInputProps> = ({
-    channel,
     isAddMediaModalOpen,
     setAddMediaModalOpen,
 }) => {
     const dispatch = useAppDispatch()
-    const { register, handleSubmit, reset } = useForm<Message>()
+    const { register, handleSubmit, reset } = useForm<FormValues>()
 
-    const onSubmit = async (data: Message) => {
+    const onSubmit = async (data: FormValues) => {
         // Clear user input onSubmit
         reset()
 
         // Call dispatch to send message to database
         dispatch(setMessageLoading(true))
-        await dispatch(sendMessage({ channel, content: data.content }))
+        await dispatch(sendMessage({ content: data.content }))
     }
 
     return (
