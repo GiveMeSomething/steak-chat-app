@@ -30,7 +30,7 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
     const [uploadState, setUploadState] = useState<string>('')
     const [uploadError, setUploadError] = useState<string>('')
 
-    const [uploadProgress, setUploadProgress] = useState(0)
+    const [uploadProgress, setUploadProgress] = useState<number>(0)
 
     const { handleSubmit, register, reset } = useForm<FormValues>()
 
