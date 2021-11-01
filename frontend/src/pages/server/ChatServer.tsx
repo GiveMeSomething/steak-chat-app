@@ -34,7 +34,7 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     const currentChannel = useAppSelector(selectCurrentChannel)
 
     const channelsRef = ref(database, 'channels')
-    const messagesRef = ref(database, `channels/${currentChannel}/messages`)
+    const messagesRef = ref(database, `channels/${currentChannel.id}/messages`)
 
     // Get all data needed here
     useEffect(() => {

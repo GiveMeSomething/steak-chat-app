@@ -1,18 +1,19 @@
 import React, { FunctionComponent } from 'react'
 import { useForm } from 'react-hook-form'
-import { useAppDispatch } from 'redux/hooks'
+import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { Button, Input, Popup } from 'semantic-ui-react'
+import { selectCurrentChannel } from '../channel.slice'
 import { sendMessage, setMessageLoading } from '../message.slice'
 
-interface MessagesInputProps {
-    channel: string
-}
+interface MessagesInputProps {}
 
 interface Message {
     content: string
 }
 
-const MessagesInput: FunctionComponent<MessagesInputProps> = ({ channel }) => {
+const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
+    const currentChannel = useAppSelector(selectCurrentChannel)
+
     const dispatch = useAppDispatch()
     const { register, handleSubmit, reset } = useForm<Message>()
 
@@ -22,7 +23,9 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = ({ channel }) => {
 
         // Call dispatch to send message to database
         dispatch(setMessageLoading(true))
-        await dispatch(sendMessage({ channel, content: data.content }))
+        await dispatch(
+            sendMessage({ channel: currentChannel.id, content: data.content }),
+        )
     }
 
     return (

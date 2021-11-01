@@ -6,10 +6,10 @@ import { ref, set } from '@firebase/database'
 import { UserInfo } from 'pages/auth/components/user.slice'
 
 export interface ChannelInfo {
-    id?: string
-    name?: string
+    id: string
+    name: string
     desc?: string
-    createdBy: {
+    createdBy?: {
         uid?: string
         username?: string
     }
@@ -23,13 +23,16 @@ interface ChannelInfoPayload {
 interface channelSliceInitialState {
     channels: ChannelInfo[]
     channelError: any
-    currentChannel: string
+    currentChannel: ChannelInfo
 }
 
 const initalState: channelSliceInitialState = {
     channels: [],
     channelError: '',
-    currentChannel: '',
+    currentChannel: {
+        id: '',
+        name: ''
+    },
 }
 
 const addChannelToDatabase = async ({
@@ -84,8 +87,7 @@ const channelSlice = createSlice({
 
                 // Set current channel to first channel (if have any)
                 if (state.channels[0].id) {
-                    // TODO: Find a better way to solve this problem
-                    state.currentChannel = state.channels[0].id
+                    state.currentChannel = state.channels[0]
                 }
             }
         },
@@ -101,12 +103,12 @@ const channelSlice = createSlice({
     },
 })
 
-export const { setChannels, removeChannels, addChannel, setCurrentChannel } =
-    channelSlice.actions
+export const { setChannels, removeChannels, addChannel, setCurrentChannel } = channelSlice.actions
 
-export const selectChannels = (state: RootState) => state.channels
+// Select all channels
+export const selectChannels = (state: RootState) => state.channels.channels
 
-export const selectCurrentChannel = (state: RootState) =>
-    state.channels.currentChannel
+// Select currently selected channel, first channel by default
+export const selectCurrentChannel = (state: RootState) => state.channels.currentChannel
 
 export default channelSlice.reducer
