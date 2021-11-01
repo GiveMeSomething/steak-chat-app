@@ -1,11 +1,12 @@
 import React, { FunctionComponent, useState } from 'react'
 import { useAppDispatch } from 'redux/hooks'
 
-import AddChannelModal from './modal/AddChannelModal'
+import { signOutAndRemoveUser } from 'pages/auth/components/user.slice'
+
 import ServerSidebar from './sidebar/ServerSidebar'
 import ServerNavbar from './navbar/ServerNavbar'
+import AddChannelModal from './modal/AddChannelModal'
 import ServerMessages from './message/ServerMessages'
-import { signOutAndRemoveUser } from 'pages/auth/components/user.slice'
 
 const ServerLayout: FunctionComponent = () => {
     const [isChannelModalOpen, setChannelModalOpen] = useState<boolean>(false)

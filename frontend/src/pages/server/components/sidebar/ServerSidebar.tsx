@@ -1,7 +1,12 @@
 import React, { FunctionComponent, MouseEvent, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { Accordion, Icon, Popup } from 'semantic-ui-react'
-import { selectChannels, setCurrentChannel } from '../channel.slice'
+import {
+    ChannelInfo,
+    selectChannels,
+    selectCurrentChannel,
+    setCurrentChannel,
+} from '../channel.slice'
 
 interface SidebarProps {
     setChannelModalOpen: Function
@@ -12,6 +17,8 @@ const ServerSidebar: FunctionComponent<SidebarProps> = (props) => {
     const [isActive, setActive] = useState<boolean>(true)
 
     const channels = useAppSelector(selectChannels)
+    const currentChannel = useAppSelector(selectCurrentChannel)
+
     const dispatch = useAppDispatch()
 
     const handleOnChannelMenuClick = () => {
@@ -27,8 +34,8 @@ const ServerSidebar: FunctionComponent<SidebarProps> = (props) => {
     }
 
     // Select current channel
-    const handleOnChannelClick = (channelId: any) => {
-        dispatch(setCurrentChannel(channelId))
+    const handleOnChannelClick = (channelInfo: ChannelInfo) => {
+        dispatch(setCurrentChannel(channelInfo))
     }
 
     return (
@@ -64,18 +71,18 @@ const ServerSidebar: FunctionComponent<SidebarProps> = (props) => {
                         </div>
                     </Accordion.Title>
                     <Accordion.Content active={isActive}>
-                        {Object.values(channels.channels).map((channel) => {
+                        {Object.values(channels).map((channel) => {
                             return (
                                 <div
                                     className={`flex items-center justify-between h-full w-full pl-4 cursor-pointer
                                     ${
-                                        channel.id === channels.currentChannel
+                                        channel.id === currentChannel.id
                                             ? 'bg-slack-sidebar-focus text-slack-text-focus'
                                             : 'hover:bg-slack-sidebar-hover text-slack-text-blur'
                                     }`}
                                     key={channel.id}
                                     onClick={() =>
-                                        handleOnChannelClick(channel.id)
+                                        handleOnChannelClick(channel)
                                     }
                                 >
                                     <div className="flex items-baseline px-4 py-2">

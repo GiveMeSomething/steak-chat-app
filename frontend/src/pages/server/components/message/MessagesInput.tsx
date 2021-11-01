@@ -1,8 +1,11 @@
 import React, { FunctionComponent } from 'react'
 import { useForm } from 'react-hook-form'
 import { useAppDispatch } from 'redux/hooks'
+
 import { Button, Input, Popup } from 'semantic-ui-react'
+
 import { sendMessage, setMessageLoading } from '../message.slice'
+
 import AddMediaModal from '../modal/AddMediaModal'
 
 interface MessagesInputProps {
