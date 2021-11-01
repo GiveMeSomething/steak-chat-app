@@ -18,6 +18,7 @@ const ProgressBar: FunctionComponent<ProgressBarProps> = ({
                 indicating
                 size="medium"
                 inverted
+                className="mx-auto"
             />
         )
     } else {

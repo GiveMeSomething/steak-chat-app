@@ -76,8 +76,6 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
             if (typeof error === typeof FirebaseError) {
                 setError('Wrong email and password combination!')
             } else {
-                console.log(error)
-
                 setError('Service unavailable. Please try again later')
             }
         } finally {
@@ -87,8 +85,6 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
     }
 
     if (willBeRedirect) {
-        console.log('Redirecting')
-
         return <Redirect to="/servers" />
     }
 

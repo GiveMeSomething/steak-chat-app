@@ -66,7 +66,6 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
                         (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
                     )
                     setUploadProgress(progress)
-                    console.log(progress)
 
                     // Set the state for according UI update
                     setUploadState(snapshot.state)
@@ -75,9 +74,6 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
                     // TODO: Handle upload errors more specific if needed
                     if (err.message) {
                         setUploadError(err.message)
-                        console.log(err)
-                    } else {
-                        console.log(err)
                     }
                 },
                 async () => {
