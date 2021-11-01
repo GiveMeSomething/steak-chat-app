@@ -40,3 +40,22 @@ i .icon {
 .fullsize {
   @apply w-full h-full
 }
+
+/* Override Semantic UI Modal styles */
+.ui.top.dimmer {
+  background: none !important;
+  padding: 0 !important;
+}
+
+#custom__modal .ui.tiny.modal {
+  margin: 0 !important;
+}
+
+#custom__modal input:focus {
+  outline: none !important;
+}
+
+#custom__modal.modal {
+  // Equal to mt-2
+  margin: 0.5rem 0 0 0 !important
+}
