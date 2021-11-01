@@ -7,6 +7,7 @@ import { Modal, Button, Icon } from 'semantic-ui-react'
 import { v4 as uuid } from 'uuid'
 import { sendMessage } from '../message.slice'
 import FormInput from './FormInput'
+import ProgressBar from './ProgressBar'
 
 interface AddMediaModalProps {
     isOpen: boolean
@@ -14,7 +15,6 @@ interface AddMediaModalProps {
 }
 
 interface FormValues {
-    media: File
     desc?: string
 }
 
@@ -23,7 +23,8 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
     setOpen,
 }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [media, setMedia] = useState<File>()
+
+    const [userMedia, setUserMedia] = useState<File>()
     const [mediaUrl, setMediaUrl] = useState<string>('')
 
     const [uploadState, setUploadState] = useState<string>('')
@@ -31,13 +32,7 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
 
     const [uploadProgress, setUploadProgress] = useState(0)
 
-    const {
-        handleSubmit,
-        register,
-        reset,
-        setError,
-        formState: { errors },
-    } = useForm<FormValues>()
+    const { handleSubmit, register, reset } = useForm<FormValues>()
 
     const dispatch = useAppDispatch()
 
@@ -51,8 +46,11 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
         const filePath = `chat/public/${uuid()}.${extractFileExt(file.name)}`
         const storageRef = ref(storage, filePath)
 
+        // Set current form states
+        setIsLoading(true)
         setUploadState('uploading')
 
+        // Upload things
         try {
             const result = uploadBytesResumable(storageRef, file)
 
@@ -82,27 +80,37 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
                         console.log(err)
                     }
                 },
-                () => {
+                async () => {
                     // If successfully uploaded, dispatch sendMessage to display and save message to database
-                    getDownloadURL(result.snapshot.ref).then((downloadUrl) => {
-                        dispatch(
-                            sendMessage({
-                                mediaPath: downloadUrl,
-                                content,
-                            }),
-                        )
-                    })
+                    getDownloadURL(result.snapshot.ref).then(
+                        async (downloadUrl) => {
+                            // When done, dispatch a action to add message to redux store
+                            await dispatch(
+                                sendMessage({
+                                    mediaPath: downloadUrl,
+                                    content,
+                                }),
+                            )
+
+                            // Close the modal after finish uploading
+                            onClose()
+                        },
+                    )
                 },
             )
         } catch (err: any) {
             setUploadError(err.message)
+            onClose()
         }
     }
 
     // Close modal operations
     const onClose = () => {
+        setUploadState('')
+        setUploadProgress(0)
+        setUploadError('')
+
         setIsLoading(false)
-        setMedia(undefined)
         setMediaUrl('')
 
         reset({ desc: '' })
@@ -110,51 +118,43 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
         setOpen(false)
     }
 
-    // Upload the media (and the desc) to database, then display as a message
+    // Upload the userMedia (and the desc) to database, then display as a message
     const onSubmit = async ({ desc = '' }: FormValues) => {
-        setIsLoading(true)
-
-        if (media) {
-            await uploadFileToStorage(media, desc)
+        if (userMedia) {
+            await uploadFileToStorage(userMedia, desc)
         }
-
-        console.log(uploadState)
-        console.log(uploadError)
-        console.log(uploadProgress)
-
-        onClose()
     }
 
     // Check file size
-    const isImageValid = (imageFile: File): boolean => {
+    const isImageValid = (imageFile: File | undefined): boolean => {
+        if (!imageFile) {
+            setUploadError('No image selected')
+            return false
+        }
+
         // Validate file size (by bytes)
         // Here it is limit to 5 * 1000 * 1000 ~ 5MB
         if (imageFile.size >= 5 * 1000 * 1000) {
-            setError(
-                'media',
-                { message: 'Image size should not exceed 5MB' },
-                { shouldFocus: false },
-            )
-
+            setUploadError('Image size should not exceed 5MB')
             return false
         }
 
         return true
     }
 
-    // This will show a preview before pushing the media to Firebase Database
+    // This will show a preview before pushing the userMedia to Firebase Database
     const uploadFile = (event: ChangeEvent<HTMLInputElement>) => {
         const reader = new FileReader()
         const files = event.target.files
 
-        if (files && files[0]) {
-            const userUploadMedia = files[0]
-
-            if (!isImageValid(userUploadMedia)) {
+        if (files) {
+            if (!isImageValid(files[0])) {
                 return
             }
 
-            setMedia(userUploadMedia)
+            const userUploadMedia = files[0]
+
+            setUserMedia(userUploadMedia)
 
             reader.readAsDataURL(userUploadMedia)
             reader.onloadend = () => {
@@ -180,7 +180,7 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
                     <h1>Upload image</h1>
                 </Modal.Header>
                 <Modal.Content>
-                    {mediaUrl && media ? (
+                    {mediaUrl && userMedia ? (
                         <img src={mediaUrl} className="max-h-40" />
                     ) : (
                         <div className="flex flex-col items-center justify-center bg-slack-sidebar-blur py-10">
@@ -195,14 +195,11 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
                                 accept="image/png, image/gif, image/jpeg"
                                 id="upload-file"
                                 hidden
-                                {...register('media', {
-                                    onChange: uploadFile,
-                                    required: 'No image selected',
-                                })}
+                                onChange={uploadFile}
                             />
-                            {errors.media && (
+                            {uploadError && (
                                 <p className="text-red-600 font-semibold pt-2">
-                                    {errors.media.message}
+                                    {uploadError}
                                 </p>
                             )}
                         </div>
@@ -215,6 +212,10 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
                             {...register('desc')}
                         />
                     </div>
+                    <ProgressBar
+                        uploadState={uploadState}
+                        progress={uploadProgress}
+                    />
                 </Modal.Content>
                 <Modal.Actions>
                     <Button color="red" onClick={onClose}>

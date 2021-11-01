@@ -1,0 +1,28 @@
+import React, { FunctionComponent } from 'react'
+import { Progress } from 'semantic-ui-react'
+
+interface ProgressBarProps {
+    uploadState: string
+    progress: number
+}
+
+const ProgressBar: FunctionComponent<ProgressBarProps> = ({
+    uploadState,
+    progress,
+}) => {
+    if (uploadState) {
+        return (
+            <Progress
+                percent={progress}
+                progress
+                indicating
+                size="medium"
+                inverted
+            />
+        )
+    } else {
+        return <div></div>
+    }
+}
+
+export default ProgressBar

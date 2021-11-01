@@ -3,6 +3,7 @@ import React, { FunctionComponent } from 'react'
 interface MessageComponentProps {
     content?: string
     timestamp?: object
+    media?: string
     createdBy: {
         username?: string
         photoUrl?: string
@@ -13,6 +14,7 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
     content,
     timestamp,
     createdBy,
+    media,
 }) => {
     // Firebase save timestamp as object, but still number when console log
     // So we need to manually cast to number
@@ -25,8 +27,8 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
     })
 
     return (
-        <div className="flex items-center justify-start py-2 text-gray-500">
-            <span className="flex">
+        <div className="flex items-start justify-start py-2 text-gray-500">
+            <span className="flex items-start">
                 <img
                     src={createdBy.photoUrl}
                     alt="avt"
@@ -34,11 +36,16 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
                 />
             </span>
             <div className="ml-4">
-                <div className="flex items-baseline pb-1">
-                    <h3 className="font-bold">{createdBy.username}</h3>
-                    <h5 className="text-slack-text-blur px-2">{messageTime}</h5>
+                <div className="flex items-center h-full text-xl">
+                    <h4 className="font-semibold text-xl leading-none">
+                        {createdBy.username}
+                    </h4>
+                    <p className="text-slack-text-blur text-sm leading-none px-2">
+                        {messageTime}
+                    </p>
                 </div>
-                <h5>{content}</h5>
+                {content && <h5 className="text-lg">{content}</h5>}
+                {media && <img src={media} className="max-h-40 p-2" />}
             </div>
         </div>
     )

@@ -47,13 +47,11 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
         // Listen to auth changed to redirect to servers page
         setFocus('email')
 
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        onAuthStateChanged(auth, (user) => {
             if (user) {
                 setWillBeDirect(true)
             }
         })
-
-        return () => unsubscribe()
     }, [])
 
     const onSubmit = async (data: FormValues) => {

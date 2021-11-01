@@ -127,8 +127,10 @@ export const { setMessages, addMessage, clearMessages, setMessageLoading } =
     messageSlice.actions
 
 export const selectMessages = (state: RootState) => state.messages.messages
+
 export const selectMessagesError = (state: RootState) =>
     state.messages.messageError
+
 export const isMessageLoading = (state: RootState) =>
     state.messages.isMessageLoading
 
