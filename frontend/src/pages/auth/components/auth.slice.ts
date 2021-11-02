@@ -28,12 +28,12 @@ export interface UserInfo {
     status?: 'Online' | 'Away'
 }
 
-interface UserSliceState {
+interface AuthSliceState {
     user: UserInfo | null
     userError: any
 }
 
-const initialState: UserSliceState = {
+const initialState: AuthSliceState = {
     user: null,
     userError: null,
 }

@@ -8,7 +8,7 @@ import { storage } from 'firebase/firebase'
 import { Modal, Button, Icon } from 'semantic-ui-react'
 import { v4 as uuid } from 'uuid'
 
-import { sendMessage } from '../message.slice'
+import { sendMessage } from '../slices/message.slice'
 
 import { MAX_FILE_SIZE_BYTES } from 'utils/appConst'
 

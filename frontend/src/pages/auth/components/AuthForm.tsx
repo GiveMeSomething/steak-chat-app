@@ -11,7 +11,7 @@ import {
     signInAndSaveUser,
     removeUserError,
     signUpAndSaveUser,
-} from './user.slice'
+} from './auth.slice'
 
 import FormInput from './FormInput'
 

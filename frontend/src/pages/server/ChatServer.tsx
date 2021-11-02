@@ -11,19 +11,19 @@ import {
 } from '@firebase/database'
 
 import {
-    addMessage,
-    clearMessages,
-    clearSearchMessage,
-    setMessages,
-} from './components/message.slice'
-import {
     addChannel,
     selectCurrentChannel,
     setChannels,
-} from './components/channel.slice'
+} from './components/slices/channel.slice'
 
 import ServerLayout from './components/ServerLayout'
 import withAuthRedirect from 'components/middleware/withAuthRedirect'
+import {
+    clearMessages,
+    clearSearchMessage,
+    setMessages,
+    addMessage,
+} from './components/slices/message.slice'
 
 interface ChatServerProps {}
 

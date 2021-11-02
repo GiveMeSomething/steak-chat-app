@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useState } from 'react'
 import { useAppDispatch } from 'redux/hooks'
 
-import { signOutAndRemoveUser } from 'pages/auth/components/user.slice'
+import { signOutAndRemoveUser } from 'pages/auth/components/auth.slice'
 
 import ServerSidebar from './sidebar/ServerSidebar'
 import ServerNavbar from './navbar/ServerNavbar'

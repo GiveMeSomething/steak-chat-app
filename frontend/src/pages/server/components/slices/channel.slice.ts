@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { database } from 'firebase/firebase'
 import { v4 as uuid } from 'uuid'
 import { ref, set } from '@firebase/database'
-import { UserInfo } from 'pages/auth/components/user.slice'
+import { UserInfo } from 'pages/auth/components/auth.slice'
 
 export interface ChannelInfo {
     id: string

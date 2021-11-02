@@ -1,8 +1,8 @@
 import React, { FunctionComponent, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
 
-import { selectCurrentUser } from 'pages/auth/components/user.slice'
-import { selectCurrentChannel } from '../channel.slice'
+import { selectCurrentUser } from 'pages/auth/components/auth.slice'
+import { selectCurrentChannel } from '../slices/channel.slice'
 
 import SearchModal from '../modal/SearchModal'
 import ProfileDropdown from './ProfileDropdown'
