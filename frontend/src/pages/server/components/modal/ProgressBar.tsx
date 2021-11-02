@@ -22,7 +22,7 @@ const ProgressBar: FunctionComponent<ProgressBarProps> = ({
             />
         )
     } else {
-        return <div></div>
+        return null
     }
 }
 

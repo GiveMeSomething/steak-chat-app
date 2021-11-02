@@ -1,11 +1,17 @@
+import React, { ChangeEvent, FunctionComponent, useState } from 'react'
+import { useAppDispatch } from 'redux/hooks'
+import { useForm } from 'react-hook-form'
+
 import { getDownloadURL, ref, uploadBytesResumable } from '@firebase/storage'
 import { storage } from 'firebase/firebase'
-import React, { ChangeEvent, FunctionComponent, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import { useAppDispatch } from 'redux/hooks'
+
 import { Modal, Button, Icon } from 'semantic-ui-react'
 import { v4 as uuid } from 'uuid'
+
 import { sendMessage } from '../message.slice'
+
+import { MAX_FILE_SIZE_BYTES } from 'utils/appConst'
+
 import FormInput from './FormInput'
 import ProgressBar from './ProgressBar'
 
@@ -95,6 +101,7 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
                 },
             )
         } catch (err: any) {
+            // Catch any errors left
             setUploadError(err.message)
             onClose()
         }
@@ -102,6 +109,7 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
 
     // Close modal operations
     const onClose = () => {
+        // Set modal state back to intial state
         setUploadState('')
         setUploadProgress(0)
         setUploadError('')
@@ -109,8 +117,10 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
         setIsLoading(false)
         setMediaUrl('')
 
-        reset({ desc: '' })
+        // Reset form values
+        reset()
 
+        // Close modal
         setOpen(false)
     }
 
@@ -130,7 +140,7 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
 
         // Validate file size (by bytes)
         // Here it is limit to 5 * 1000 * 1000 ~ 5MB
-        if (imageFile.size >= 5 * 1000 * 1000) {
+        if (imageFile.size >= MAX_FILE_SIZE_BYTES) {
             setUploadError('Image size should not exceed 5MB')
             return false
         }
