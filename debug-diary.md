@@ -61,3 +61,10 @@
     - More notes:
         - set() will overwrites all data at the given destination
         - Continue...
+
+9. React.js + TS Note
+    - Return `null` instead of return a empty `<div>`
+    - Put constant in files to avoid hard-coded
+    - `useState()` should come with type -> `useState<T>()`
+    - Avoid using `any` with `props`
+    - Write Function HOC with `function` keyword to avoid `<T,>` or `<T extends unknown>` when write with arrow function (T = PropsType)
