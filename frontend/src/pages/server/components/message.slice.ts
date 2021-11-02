@@ -5,7 +5,7 @@ import { RootState } from 'redux/store'
 import { Undefinable } from 'types/commonType'
 import { v4 as uuid } from 'uuid'
 
-interface Message {
+export interface Message {
     id: string
     content: string
     timestamp: object
@@ -24,12 +24,14 @@ interface SendMessagePayload {
 
 interface MessagesState {
     messages: Message[] | null
+    searchMessages: Message[] | null
     messageError: string | 'EMPTY'
     isMessageLoading: boolean
 }
 
 const initialState: MessagesState = {
     messages: null,
+    searchMessages: null,
     messageError: '',
     isMessageLoading: false,
 }
@@ -63,7 +65,7 @@ export const sendMessage = createAsyncThunk<
 
             const messageRef = ref(
                 database,
-                `channels/${currentChannel}/messages/${message.id}`,
+                `channels/${currentChannel.id}/messages/${message.id}`,
             )
 
             // Set object to database, this will trigger child_added to re-render page
@@ -98,6 +100,16 @@ const messageSlice = createSlice({
                 state.messageError = 'EMPTY'
             }
         },
+        setSearchMessages: (state, action) => {
+            // Get message objects from action payload and convert to array
+            if (action.payload) {
+                const messages: Message[] = action.payload
+
+                if (messages.length > 0) {
+                    state.searchMessages = messages
+                }
+            }
+        },
         addMessage: (state, action) => {
             if (state.messages) {
                 state.messages = [...state.messages, action.payload]
@@ -107,6 +119,9 @@ const messageSlice = createSlice({
         },
         clearMessages: (state) => {
             state.messages = null
+        },
+        clearSearchMessage: (state) => {
+            state.searchMessages = null
         },
         setMessageLoading: (state, action) => {
             state.isMessageLoading = action.payload
@@ -123,10 +138,11 @@ const messageSlice = createSlice({
     },
 })
 
-export const { setMessages, addMessage, clearMessages, setMessageLoading } =
+export const { setMessages, addMessage, clearMessages, setMessageLoading, setSearchMessages, clearSearchMessage } =
     messageSlice.actions
 
 export const selectMessages = (state: RootState) => state.messages.messages
+export const selectSearchMessages = (state: RootState) => state.messages.searchMessages
 
 export const selectMessagesError = (state: RootState) =>
     state.messages.messageError

@@ -13,6 +13,7 @@ import {
 import {
     addMessage,
     clearMessages,
+    clearSearchMessage,
     setMessages,
 } from './components/message.slice'
 import {
@@ -57,8 +58,9 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     useEffect(() => {
         // Clear current channel messages
         dispatch(clearMessages())
+        dispatch(clearSearchMessage())
 
-        if (currentChannel) {
+        if (currentChannel && currentChannel.id) {
             // Fetch message of current channel
             // This will guarantee currentChannel value is provided to messageRef
 
@@ -77,7 +79,7 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
         }
 
         setIsLoading(false)
-    }, [currentChannel])
+    }, [currentChannel.id])
 
     // This will be trigger when isFirstLoad changed (after the first data load is done)
     useEffect(() => {
