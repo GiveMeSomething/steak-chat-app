@@ -71,7 +71,7 @@ const MessagesPanel: FunctionComponent<MessagePanelProps> = () => {
             <div className="flex flex-1 flex-col items-start justify-end overflow-auto mb-20 px-4">
                 <div
                     className="flex flex-col mt-auto"
-                    style={{ maxHeight: '70vh' }}
+                    id="message-panel__content"
                 >
                     {messagePanelContent()}
                     <div ref={scrollToBottomDiv} />
