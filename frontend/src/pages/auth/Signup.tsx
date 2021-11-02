@@ -22,7 +22,7 @@ const Signup = () => {
                             <div className="px-10 py-2 rounded-full uppercase text-white bg-fresh-2-500 hover:bg-yellow-700 cursor-pointer">
                                 <Link
                                     to="/auth/signin"
-                                    className="no-underline hover:text-white"
+                                    className="no-underline uppercase hover:text-white"
                                 >
                                     Sign in
                                 </Link>

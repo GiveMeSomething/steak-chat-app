@@ -1,6 +1,4 @@
 // craco.config.js
-console.log('Craco running')
-
 module.exports = {
     style: {
         postcss: {

@@ -1,18 +1,14 @@
 import React, { FunctionComponent, useState } from 'react'
-import { useAppDispatch, useAppSelector } from 'redux/hooks'
+import { useAppDispatch } from 'redux/hooks'
 
-import { signOutAndRemoveUser } from 'pages/auth/components/user.slice'
-import { selectCurrentChannel } from './channel.slice'
-
-import AddChannelModal from './sidebar/AddChannelModal'
+import AddChannelModal from './modal/AddChannelModal'
 import ServerSidebar from './sidebar/ServerSidebar'
 import ServerNavbar from './navbar/ServerNavbar'
 import ServerMessages from './message/ServerMessages'
+import { signOutAndRemoveUser } from 'pages/auth/components/user.slice'
 
 const ServerLayout: FunctionComponent = () => {
     const [isChannelModalOpen, setChannelModalOpen] = useState<boolean>(false)
-
-    const currentChannel = useAppSelector(selectCurrentChannel)
 
     const dispatch = useAppDispatch()
 
@@ -31,7 +27,7 @@ const ServerLayout: FunctionComponent = () => {
                         />
                     </div>
                     <div className="col-span-10 w-full h-full bg-white text-gray-800">
-                        <ServerMessages currentChannel={currentChannel} />
+                        <ServerMessages />
                     </div>
                 </div>
                 <AddChannelModal

@@ -47,7 +47,7 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
         // Listen to auth changed to redirect to servers page
         setFocus('email')
 
-        const unsubscribe = onAuthStateChanged(auth, async (user) => {
+        const unsubscribe = onAuthStateChanged(auth, (user) => {
             if (user) {
                 setWillBeDirect(true)
             }
@@ -78,8 +78,6 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
             if (typeof error === typeof FirebaseError) {
                 setError('Wrong email and password combination!')
             } else {
-                console.log(error)
-
                 setError('Service unavailable. Please try again later')
             }
         } finally {
@@ -89,8 +87,6 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
     }
 
     if (willBeRedirect) {
-        console.log('Redirecting')
-
         return <Redirect to="/servers" />
     }
 
