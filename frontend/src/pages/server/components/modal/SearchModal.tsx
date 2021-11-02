@@ -100,6 +100,7 @@ const SearchModal: FunctionComponent<SearchModalProps> = ({
     return (
         <>
             <Modal
+                closeIcon
                 id="custom__modal"
                 as="form"
                 className="rounded-lg"
