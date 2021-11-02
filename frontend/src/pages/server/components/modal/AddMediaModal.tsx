@@ -14,6 +14,7 @@ import { MAX_FILE_SIZE_BYTES } from 'utils/appConst'
 
 import FormInput from './FormInput'
 import ProgressBar from './ProgressBar'
+import { extractFileExt } from 'utils/fileUtil'
 
 interface AddMediaModalProps {
     isOpen: boolean
@@ -41,11 +42,6 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
     const { handleSubmit, register, reset } = useForm<FormValues>()
 
     const dispatch = useAppDispatch()
-
-    const extractFileExt = (fileName: string): string => {
-        const lastDot = fileName.lastIndexOf('.')
-        return fileName.slice(lastDot)
-    }
 
     // Refs: https://firebase.google.com/docs/storage/web/upload-files#manage_uploads
     const uploadFileToStorage = async (file: File, content: string) => {

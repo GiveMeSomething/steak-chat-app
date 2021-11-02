@@ -29,7 +29,8 @@ interface ChatServerProps {}
 
 const ChatServer: FunctionComponent<ChatServerProps> = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
-    const [isFirstLoad, setIsFirstLoad] = useState<boolean>(true)
+    const [isServerFirstLoad, setIsServerFirstLoad] = useState<boolean>(true)
+    const [isChannelFirstLoad, setIsChannelFirstLoad] = useState<boolean>(true)
 
     const dispatch = useAppDispatch()
     const currentChannel = useAppSelector(selectCurrentChannel)
@@ -37,7 +38,7 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     const channelsRef = ref(database, 'channels')
     const messagesRef = ref(database, `channels/${currentChannel.id}/messages`)
 
-    // Get all data needed here
+    // Get all channels when server is loaded first time
     useEffect(() => {
         // Fetch channels in current server
         onValue(
@@ -50,20 +51,32 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
             },
         )
 
-        setIsFirstLoad(false)
+        setIsServerFirstLoad(false)
     }, [])
 
-    // Only run when currentChannel changed
-    // To fetch all messages of currentChannel
+    // This will be trigger when isServerFirstLoad changed (after the first data load is done)
+    // Watch for others channel creation
     useEffect(() => {
-        // Clear current channel messages
-        dispatch(clearMessages())
-        dispatch(clearSearchMessage())
+        if (!isServerFirstLoad) {
+            // Subscribe to changed and child_added here
+            const channelUnsubScribe = onChildAdded(channelsRef, (data) => {
+                dispatch(addChannel(data.val()))
+            })
 
+            return () => channelUnsubScribe()
+        }
+    }, [isServerFirstLoad])
+
+    // Only run when currentChannel changed
+    // To fetch all messages of currentChannel when currentChannel changed
+    useEffect(() => {
         if (currentChannel && currentChannel.id) {
+            // Clear current channel messages in Redux store
+            dispatch(clearMessages())
+            dispatch(clearSearchMessage())
+
             // Fetch message of current channel
             // This will guarantee currentChannel value is provided to messageRef
-
             onValue(
                 query(messagesRef, orderByChild('timestamp')),
                 (data) => {
@@ -76,29 +89,24 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
                 },
                 { onlyOnce: true },
             )
+
+            setIsChannelFirstLoad(false)
         }
 
         setIsLoading(false)
     }, [currentChannel.id])
 
-    // This will be trigger when isFirstLoad changed (after the first data load is done)
+    // This will be trigger when isChannelFirstLoad changed (after the first data load is done)
+    // Watch for messages from other (realtime)
     useEffect(() => {
-        if (!isFirstLoad) {
-            // Subscribe to changed and child_added here
-            const channelUnsubScribe = onChildAdded(channelsRef, (data) => {
-                dispatch(addChannel(data.val()))
-            })
-
+        if (!isChannelFirstLoad) {
             const messageUnsubscribe = onChildAdded(messagesRef, (data) => {
                 dispatch(addMessage(data.val()))
             })
 
-            return () => {
-                channelUnsubScribe()
-                messageUnsubscribe()
-            }
+            return () => messageUnsubscribe()
         }
-    }, [isFirstLoad])
+    }, [isChannelFirstLoad])
 
     if (isLoading) {
         return (

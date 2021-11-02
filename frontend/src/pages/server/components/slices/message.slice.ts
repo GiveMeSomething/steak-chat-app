@@ -1,9 +1,11 @@
 import { get, ref, serverTimestamp, set } from '@firebase/database'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { database } from 'firebase/firebase'
+import { UserInfo } from 'pages/auth/components/auth.slice'
 import { RootState } from 'redux/store'
 import { Undefinable } from 'types/commonType'
 import { v4 as uuid } from 'uuid'
+import { ChannelInfo } from './channel.slice'
 
 export interface Message {
     id: string
@@ -36,6 +38,18 @@ const initialState: MessagesState = {
     isMessageLoading: false,
 }
 
+const saveMessageToDatabase = async (currentUser: UserInfo, message: Message, currentChannel: ChannelInfo) => {
+    const messageRef = ref(
+        database,
+        `channels/${currentChannel.id}/messages/${message.id}`,
+    )
+
+    // Set object to database, this will trigger child_added to re-render page
+    await set(messageRef, message)
+
+    return get(messageRef)
+}
+
 export const sendMessage = createAsyncThunk<
     any,
     SendMessagePayload,
@@ -63,15 +77,7 @@ export const sendMessage = createAsyncThunk<
                 createdBy,
             }
 
-            const messageRef = ref(
-                database,
-                `channels/${currentChannel.id}/messages/${message.id}`,
-            )
-
-            // Set object to database, this will trigger child_added to re-render page
-            await set(messageRef, message)
-
-            const result = await get(messageRef)
+            const result = await saveMessageToDatabase(currentUser, message, currentChannel)
 
             // Cancel loading state
             dispatch(setMessageLoading(false))
@@ -111,7 +117,7 @@ const messageSlice = createSlice({
             }
         },
         addMessage: (state, action) => {
-            if (state.messages) {
+            if (state.messages && state.messages.length > 0) {
                 state.messages = [...state.messages, action.payload]
             } else {
                 state.messages = [action.payload]
@@ -126,15 +132,6 @@ const messageSlice = createSlice({
         setMessageLoading: (state, action) => {
             state.isMessageLoading = action.payload
         },
-    },
-    extraReducers: (builder) => {
-        builder.addCase(sendMessage.fulfilled, (state, action) => {
-            if (state.messages) {
-                state.messages = [...state.messages, action.payload]
-            } else {
-                state.messages = [action.payload]
-            }
-        })
     },
 })
 
