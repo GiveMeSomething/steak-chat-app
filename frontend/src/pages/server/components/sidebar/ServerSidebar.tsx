@@ -3,7 +3,7 @@ import { useAppSelector } from 'redux/hooks'
 import { selectCurrentChannel } from '../slices/channel.slice'
 
 import ChannelsDropdown from './ChannelsDropdown'
-import UsersDropdown from './UsersDropdown'
+import UsersDropdown from './usersDropdown/UsersDropdown'
 
 interface SidebarProps {
     setChannelModalOpen: Function

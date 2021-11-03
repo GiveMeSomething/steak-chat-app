@@ -4,6 +4,7 @@ import { database } from 'firebase/firebase'
 import { v4 as uuid } from 'uuid'
 import { ref, set } from '@firebase/database'
 import { UserInfo } from 'pages/auth/components/auth.slice'
+import { Undefinable } from 'types/commonType'
 
 export interface ChannelInfo {
     id: string
@@ -23,7 +24,7 @@ interface ChannelInfoPayload {
 interface channelSliceInitialState {
     channels: ChannelInfo[]
     channelError: any
-    currentChannel: ChannelInfo,
+    currentChannel: ChannelInfo
     isDirectChannel: boolean
 }
 
@@ -32,9 +33,9 @@ const initalState: channelSliceInitialState = {
     channelError: '',
     currentChannel: {
         id: '',
-        name: ''
+        name: '',
     },
-    isDirectChannel: false
+    isDirectChannel: false,
 }
 
 const addChannelToDatabase = async ({
@@ -54,7 +55,7 @@ const addChannelToDatabase = async ({
 
 const channelInfoFromUser = (
     data: ChannelInfoPayload,
-    user: UserInfo | null,
+    user: Undefinable<UserInfo>,
 ): ChannelInfo => ({
     id: uuid(),
     name: data.channelName,
@@ -65,17 +66,15 @@ const channelInfoFromUser = (
     },
 })
 
-export const addNewChannel = createAsyncThunk<void, ChannelInfoPayload, { state: RootState }>(
-    'channels/create',
-    async (
-        data: ChannelInfoPayload,
-        { getState },
-    ) => {
-        const channelInfo = channelInfoFromUser(data, getState().user.user)
+export const addNewChannel = createAsyncThunk<
+    void,
+    ChannelInfoPayload,
+    { state: RootState }
+>('channels/create', async (data: ChannelInfoPayload, { getState }) => {
+    const channelInfo = channelInfoFromUser(data, getState().user.user)
 
-        await addChannelToDatabase(channelInfo)
-    },
-)
+    await addChannelToDatabase(channelInfo)
+})
 
 const channelSlice = createSlice({
     name: 'channel',
@@ -104,19 +103,27 @@ const channelSlice = createSlice({
         },
         setIsDirectChannel: (state, action) => {
             state.isDirectChannel = action.payload
-        }
+        },
     },
 })
 
-export const { setChannels, removeChannels, addChannel, setCurrentChannel, setIsDirectChannel } = channelSlice.actions
+export const {
+    setChannels,
+    removeChannels,
+    addChannel,
+    setCurrentChannel,
+    setIsDirectChannel,
+} = channelSlice.actions
 
 // Select all channels
 export const selectChannels = (state: RootState) => state.channels.channels
 
 // Select currently selected channel, first channel by default
-export const selectCurrentChannel = (state: RootState) => state.channels.currentChannel
+export const selectCurrentChannel = (state: RootState) =>
+    state.channels.currentChannel
 
 // Select isDirectMessage for logic check
-export const isDirectChannel = (state: RootState) => state.channels.isDirectChannel
+export const isDirectChannel = (state: RootState) =>
+    state.channels.isDirectChannel
 
 export default channelSlice.reducer

@@ -7,8 +7,9 @@ import {
     selectCurrentChannel,
     setCurrentChannel,
     setIsDirectChannel,
-} from '../slices/channel.slice'
-import { selectChannelUsers } from '../slices/channelUsers.slice'
+} from '../../slices/channel.slice'
+import { selectChannelUsers } from '../../slices/channelUsers.slice'
+import UsersDropdownItem from './UsersDropdownItem'
 
 interface UsersDropdownProps {
     isActive: boolean
@@ -68,27 +69,10 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
                             key={user.uid}
                             onClick={() => handleOnChannelUserClick(user)}
                         >
-                            <div className="flex items-center px-4 py-2">
-                                <div className="rounded-md max-h-6 w-6 mr-2">
-                                    <img
-                                        src={user.photoUrl}
-                                        className="rounded-md"
-                                    />
-                                </div>
-                                <h4 className="leading-6">
-                                    <span>{user.username}</span>
-                                    {user.uid === currentUser.user?.uid && (
-                                        <span className="mx-2 current-indicator">
-                                            you
-                                        </span>
-                                    )}
-                                </h4>
-                            </div>
-                            <div className="ml-auto pr-4">
-                                <div className="flex items-baseline cursor-pointer">
-                                    <Icon name="ellipsis horizontal" />
-                                </div>
-                            </div>
+                            <UsersDropdownItem
+                                user={user}
+                                currentUser={currentUser.user}
+                            />
                         </div>
                     )
                 })}

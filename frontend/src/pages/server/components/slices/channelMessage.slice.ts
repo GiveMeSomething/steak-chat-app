@@ -36,10 +36,13 @@ const initialState: MessagesState = {
     searchMessages: [],
     messageError: '',
     isMessageLoading: false,
-    isDirectMessage: false
+    isDirectMessage: false,
 }
 
-const saveMessageToDatabase = async (message: Message, currentChannel: ChannelInfo) => {
+const saveMessageToDatabase = async (
+    message: Message,
+    currentChannel: ChannelInfo,
+) => {
     const messageRef = ref(
         database,
         `channels/${currentChannel.id}/messages/${message.id}`,
@@ -87,7 +90,7 @@ export const sendMessage = createAsyncThunk<
             return result.val()
         }
 
-        return null
+        return undefined
     },
 )
 
@@ -136,11 +139,18 @@ const messageSlice = createSlice({
     },
 })
 
-export const { setMessages, addMessage, clearMessages, setMessageLoading, setSearchMessages, clearSearchMessage } =
-    messageSlice.actions
+export const {
+    setMessages,
+    addMessage,
+    clearMessages,
+    setMessageLoading,
+    setSearchMessages,
+    clearSearchMessage,
+} = messageSlice.actions
 
 export const selectMessages = (state: RootState) => state.messages.messages
-export const selectSearchMessages = (state: RootState) => state.messages.searchMessages
+export const selectSearchMessages = (state: RootState) =>
+    state.messages.searchMessages
 
 export const selectMessagesError = (state: RootState) =>
     state.messages.messageError

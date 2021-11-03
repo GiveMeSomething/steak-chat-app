@@ -163,4 +163,4 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     }
 }
 
-export default withAuthRedirect(ChatServer)
+export default withAuthRedirect<ChatServerProps>(ChatServer)
