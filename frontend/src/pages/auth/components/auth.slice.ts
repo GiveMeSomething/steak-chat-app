@@ -48,6 +48,7 @@ const auth = getAuth(firebaseApp)
 
 async function updateUserToDatabase(createdUser: User) {
     await set(ref(database, 'users/' + createdUser.uid), {
+        uid: createdUser.uid,
         username: createdUser.displayName,
         email: createdUser.email,
         photoUrl: createdUser.photoURL,
@@ -56,7 +57,7 @@ async function updateUserToDatabase(createdUser: User) {
 }
 
 async function updateUserStatusToDatabase(userId: string, status: UserStatus) {
-    await update(ref(database, 'users/' + userId + '/status'), { status })
+    await update(ref(database, 'users/' + userId), { status })
 }
 
 // Login to existed user
@@ -210,6 +211,6 @@ export const {
     removeUserError,
 } = userSlice.actions
 
-export const selectCurrentUser = (state: RootState) => state.user
+export const selectCurrentUser = (state: RootState) => state.user.user
 
 export default userSlice.reducer

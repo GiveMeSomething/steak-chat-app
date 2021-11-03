@@ -30,7 +30,7 @@ const MessagesPanel: FunctionComponent<MessagePanelProps> = () => {
         if (loadedMessage === messages?.length) {
             setIsLoading(false)
         }
-    }, [loadedMessage])
+    }, [loadedMessage, messages])
 
     const incrementLoadedMessage = () => {
         setLoadedMessage(loadedMessage + 1)

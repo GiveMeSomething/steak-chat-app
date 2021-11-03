@@ -35,8 +35,8 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
             id: user.uid,
             name: user.username,
             createdBy: {
-                uid: currentUser.user?.uid,
-                username: currentUser.user?.username,
+                uid: currentUser?.uid,
+                username: currentUser?.username,
             },
         }
         dispatch(setIsDirectChannel(true))
@@ -71,7 +71,7 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
                         >
                             <UsersDropdownItem
                                 user={user}
-                                currentUser={currentUser.user}
+                                currentUser={currentUser}
                             />
                         </div>
                     )

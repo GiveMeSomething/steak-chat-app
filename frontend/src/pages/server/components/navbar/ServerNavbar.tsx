@@ -6,6 +6,7 @@ import { selectCurrentChannel } from '../slices/channel.slice'
 
 import SearchModal from '../modal/SearchModal'
 import ProfileDropdown from './ProfileDropdown'
+import { UserStatus } from 'utils/appEnum'
 
 interface ServerNavbarProps {
     handleSignout: Function
@@ -24,29 +25,34 @@ const ServerNavbar: FunctionComponent<ServerNavbarProps> = ({
         setIsSearchModalOpen(true)
     }
 
-    return (
-        <div className="w-full bg-slack-navbar py-2">
-            <div className="flex items-center justify-center relative">
-                <input
-                    type="text"
-                    className="bg-slack-searchbar rounded-md w-3/6 text-slack-text-focus col-start-2 absolute placeholder-white px-4 cursor-pointer"
-                    placeholder={`Search something in #${currentChannel.name}`}
-                    readOnly={true}
-                    onClick={handleOnSearchClick}
-                />
-                <ProfileDropdown
-                    username={currentUser.user?.username}
-                    avatarUrl={currentUser.user?.photoUrl}
-                    status={currentUser.user?.status}
-                    handleSignout={() => handleSignout()}
+    if (currentUser) {
+        const { username, photoUrl, status } = currentUser
+        return (
+            <div className="w-full bg-slack-navbar py-2">
+                <div className="flex items-center justify-center relative">
+                    <input
+                        type="text"
+                        className="bg-slack-searchbar rounded-md w-3/6 text-slack-text-focus col-start-2 absolute placeholder-white px-4 cursor-pointer"
+                        placeholder={`Search something in #${currentChannel.name}`}
+                        readOnly={true}
+                        onClick={handleOnSearchClick}
+                    />
+                    <ProfileDropdown
+                        username={username}
+                        avatarUrl={photoUrl}
+                        userStatus={status || UserStatus.AWAY}
+                        handleSignout={() => handleSignout()}
+                    />
+                </div>
+                <SearchModal
+                    isOpen={isSearchModalOpen}
+                    setOpen={setIsSearchModalOpen}
                 />
             </div>
-            <SearchModal
-                isOpen={isSearchModalOpen}
-                setOpen={setIsSearchModalOpen}
-            />
-        </div>
-    )
+        )
+    } else {
+        return null
+    }
 }
 
 export default ServerNavbar

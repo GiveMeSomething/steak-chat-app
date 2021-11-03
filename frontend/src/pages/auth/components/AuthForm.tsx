@@ -3,7 +3,6 @@ import { Redirect } from 'react-router'
 import { useForm } from 'react-hook-form'
 import { useAppDispatch } from 'redux/hooks'
 
-import { FirebaseError } from '@firebase/util'
 import { firebaseApp } from 'firebase/firebase'
 import { getAuth, onAuthStateChanged } from '@firebase/auth'
 
@@ -75,8 +74,8 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
             }
         } catch (error: any) {
             // If not Firebase Authentication Error => assume it's network issue
-            if (typeof error === typeof FirebaseError) {
-                setError('Wrong email and password combination!')
+            if (error.message) {
+                setError(error.message)
             } else {
                 setError('Service unavailable. Please try again later')
             }

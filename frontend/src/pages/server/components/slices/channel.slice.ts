@@ -97,6 +97,11 @@ const channelSlice = createSlice({
         },
         addChannel: (state, action) => {
             state.channels.push(action.payload)
+
+            // Set first loaded channel as currenty active channel
+            if (state.channels.length === 1) {
+                state.currentChannel = state.channels[0]
+            }
         },
         setCurrentChannel: (state, action) => {
             state.currentChannel = action.payload

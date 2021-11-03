@@ -55,7 +55,7 @@ const saveMessageToDatabase = async (
 }
 
 export const sendMessage = createAsyncThunk<
-    any,
+    void,
     SendMessagePayload,
     { state: RootState }
 >(
@@ -81,16 +81,11 @@ export const sendMessage = createAsyncThunk<
                 createdBy,
             }
 
-            const result = await saveMessageToDatabase(message, currentChannel)
+            await saveMessageToDatabase(message, currentChannel)
 
             // Cancel loading state
             dispatch(setMessageLoading(false))
-
-            // Return value to add to store
-            return result.val()
         }
-
-        return undefined
     },
 )
 
@@ -121,11 +116,7 @@ const messageSlice = createSlice({
             }
         },
         addMessage: (state, action) => {
-            if (state.messages && state.messages.length > 0) {
-                state.messages = [...state.messages, action.payload]
-            } else {
-                state.messages = [action.payload]
-            }
+            state.messages.push(action.payload)
         },
         clearMessages: (state) => {
             state.messages = []

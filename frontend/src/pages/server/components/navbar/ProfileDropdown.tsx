@@ -3,16 +3,16 @@ import { Dropdown } from 'semantic-ui-react'
 import { DropdownOptions } from 'types/semantic-ui-type'
 
 interface ProfileDropdownProps {
-    username?: string
-    avatarUrl?: string
-    status?: string
+    username: string
+    avatarUrl: string
+    userStatus: string
     handleSignout: Function
 }
 
 const ProfileDropdown: FunctionComponent<ProfileDropdownProps> = ({
     username,
     avatarUrl,
-    status,
+    userStatus,
     handleSignout,
 }) => {
     const userSettings: DropdownOptions[] = [
@@ -60,8 +60,8 @@ const ProfileDropdown: FunctionComponent<ProfileDropdownProps> = ({
                         </span>
                         <div className="pl-4">
                             <h3 className="font-semibold">{username}</h3>
-                            <h5 className="font-light">{status}</h5>
                         </div>
+                        <h4>{userStatus}</h4>
                     </div>
                     <Dropdown.Divider />
                     <Dropdown.Item {...userSettings[0]} />
