@@ -35,7 +35,7 @@ const ServerNavbar: FunctionComponent<ServerNavbarProps> = ({
                     onClick={handleOnSearchClick}
                 />
                 <ProfileDropdown
-                    username={currentUser.user?.displayName}
+                    username={currentUser.user?.username}
                     avatarUrl={currentUser.user?.photoUrl}
                     status={currentUser.user?.status}
                     handleSignout={() => handleSignout()}

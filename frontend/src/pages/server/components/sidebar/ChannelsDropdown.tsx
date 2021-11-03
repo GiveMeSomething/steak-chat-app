@@ -62,11 +62,11 @@ const ChannelsDropdown: FunctionComponent<ChannelsDropdownProps> = ({
                 {Object.values(channels).map((channel) => {
                     return (
                         <div
-                            className={`flex items-center justify-between h-full w-full pl-4 cursor-pointer
+                            className={`flex items-center justify-between h-full w-full pl-4 cursor-pointer font-semibold
                                     ${
                                         channel.id === currentChannel.id
-                                            ? 'bg-slack-sidebar-focus text-slack-text-focus'
-                                            : 'hover:bg-slack-sidebar-hover text-slack-text-blur'
+                                            ? 'sidebar-dropdown-item__active'
+                                            : 'sidebar-dropdown-item__inactive'
                                     }`}
                             key={channel.id}
                             onClick={() => handleOnChannelClick(channel)}

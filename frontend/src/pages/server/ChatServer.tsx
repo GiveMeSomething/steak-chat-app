@@ -23,7 +23,11 @@ import {
     clearSearchMessage,
     setMessages,
     addMessage,
-} from './components/slices/message.slice'
+} from './components/slices/channelMessage.slice'
+import {
+    addChannelUser,
+    setChannelUsers,
+} from './components/slices/channelUsers.slice'
 
 interface ChatServerProps {}
 
@@ -37,9 +41,9 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
 
     const channelsRef = ref(database, 'channels')
     const messagesRef = ref(database, `channels/${currentChannel.id}/messages`)
+    const channelUsersRef = ref(database, 'users')
 
-    // Get all channels when server is loaded first time
-    useEffect(() => {
+    const fetchChannels = () => {
         // Fetch channels in current server
         onValue(
             query(channelsRef, orderByChild('name')),
@@ -50,22 +54,47 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
                 onlyOnce: true,
             },
         )
+    }
+
+    const fetchCurrentChannelMessages = () => {
+        // Fetch messages of current channel
+        onValue(
+            query(messagesRef, orderByChild('timestamp')),
+            (data) => {
+                const result: any[] = []
+                data.forEach((message) => {
+                    result.push(message.val())
+                })
+
+                dispatch(setMessages(result))
+            },
+            { onlyOnce: true },
+        )
+    }
+
+    const fetchServerUsers = () => {
+        // Fetch users of current channel
+        onValue(
+            query(channelUsersRef, orderByChild('username')),
+            (data) => {
+                const result: any[] = []
+                data.forEach((user) => {
+                    result.push(user.val())
+                })
+
+                dispatch(setChannelUsers(result))
+            },
+            { onlyOnce: true },
+        )
+    }
+
+    // Get server's channels and users when server is loaded first time
+    useEffect(() => {
+        fetchChannels()
+        fetchServerUsers()
 
         setIsServerFirstLoad(false)
     }, [])
-
-    // This will be trigger when isServerFirstLoad changed (after the first data load is done)
-    // Watch for others channel creation
-    useEffect(() => {
-        if (!isServerFirstLoad) {
-            // Subscribe to changed and child_added here
-            const channelUnsubScribe = onChildAdded(channelsRef, (data) => {
-                dispatch(addChannel(data.val()))
-            })
-
-            return () => channelUnsubScribe()
-        }
-    }, [isServerFirstLoad])
 
     // Only run when currentChannel changed
     // To fetch all messages of currentChannel when currentChannel changed
@@ -75,20 +104,8 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
             dispatch(clearMessages())
             dispatch(clearSearchMessage())
 
-            // Fetch message of current channel
-            // This will guarantee currentChannel value is provided to messageRef
-            onValue(
-                query(messagesRef, orderByChild('timestamp')),
-                (data) => {
-                    const result: any[] = []
-                    data.forEach((message) => {
-                        result.push(message.val())
-                    })
-
-                    dispatch(setMessages(result))
-                },
-                { onlyOnce: true },
-            )
+            // Fetch all channel's messages and users on first load
+            fetchCurrentChannelMessages()
 
             setIsChannelFirstLoad(false)
         }
@@ -96,17 +113,42 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
         setIsLoading(false)
     }, [currentChannel.id])
 
-    // This will be trigger when isChannelFirstLoad changed (after the first data load is done)
-    // Watch for messages from other (realtime)
+    // This will be trigger when isServerFirstLoad changed (after the first data load is done)
+    // Watch for others channel creation
     useEffect(() => {
-        if (!isChannelFirstLoad) {
-            const messageUnsubscribe = onChildAdded(messagesRef, (data) => {
-                dispatch(addMessage(data.val()))
+        if (!isServerFirstLoad) {
+            const channelUnsubScribe = onChildAdded(channelsRef, (data) => {
+                dispatch(addChannel(data.val()))
             })
 
-            return () => messageUnsubscribe()
+            return () => channelUnsubScribe()
         }
-    }, [isChannelFirstLoad])
+    }, [isServerFirstLoad])
+
+    // This will be trigger when isChannelFirstLoad changed (after the first data load is done)
+    // Watch for messages from other (realtime)
+    // Watch for new user in channel
+    useEffect(() => {
+        const messagesUnsubscribe = onChildAdded(messagesRef, (data) => {
+            if (!isChannelFirstLoad) {
+                dispatch(addMessage(data.val()))
+            }
+        })
+
+        const channelUsersUnsubscribe = onChildAdded(
+            channelUsersRef,
+            (data) => {
+                if (!isChannelFirstLoad) {
+                    dispatch(addChannelUser(data.val()))
+                }
+            },
+        )
+
+        return () => {
+            messagesUnsubscribe()
+            channelUsersUnsubscribe()
+        }
+    }, [])
 
     if (isLoading) {
         return (

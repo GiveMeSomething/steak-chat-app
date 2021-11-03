@@ -3,30 +3,30 @@
 @tailwind utilities;
 
 @layer base {
-  h1 {
-    @apply text-3xl;
-  }
-  h2 {
-    @apply text-2xl;
-  }
-  h3 {
-    @apply text-xl;
-  }
+    h1 {
+        @apply text-3xl;
+    }
+    h2 {
+        @apply text-2xl;
+    }
+    h3 {
+        @apply text-xl;
+    }
 }
 
 html,
 body {
     margin: 0 !important;
     padding: 0 !important;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-        "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif,
-        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
-        "Noto Color Emoji";
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto,
+        'Helvetica Neue', Arial, 'Noto Sans', 'Liberation Sans', sans-serif,
+        'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol',
+        'Noto Color Emoji';
 }
 
 i .icon {
-  margin: 0 !important;
-  padding: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
 }
 
 .container {
@@ -34,32 +34,44 @@ i .icon {
 }
 
 .fullscreen {
-  @apply w-screen h-screen min-h-screen
+    @apply w-screen h-screen min-h-screen;
 }
 
 .fullsize {
-  @apply w-full h-full
+    @apply w-full h-full;
 }
 
 /* Override Semantic UI Modal styles */
 .ui.top.dimmer {
-  background: none !important;
-  padding: 0 !important;
+    background: none !important;
+    padding: 0 !important;
+}
+
+.sidebar-dropdown-item__active {
+    @apply bg-slack-sidebar-focus text-slack-text-focus;
+}
+
+.sidebar-dropdown-item__inactive {
+    @apply hover:bg-slack-sidebar-hover text-slack-text-blur;
+}
+
+.sidebar-dropdown-item__inactive .current-indicator {
+    @apply text-slack-searchbar;
 }
 
 #custom__modal .ui.tiny.modal {
-  margin: 0 !important;
+    margin: 0 !important;
 }
 
 #custom__modal input:focus {
-  outline: none !important;
+    outline: none !important;
 }
 
 #custom__modal.modal {
-  // Equal to mt-2
-  margin: 0.5rem 0 0 0 !important
+    // Equal to mt-2
+    margin: 0.5rem 0 0 0 !important;
 }
 
 #message-panel__content {
-  max-height: 70vh;
+    max-height: 70vh;
 }

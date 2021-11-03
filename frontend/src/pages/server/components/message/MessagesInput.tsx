@@ -4,7 +4,7 @@ import { useAppDispatch } from 'redux/hooks'
 
 import { Button, Input, Popup } from 'semantic-ui-react'
 
-import { sendMessage, setMessageLoading } from '../slices/message.slice'
+import { sendMessage, setMessageLoading } from '../slices/channelMessage.slice'
 
 import AddMediaModal from '../modal/AddMediaModal'
 

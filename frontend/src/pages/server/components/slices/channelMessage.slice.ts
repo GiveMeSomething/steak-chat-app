@@ -1,7 +1,6 @@
 import { get, ref, serverTimestamp, set } from '@firebase/database'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { database } from 'firebase/firebase'
-import { UserInfo } from 'pages/auth/components/auth.slice'
 import { RootState } from 'redux/store'
 import { Undefinable } from 'types/commonType'
 import { v4 as uuid } from 'uuid'
@@ -25,20 +24,22 @@ interface SendMessagePayload {
 }
 
 interface MessagesState {
-    messages: Message[] | null
-    searchMessages: Message[] | null
+    messages: Message[]
+    searchMessages: Message[]
     messageError: string | 'EMPTY'
     isMessageLoading: boolean
+    isDirectMessage: boolean
 }
 
 const initialState: MessagesState = {
-    messages: null,
-    searchMessages: null,
+    messages: [],
+    searchMessages: [],
     messageError: '',
     isMessageLoading: false,
+    isDirectMessage: false
 }
 
-const saveMessageToDatabase = async (currentUser: UserInfo, message: Message, currentChannel: ChannelInfo) => {
+const saveMessageToDatabase = async (message: Message, currentChannel: ChannelInfo) => {
     const messageRef = ref(
         database,
         `channels/${currentChannel.id}/messages/${message.id}`,
@@ -64,7 +65,7 @@ export const sendMessage = createAsyncThunk<
         if (currentUser) {
             const createdBy = {
                 uid: currentUser.uid,
-                username: currentUser.displayName,
+                username: currentUser.username,
                 photoUrl: currentUser.photoUrl,
             }
 
@@ -77,7 +78,7 @@ export const sendMessage = createAsyncThunk<
                 createdBy,
             }
 
-            const result = await saveMessageToDatabase(currentUser, message, currentChannel)
+            const result = await saveMessageToDatabase(message, currentChannel)
 
             // Cancel loading state
             dispatch(setMessageLoading(false))
@@ -124,10 +125,10 @@ const messageSlice = createSlice({
             }
         },
         clearMessages: (state) => {
-            state.messages = null
+            state.messages = []
         },
         clearSearchMessage: (state) => {
-            state.searchMessages = null
+            state.searchMessages = []
         },
         setMessageLoading: (state, action) => {
             state.isMessageLoading = action.payload

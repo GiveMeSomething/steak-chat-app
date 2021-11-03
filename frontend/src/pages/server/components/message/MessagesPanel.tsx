@@ -1,6 +1,9 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
-import { selectMessages, selectSearchMessages } from '../slices/message.slice'
+import {
+    selectMessages,
+    selectSearchMessages,
+} from '../slices/channelMessage.slice'
 import MessageComponent from './MessageComponent'
 
 interface MessagePanelProps {}

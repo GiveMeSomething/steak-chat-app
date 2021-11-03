@@ -22,7 +22,7 @@ import md5 from 'md5'
 // TODO: Maybe functions need to be in async/await
 export interface UserInfo {
     uid: string
-    displayName: string
+    username: string
     photoUrl: string
     email: string
     status?: 'Online' | 'Away'
@@ -119,7 +119,7 @@ async function getUserFromDatabase(uid: string) {
         uid,
         email: userSnapshot.child('email').val(),
         photoUrl: userSnapshot.child('photoUrl').val(),
-        displayName: userSnapshot.child('username').val(),
+        username: userSnapshot.child('username').val(),
         status: 'Online',
     }
 

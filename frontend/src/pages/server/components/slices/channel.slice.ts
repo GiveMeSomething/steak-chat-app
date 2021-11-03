@@ -23,7 +23,8 @@ interface ChannelInfoPayload {
 interface channelSliceInitialState {
     channels: ChannelInfo[]
     channelError: any
-    currentChannel: ChannelInfo
+    currentChannel: ChannelInfo,
+    isDirectChannel: boolean
 }
 
 const initalState: channelSliceInitialState = {
@@ -33,6 +34,7 @@ const initalState: channelSliceInitialState = {
         id: '',
         name: ''
     },
+    isDirectChannel: false
 }
 
 const addChannelToDatabase = async ({
@@ -59,14 +61,14 @@ const channelInfoFromUser = (
     desc: data.channelDesc,
     createdBy: {
         uid: user?.uid,
-        username: user?.displayName,
+        username: user?.username,
     },
 })
 
-export const addNewChannel = createAsyncThunk<any, any, { state: RootState }>(
+export const addNewChannel = createAsyncThunk<void, ChannelInfoPayload, { state: RootState }>(
     'channels/create',
     async (
-        data: { channelName: string; channelDesc: string },
+        data: ChannelInfoPayload,
         { getState },
     ) => {
         const channelInfo = channelInfoFromUser(data, getState().user.user)
@@ -100,15 +102,21 @@ const channelSlice = createSlice({
         setCurrentChannel: (state, action) => {
             state.currentChannel = action.payload
         },
+        setIsDirectChannel: (state, action) => {
+            state.isDirectChannel = action.payload
+        }
     },
 })
 
-export const { setChannels, removeChannels, addChannel, setCurrentChannel } = channelSlice.actions
+export const { setChannels, removeChannels, addChannel, setCurrentChannel, setIsDirectChannel } = channelSlice.actions
 
 // Select all channels
 export const selectChannels = (state: RootState) => state.channels.channels
 
 // Select currently selected channel, first channel by default
 export const selectCurrentChannel = (state: RootState) => state.channels.currentChannel
+
+// Select isDirectMessage for logic check
+export const isDirectChannel = (state: RootState) => state.channels.isDirectChannel
 
 export default channelSlice.reducer

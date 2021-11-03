@@ -1,5 +1,14 @@
+import { selectCurrentUser, UserInfo } from 'pages/auth/components/auth.slice'
 import React, { FunctionComponent } from 'react'
+import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { Accordion, Icon } from 'semantic-ui-react'
+import {
+    ChannelInfo,
+    selectCurrentChannel,
+    setCurrentChannel,
+    setIsDirectChannel,
+} from '../slices/channel.slice'
+import { selectChannelUsers } from '../slices/channelUsers.slice'
 
 interface UsersDropdownProps {
     isActive: boolean
@@ -10,13 +19,35 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
     isActive,
     setActive,
 }) => {
-    const handleOnUsersMenuClick = () => {
+    const dispatch = useAppDispatch()
+
+    const currentUser = useAppSelector(selectCurrentUser)
+    const channelUsers = useAppSelector(selectChannelUsers)
+    const currentChannel = useAppSelector(selectCurrentChannel)
+
+    const handleOnChannelUserMenuClick = () => {
         setActive(!isActive)
+    }
+
+    const handleOnChannelUserClick = (user: UserInfo) => {
+        const directChannelInfo: ChannelInfo = {
+            id: user.uid,
+            name: user.username,
+            createdBy: {
+                uid: currentUser.user?.uid,
+                username: currentUser.user?.username,
+            },
+        }
+        dispatch(setIsDirectChannel(true))
+        dispatch(setCurrentChannel(directChannelInfo))
     }
 
     return (
         <Accordion>
-            <Accordion.Title active={isActive} onClick={handleOnUsersMenuClick}>
+            <Accordion.Title
+                active={isActive}
+                onClick={handleOnChannelUserMenuClick}
+            >
                 <div className="flex h-full items-center justify-between px-4 hover:bg-slack-sidebar-hover text-white">
                     <div className="flex items-baseline">
                         <Icon name="dropdown" />
@@ -25,21 +56,33 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
                 </div>
             </Accordion.Title>
             <Accordion.Content active={isActive}>
-                {/* {Object.values(users).map((channel) => {
+                {Object.values(channelUsers).map((user) => {
                     return (
                         <div
-                            className={`flex items-center justify-between h-full w-full pl-4 cursor-pointer
+                            className={`flex items-center justify-between h-full w-full pl-4 cursor-pointer font-semibold
                                 ${
-                                    channel.id === currentChannel.id
-                                        ? 'bg-slack-sidebar-focus text-slack-text-focus'
-                                        : 'hover:bg-slack-sidebar-hover text-slack-text-blur'
+                                    user.uid === currentChannel.id
+                                        ? 'sidebar-dropdown-item__active'
+                                        : 'sidebar-dropdown-item__inactive'
                                 }`}
-                            key={channel.id}
-                            onClick={() => handleOnChannelClick(channel)}
+                            key={user.uid}
+                            onClick={() => handleOnChannelUserClick(user)}
                         >
-                            <div className="flex items-baseline px-4 py-2">
-                                <Icon name="hashtag" className="m-0" />
-                                <h4 className="leading-6">{channel.name}</h4>
+                            <div className="flex items-center px-4 py-2">
+                                <div className="rounded-md max-h-6 w-6 mr-2">
+                                    <img
+                                        src={user.photoUrl}
+                                        className="rounded-md"
+                                    />
+                                </div>
+                                <h4 className="leading-6">
+                                    <span>{user.username}</span>
+                                    {user.uid === currentUser.user?.uid && (
+                                        <span className="mx-2 current-indicator">
+                                            you
+                                        </span>
+                                    )}
+                                </h4>
                             </div>
                             <div className="ml-auto pr-4">
                                 <div className="flex items-baseline cursor-pointer">
@@ -48,7 +91,7 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
                             </div>
                         </div>
                     )
-                })} */}
+                })}
             </Accordion.Content>
         </Accordion>
     )

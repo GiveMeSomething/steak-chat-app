@@ -8,7 +8,7 @@ import {
     Message,
     selectMessages,
     setSearchMessages,
-} from '../slices/message.slice'
+} from '../slices/channelMessage.slice'
 
 interface SearchModalProps {
     isOpen: boolean
