@@ -26,22 +26,34 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
     const channelUsers = useAppSelector(selectChannelUsers)
     const currentChannel = useAppSelector(selectCurrentChannel)
 
+    const getDirectChannelId = (userId: string) => {
+        if (currentUser) {
+            // Create direct channel id based on userId and currentUser
+            if (userId < currentUser.uid) {
+                return `${userId}/${currentUser.uid}`
+            } else {
+                return `${currentUser.uid}/${userId}`
+            }
+        }
+
+        return ''
+    }
+
+    const isCurrentUserActive = (userId: string): boolean => {
+        if (currentChannel.id === getDirectChannelId(userId)) {
+            return true
+        }
+
+        return false
+    }
+
     const handleOnChannelUserMenuClick = () => {
         setActive(!isActive)
     }
 
     const handleOnChannelUserClick = (user: UserInfo) => {
         if (currentUser) {
-            const { uid } = currentUser
-
-            let directChannelId = ''
-
-            // Create direct channel id based on 2 participants
-            if (uid < user.uid) {
-                directChannelId = `${uid}/${user.uid}`
-            } else {
-                directChannelId = `${user.uid}/${uid}`
-            }
+            const directChannelId = getDirectChannelId(user.uid)
 
             // Create channel info to set currentChannel
             const directChannelInfo: ChannelInfo = {
@@ -55,16 +67,6 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
             }
             dispatch(setIsDirectChannel(true))
             dispatch(setCurrentChannel(directChannelInfo))
-        }
-    }
-
-    const isCurrentUserActive = (userId: string): boolean => {
-        const participants = currentChannel.id.split('/')
-
-        if (participants.length < 2) {
-            return false
-        } else {
-            return participants.includes(userId)
         }
     }
 
