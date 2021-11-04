@@ -36,9 +36,28 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
             }
         }
 
+        // To avoid returning undefined
+        // If there is no currentUser, the server should redirect to Login page
         return ''
     }
 
+    const generateDirectChannelInfo = (channelId: string, toUser: UserInfo) => {
+        if (currentUser) {
+            const directChannelInfo: ChannelInfo = {
+                id: channelId,
+                name: toUser.username,
+                createdBy: {
+                    uid: currentUser?.uid,
+                    username: currentUser?.username,
+                    photoUrl: currentUser.photoUrl,
+                },
+            }
+
+            return directChannelInfo
+        }
+    }
+
+    // Check selected direct channel to highlight it in UI
     const isCurrentUserActive = (userId: string): boolean => {
         if (currentChannel.id === getDirectChannelId(userId)) {
             return true
@@ -47,24 +66,24 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
         return false
     }
 
+    // Open or close channel menu
     const handleOnChannelUserMenuClick = () => {
         setActive(!isActive)
     }
 
+    // Change currentChannel and switch to directChannel mode
     const handleOnChannelUserClick = (user: UserInfo) => {
-        if (currentUser) {
-            const directChannelId = getDirectChannelId(user.uid)
+        const directChannelId = getDirectChannelId(user.uid)
 
-            // Create channel info to set currentChannel
-            const directChannelInfo: ChannelInfo = {
-                id: directChannelId,
-                name: user.username,
-                createdBy: {
-                    uid: currentUser?.uid,
-                    username: currentUser?.username,
-                    photoUrl: currentUser.photoUrl,
-                },
-            }
+        // Create channel info to set currentChannel
+        const directChannelInfo = generateDirectChannelInfo(
+            directChannelId,
+            user,
+        )
+
+        // This should be always true
+        // If there is no currentUser (result in no channelInfo), the server should redirect to Login
+        if (directChannelInfo) {
             dispatch(setIsDirectChannel(true))
             dispatch(setCurrentChannel(directChannelInfo))
         }
