@@ -42,11 +42,22 @@ const initialState: MessagesState = {
 const saveMessageToDatabase = async (
     message: Message,
     currentChannel: ChannelInfo,
+    isDirectChannel: boolean,
 ) => {
-    const messageRef = ref(
-        database,
-        `channels/${currentChannel.id}/messages/${message.id}`,
-    )
+    let messageRef
+
+    // Set messages destination based on public channel or private channel (direct messages)
+    if (isDirectChannel) {
+        messageRef = ref(
+            database,
+            `direct-message/${currentChannel.id}/messages/${message.id}`,
+        )
+    } else {
+        messageRef = ref(
+            database,
+            `channels/${currentChannel.id}/messages/${message.id}`,
+        )
+    }
 
     // Set object to database, this will trigger child_added to re-render page
     await set(messageRef, message)
@@ -64,6 +75,7 @@ export const sendMessage = createAsyncThunk<
         const appState = getState()
         const currentUser = appState.user.user
         const currentChannel = appState.channels.currentChannel
+        const isDirectMessage = appState.channels.isDirectChannel
 
         if (currentUser) {
             const createdBy = {
@@ -81,7 +93,11 @@ export const sendMessage = createAsyncThunk<
                 createdBy,
             }
 
-            await saveMessageToDatabase(message, currentChannel)
+            await saveMessageToDatabase(
+                message,
+                currentChannel,
+                isDirectMessage,
+            )
 
             // Cancel loading state
             dispatch(setMessageLoading(false))
@@ -146,7 +162,7 @@ export const selectSearchMessages = (state: RootState) =>
 export const selectMessagesError = (state: RootState) =>
     state.messages.messageError
 
-export const isMessageLoading = (state: RootState) =>
+export const selectIsMessageLoading = (state: RootState) =>
     state.messages.isMessageLoading
 
 export default messageSlice.reducer

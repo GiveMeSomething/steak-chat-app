@@ -6,10 +6,10 @@ interface MessageComponentProps {
     timestamp?: object
     media?: string
     createdBy: {
+        uid?: string
         username?: string
         photoUrl?: string
     }
-    onMessageLoaded: Function
 }
 
 const MessageComponent: FunctionComponent<MessageComponentProps> = ({
@@ -17,7 +17,6 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
     timestamp,
     createdBy,
     media,
-    onMessageLoaded,
 }) => {
     const imageRef = useRef<HTMLImageElement>(null)
 
@@ -29,10 +28,6 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
         serverTime,
     )}`
 
-    const onImageLoad = () => {
-        onMessageLoaded()
-    }
-
     return (
         <div className="flex items-start justify-start py-2 text-gray-500">
             <span className="flex items-start">
@@ -40,7 +35,6 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
                     src={createdBy.photoUrl}
                     alt="avt"
                     className="rounded-md h-12 w-12"
-                    onLoad={() => media && onImageLoad}
                 />
             </span>
             <div className="ml-4">
@@ -50,12 +44,7 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
                 </div>
                 {content && <h5 className="text-lg">{content}</h5>}
                 {media && (
-                    <img
-                        src={media}
-                        onLoad={onImageLoad}
-                        className="max-h-40 p-2"
-                        ref={imageRef}
-                    />
+                    <img src={media} className="max-h-40 p-2" ref={imageRef} />
                 )}
             </div>
         </div>

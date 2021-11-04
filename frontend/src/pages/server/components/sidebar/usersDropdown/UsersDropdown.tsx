@@ -31,16 +31,41 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
     }
 
     const handleOnChannelUserClick = (user: UserInfo) => {
-        const directChannelInfo: ChannelInfo = {
-            id: user.uid,
-            name: user.username,
-            createdBy: {
-                uid: currentUser?.uid,
-                username: currentUser?.username,
-            },
+        if (currentUser) {
+            const { uid } = currentUser
+
+            let directChannelId = ''
+
+            // Create direct channel id based on 2 participants
+            if (uid < user.uid) {
+                directChannelId = `${uid}/${user.uid}`
+            } else {
+                directChannelId = `${user.uid}/${uid}`
+            }
+
+            // Create channel info to set currentChannel
+            const directChannelInfo: ChannelInfo = {
+                id: directChannelId,
+                name: user.username,
+                createdBy: {
+                    uid: currentUser?.uid,
+                    username: currentUser?.username,
+                    photoUrl: currentUser.photoUrl,
+                },
+            }
+            dispatch(setIsDirectChannel(true))
+            dispatch(setCurrentChannel(directChannelInfo))
         }
-        dispatch(setIsDirectChannel(true))
-        dispatch(setCurrentChannel(directChannelInfo))
+    }
+
+    const isCurrentUserActive = (userId: string): boolean => {
+        const participants = currentChannel.id.split('/')
+
+        if (participants.length < 2) {
+            return false
+        } else {
+            return participants.includes(userId)
+        }
     }
 
     return (
@@ -62,7 +87,7 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
                         <div
                             className={`flex items-center justify-between h-full w-full pl-4 cursor-pointer font-semibold
                                 ${
-                                    user.uid === currentChannel.id
+                                    isCurrentUserActive(user.uid)
                                         ? 'sidebar-dropdown-item__active'
                                         : 'sidebar-dropdown-item__inactive'
                                 }`}

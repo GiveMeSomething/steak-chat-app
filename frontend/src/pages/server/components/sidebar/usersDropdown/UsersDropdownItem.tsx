@@ -23,14 +23,12 @@ const UsersDropdownItem: FunctionComponent<UsersDropdownItemProps> = ({
                 return <Icon name="circle" color="grey" size="small" />
         }
     }
+
     return (
         <>
             <div className="flex items-center px-4 py-2">
                 <div className="rounded-md max-h-6 w-6 mr-2 relative">
                     <img src={user.photoUrl} className="rounded-md" />
-                    {
-                        // Display based on user status
-                    }
                     <div className="absolute -right-2 -bottom-2">
                         <StatusIcon />
                     </div>

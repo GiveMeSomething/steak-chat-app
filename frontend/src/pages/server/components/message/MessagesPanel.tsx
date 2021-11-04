@@ -10,7 +10,6 @@ interface MessagePanelProps {}
 
 const MessagesPanel: FunctionComponent<MessagePanelProps> = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
-    const [loadedMessage, setLoadedMessage] = useState<number>(0)
 
     const messages = useAppSelector(selectMessages)
     const searchMessages = useAppSelector(selectSearchMessages)
@@ -26,35 +25,22 @@ const MessagesPanel: FunctionComponent<MessagePanelProps> = () => {
     // Scroll to bottom after the iamge is loaded
     useEffect(() => {
         scrollToBottomDiv.current?.scrollIntoView({ behavior: 'auto' })
-
-        if (loadedMessage === messages?.length) {
+        if (messages.length > 0) {
             setIsLoading(false)
         }
-    }, [loadedMessage, messages])
-
-    const incrementLoadedMessage = () => {
-        setLoadedMessage(loadedMessage + 1)
-    }
+    }, [messages])
 
     // Display messages based on searchMessages and messages existance
     const messagePanelContent = () => {
         if (searchMessages && searchMessages.length > 0) {
             // Display search messages if have any
             return searchMessages.map((message) => (
-                <MessageComponent
-                    {...message}
-                    key={message.id}
-                    onMessageLoaded={incrementLoadedMessage}
-                />
+                <MessageComponent {...message} key={message.id} />
             ))
         } else if (messages && messages.length > 0) {
             // Else display normal messages
             return messages.map((message) => (
-                <MessageComponent
-                    {...message}
-                    key={message.id}
-                    onMessageLoaded={incrementLoadedMessage}
-                />
+                <MessageComponent {...message} key={message.id} />
             ))
         } else {
             // Or display welcome message if there are no messages

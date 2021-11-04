@@ -6,6 +6,7 @@ import {
     selectChannels,
     selectCurrentChannel,
     setCurrentChannel,
+    setIsDirectChannel,
 } from '../slices/channel.slice'
 
 interface ChannelsDropdownProps {
@@ -26,6 +27,7 @@ const ChannelsDropdown: FunctionComponent<ChannelsDropdownProps> = ({
 
     // Select current channel
     const handleOnChannelClick = (channelInfo: ChannelInfo) => {
+        dispatch(setIsDirectChannel(false))
         dispatch(setCurrentChannel(channelInfo))
     }
 

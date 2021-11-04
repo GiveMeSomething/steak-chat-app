@@ -13,6 +13,7 @@ export interface ChannelInfo {
     createdBy?: {
         uid?: string
         username?: string
+        photoUrl?: string
     }
 }
 
@@ -63,6 +64,7 @@ const channelInfoFromUser = (
     createdBy: {
         uid: user?.uid,
         username: user?.username,
+        photoUrl: user?.photoUrl,
     },
 })
 
@@ -128,7 +130,7 @@ export const selectCurrentChannel = (state: RootState) =>
     state.channels.currentChannel
 
 // Select isDirectMessage for logic check
-export const isDirectChannel = (state: RootState) =>
+export const selectIsDirectChannel = (state: RootState) =>
     state.channels.isDirectChannel
 
 export default channelSlice.reducer
