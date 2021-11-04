@@ -25,10 +25,26 @@ const channelUsersSlice = createSlice({
         addChannelUser: (state, action) => {
             state.users.push(action.payload)
         },
+        updateChannelUser: (state, action) => {
+            const updatedUser: UserInfo = action.payload
+            const index = state.users.findIndex(
+                (user) => user.uid === updatedUser.uid,
+            )
+
+            state.users[index] = updatedUser
+        },
+        clearChannelUsers: (state) => {
+            state.users = []
+        },
     },
 })
 
-export const { addChannelUser } = channelUsersSlice.actions
+export const {
+    setChannelUsers,
+    addChannelUser,
+    clearChannelUsers,
+    updateChannelUser,
+} = channelUsersSlice.actions
 
 export const selectChannelUsers = (state: RootState) => state.channelUsers.users
 

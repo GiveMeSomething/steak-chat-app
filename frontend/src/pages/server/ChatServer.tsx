@@ -2,7 +2,12 @@ import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
 import { database } from 'firebase/firebase'
-import { DatabaseReference, onChildAdded, ref } from '@firebase/database'
+import {
+    DatabaseReference,
+    onChildAdded,
+    onChildChanged,
+    ref,
+} from '@firebase/database'
 
 import {
     addChannel,
@@ -18,7 +23,11 @@ import {
     clearSearchMessage,
     setMessages,
 } from './components/slices/channelMessage.slice'
-import { addChannelUser } from './components/slices/channelUsers.slice'
+import {
+    addChannelUser,
+    clearChannelUsers,
+    updateChannelUser,
+} from './components/slices/channelUsers.slice'
 import { onValue, query, orderByChild } from 'firebase/database'
 
 interface ChatServerProps {}
@@ -34,6 +43,7 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     const channelsRef = ref(database, 'channels')
     const channelUsersRef = ref(database, 'users')
 
+    // Get messageRef based on public or private channel (direct messages)
     const getMessageRef = (): DatabaseReference => {
         if (isDirectChannel) {
             return ref(database, `direct-message/${currentChannel.id}/messages`)
@@ -62,6 +72,9 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     }
 
     useEffect(() => {
+        // Clear users list
+        dispatch(clearChannelUsers())
+
         const unsubscribeChannels = onChildAdded(channelsRef, (data) => {
             dispatch(addChannel(data.val()))
         })
@@ -73,9 +86,17 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
             },
         )
 
+        const unsubscribeChannelUsersChanged = onChildChanged(
+            channelUsersRef,
+            (data) => {
+                dispatch(updateChannelUser(data.val()))
+            },
+        )
+
         return () => {
             unsubscribeChannels()
             unsubscribeChannelUsers()
+            unsubscribeChannelUsersChanged()
         }
     }, [])
 
