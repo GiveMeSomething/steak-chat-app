@@ -3,15 +3,17 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { database } from 'firebase/firebase'
 import { v4 as uuid } from 'uuid'
 import { ref, set } from '@firebase/database'
-import { UserInfo } from 'pages/auth/components/user.slice'
+import { UserInfo } from 'pages/auth/components/auth.slice'
+import { Undefinable } from 'types/commonType'
 
 export interface ChannelInfo {
-    id?: string
-    name?: string
+    id: string
+    name: string
     desc?: string
-    createdBy: {
+    createdBy?: {
         uid?: string
         username?: string
+        photoUrl?: string
     }
 }
 
@@ -23,13 +25,18 @@ interface ChannelInfoPayload {
 interface channelSliceInitialState {
     channels: ChannelInfo[]
     channelError: any
-    currentChannel: string
+    currentChannel: ChannelInfo
+    isDirectChannel: boolean
 }
 
 const initalState: channelSliceInitialState = {
     channels: [],
     channelError: '',
-    currentChannel: '',
+    currentChannel: {
+        id: '',
+        name: '',
+    },
+    isDirectChannel: false,
 }
 
 const addChannelToDatabase = async ({
@@ -49,28 +56,27 @@ const addChannelToDatabase = async ({
 
 const channelInfoFromUser = (
     data: ChannelInfoPayload,
-    user: UserInfo | null,
+    user: Undefinable<UserInfo>,
 ): ChannelInfo => ({
     id: uuid(),
     name: data.channelName,
     desc: data.channelDesc,
     createdBy: {
         uid: user?.uid,
-        username: user?.displayName,
+        username: user?.username,
+        photoUrl: user?.photoUrl,
     },
 })
 
-export const addNewChannel = createAsyncThunk<any, any, { state: RootState }>(
-    'channels/create',
-    async (
-        data: { channelName: string; channelDesc: string },
-        { getState },
-    ) => {
-        const channelInfo = channelInfoFromUser(data, getState().user.user)
+export const addNewChannel = createAsyncThunk<
+    void,
+    ChannelInfoPayload,
+    { state: RootState }
+>('channels/create', async (data: ChannelInfoPayload, { getState }) => {
+    const channelInfo = channelInfoFromUser(data, getState().user.user)
 
-        await addChannelToDatabase(channelInfo)
-    },
-)
+    await addChannelToDatabase(channelInfo)
+})
 
 const channelSlice = createSlice({
     name: 'channel',
@@ -84,8 +90,7 @@ const channelSlice = createSlice({
 
                 // Set current channel to first channel (if have any)
                 if (state.channels[0].id) {
-                    // TODO: Find a better way to solve this problem
-                    state.currentChannel = state.channels[0].id
+                    state.currentChannel = state.channels[0]
                 }
             }
         },
@@ -94,19 +99,38 @@ const channelSlice = createSlice({
         },
         addChannel: (state, action) => {
             state.channels.push(action.payload)
+
+            // Set first loaded channel as currenty active channel
+            if (state.channels.length === 1) {
+                state.currentChannel = state.channels[0]
+            }
         },
         setCurrentChannel: (state, action) => {
             state.currentChannel = action.payload
         },
+        setIsDirectChannel: (state, action) => {
+            state.isDirectChannel = action.payload
+        },
     },
 })
 
-export const { setChannels, removeChannels, addChannel, setCurrentChannel } =
-    channelSlice.actions
+export const {
+    setChannels,
+    removeChannels,
+    addChannel,
+    setCurrentChannel,
+    setIsDirectChannel,
+} = channelSlice.actions
 
-export const selectChannels = (state: RootState) => state.channels
+// Select all channels
+export const selectChannels = (state: RootState) => state.channels.channels
 
+// Select currently selected channel, first channel by default
 export const selectCurrentChannel = (state: RootState) =>
     state.channels.currentChannel
+
+// Select isDirectMessage for logic check
+export const selectIsDirectChannel = (state: RootState) =>
+    state.channels.isDirectChannel
 
 export default channelSlice.reducer

@@ -3,102 +3,124 @@ import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
 import { database } from 'firebase/firebase'
 import {
+    DatabaseReference,
     onChildAdded,
-    onValue,
-    query,
+    onChildChanged,
     ref,
-    orderByChild,
 } from '@firebase/database'
 
 import {
-    addMessage,
-    clearMessages,
-    setMessages,
-} from './components/message.slice'
-import {
     addChannel,
     selectCurrentChannel,
-    setChannels,
-} from './components/channel.slice'
+    selectIsDirectChannel,
+} from './components/slices/channel.slice'
 
 import ServerLayout from './components/ServerLayout'
 import withAuthRedirect from 'components/middleware/withAuthRedirect'
+import {
+    addMessage,
+    clearMessages,
+    clearSearchMessage,
+    setMessages,
+} from './components/slices/channelMessage.slice'
+import {
+    addChannelUser,
+    clearChannelUsers,
+    updateChannelUser,
+} from './components/slices/channelUsers.slice'
+import { onValue, query, orderByChild } from 'firebase/database'
 
 interface ChatServerProps {}
 
 const ChatServer: FunctionComponent<ChatServerProps> = () => {
-    const [isLoading, setIsLoading] = useState<boolean>(true)
-    const [isFirstLoad, setIsFirstLoad] = useState<boolean>(true)
+    const [isMessageLoading, setIsMessageLoading] = useState<boolean>(true)
 
     const dispatch = useAppDispatch()
+
     const currentChannel = useAppSelector(selectCurrentChannel)
+    const isDirectChannel = useAppSelector(selectIsDirectChannel)
 
     const channelsRef = ref(database, 'channels')
-    const messagesRef = ref(database, `channels/${currentChannel}/messages`)
+    const channelUsersRef = ref(database, 'users')
 
-    // Get all data needed here
-    useEffect(() => {
-        // Fetch channels in current server
+    // Get messageRef based on public or private channel (direct messages)
+    const getMessageRef = (): DatabaseReference => {
+        if (isDirectChannel) {
+            return ref(database, `direct-message/${currentChannel.id}/messages`)
+        } else {
+            return ref(database, `channels/${currentChannel.id}/messages`)
+        }
+    }
+    const messagesRef = getMessageRef()
+
+    const fetchChannelMessages = () => {
+        // Fetch messages of current channel
         onValue(
-            query(channelsRef, orderByChild('name')),
+            query(messagesRef, orderByChild('timestamp')),
             (data) => {
-                dispatch(setChannels(data.val()))
+                const result: any[] = []
+                data.forEach((message) => {
+                    result.push(message.val())
+                })
+
+                dispatch(setMessages(result))
             },
-            {
-                onlyOnce: true,
+            { onlyOnce: true },
+        )
+
+        setIsMessageLoading(false)
+    }
+
+    useEffect(() => {
+        // Clear users list
+        dispatch(clearChannelUsers())
+
+        const unsubscribeChannels = onChildAdded(channelsRef, (data) => {
+            dispatch(addChannel(data.val()))
+        })
+
+        const unsubscribeChannelUsers = onChildAdded(
+            channelUsersRef,
+            (data) => {
+                dispatch(addChannelUser(data.val()))
             },
         )
 
-        setIsFirstLoad(false)
+        const unsubscribeChannelUsersChanged = onChildChanged(
+            channelUsersRef,
+            (data) => {
+                dispatch(updateChannelUser(data.val()))
+            },
+        )
+
+        return () => {
+            unsubscribeChannels()
+            unsubscribeChannelUsers()
+            unsubscribeChannelUsersChanged()
+        }
     }, [])
 
-    // Only run when currentChannel changed
-    // To fetch all messages of currentChannel
     useEffect(() => {
-        // Clear current channel messages
-        dispatch(clearMessages())
+        if (currentChannel && currentChannel.id) {
+            // Clear current channel messages in Redux store
+            dispatch(clearMessages())
+            dispatch(clearSearchMessage())
 
-        if (currentChannel) {
-            // Fetch message of current channel
-            // This will guarantee currentChannel value is provided to messageRef
-
-            onValue(
-                query(messagesRef, orderByChild('timestamp')),
-                (data) => {
-                    const result: any[] = []
-                    data.forEach((message) => {
-                        result.push(message.val())
-                    })
-
-                    dispatch(setMessages(result))
-                },
-                { onlyOnce: true },
-            )
-        }
-
-        setIsLoading(false)
-    }, [currentChannel])
-
-    // This will be trigger when isFirstLoad changed (after the first data load is done)
-    useEffect(() => {
-        if (!isFirstLoad) {
-            // Subscribe to changed and child_added here
-            const channelUnsubScribe = onChildAdded(channelsRef, (data) => {
-                dispatch(addChannel(data.val()))
-            })
-
-            const messageUnsubscribe = onChildAdded(messagesRef, (data) => {
+            // Add messages listener for current channel
+            // onChildAdded will run for all initial value in database
+            const unsubscribeMessages = onChildAdded(messagesRef, (data) => {
                 dispatch(addMessage(data.val()))
             })
 
-            return () => {
-                channelUnsubScribe()
-                messageUnsubscribe()
-            }
-        }
-    }, [isFirstLoad])
+            // Fetch currentChannel's message with orderBy timestamp
+            // This will override onChildAdded initial result (unordered)
+            fetchChannelMessages()
 
-    if (isLoading) {
+            return () => unsubscribeMessages()
+        }
+    }, [currentChannel.id])
+
+    if (isMessageLoading) {
         return (
             <div className="h-screen w-screen max-h-screen flex items-center justify-center">
                 <div className="ui active inverted dimmer">
@@ -111,4 +133,4 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     }
 }
 
-export default withAuthRedirect(ChatServer)
+export default withAuthRedirect<ChatServerProps>(ChatServer)

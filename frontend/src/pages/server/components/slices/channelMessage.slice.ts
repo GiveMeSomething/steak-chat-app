@@ -4,8 +4,9 @@ import { database } from 'firebase/firebase'
 import { RootState } from 'redux/store'
 import { Undefinable } from 'types/commonType'
 import { v4 as uuid } from 'uuid'
+import { ChannelInfo } from './channel.slice'
 
-interface Message {
+export interface Message {
     id: string
     content: string
     timestamp: object
@@ -23,19 +24,49 @@ interface SendMessagePayload {
 }
 
 interface MessagesState {
-    messages: Message[] | null
+    messages: Message[]
+    searchMessages: Message[]
     messageError: string | 'EMPTY'
     isMessageLoading: boolean
+    isDirectMessage: boolean
 }
 
 const initialState: MessagesState = {
-    messages: null,
+    messages: [],
+    searchMessages: [],
     messageError: '',
     isMessageLoading: false,
+    isDirectMessage: false,
+}
+
+const saveMessageToDatabase = async (
+    message: Message,
+    currentChannel: ChannelInfo,
+    isDirectChannel: boolean,
+) => {
+    let messageRef
+
+    // Set messages destination based on public channel or private channel (direct messages)
+    if (isDirectChannel) {
+        messageRef = ref(
+            database,
+            `direct-message/${currentChannel.id}/messages/${message.id}`,
+        )
+    } else {
+        messageRef = ref(
+            database,
+            `channels/${currentChannel.id}/messages/${message.id}`,
+        )
+    }
+
+    // Set object to database, this will trigger child_added to re-render page
+    await set(messageRef, message)
+
+    return get(messageRef)
 }
 
 export const sendMessage = createAsyncThunk<
-    any,
+    void,
     SendMessagePayload,
     { state: RootState }
 >(
@@ -44,11 +75,12 @@ export const sendMessage = createAsyncThunk<
         const appState = getState()
         const currentUser = appState.user.user
         const currentChannel = appState.channels.currentChannel
+        const isDirectMessage = appState.channels.isDirectChannel
 
         if (currentUser) {
             const createdBy = {
                 uid: currentUser.uid,
-                username: currentUser.displayName,
+                username: currentUser.username,
                 photoUrl: currentUser.photoUrl,
             }
 
@@ -61,24 +93,15 @@ export const sendMessage = createAsyncThunk<
                 createdBy,
             }
 
-            const messageRef = ref(
-                database,
-                `channels/${currentChannel}/messages/${message.id}`,
+            await saveMessageToDatabase(
+                message,
+                currentChannel,
+                isDirectMessage,
             )
-
-            // Set object to database, this will trigger child_added to re-render page
-            await set(messageRef, message)
-
-            const result = await get(messageRef)
 
             // Cancel loading state
             dispatch(setMessageLoading(false))
-
-            // Return value to add to store
-            return result.val()
         }
-
-        return null
     },
 )
 
@@ -98,40 +121,48 @@ const messageSlice = createSlice({
                 state.messageError = 'EMPTY'
             }
         },
-        addMessage: (state, action) => {
-            if (state.messages) {
-                state.messages = [...state.messages, action.payload]
-            } else {
-                state.messages = [action.payload]
+        setSearchMessages: (state, action) => {
+            // Get message objects from action payload and convert to array
+            if (action.payload) {
+                const messages: Message[] = action.payload
+
+                if (messages.length > 0) {
+                    state.searchMessages = messages
+                }
             }
         },
+        addMessage: (state, action) => {
+            state.messages.push(action.payload)
+        },
         clearMessages: (state) => {
-            state.messages = null
+            state.messages = []
+        },
+        clearSearchMessage: (state) => {
+            state.searchMessages = []
         },
         setMessageLoading: (state, action) => {
             state.isMessageLoading = action.payload
         },
     },
-    extraReducers: (builder) => {
-        builder.addCase(sendMessage.fulfilled, (state, action) => {
-            if (state.messages) {
-                state.messages = [...state.messages, action.payload]
-            } else {
-                state.messages = [action.payload]
-            }
-        })
-    },
 })
 
-export const { setMessages, addMessage, clearMessages, setMessageLoading } =
-    messageSlice.actions
+export const {
+    setMessages,
+    addMessage,
+    clearMessages,
+    setMessageLoading,
+    setSearchMessages,
+    clearSearchMessage,
+} = messageSlice.actions
 
 export const selectMessages = (state: RootState) => state.messages.messages
+export const selectSearchMessages = (state: RootState) =>
+    state.messages.searchMessages
 
 export const selectMessagesError = (state: RootState) =>
     state.messages.messageError
 
-export const isMessageLoading = (state: RootState) =>
+export const selectIsMessageLoading = (state: RootState) =>
     state.messages.isMessageLoading
 
 export default messageSlice.reducer

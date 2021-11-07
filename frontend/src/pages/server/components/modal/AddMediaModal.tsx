@@ -8,9 +8,10 @@ import { storage } from 'firebase/firebase'
 import { Modal, Button, Icon } from 'semantic-ui-react'
 import { v4 as uuid } from 'uuid'
 
-import { sendMessage } from '../message.slice'
+import { sendMessage } from '../slices/channelMessage.slice'
 
 import { MAX_FILE_SIZE_BYTES } from 'utils/appConst'
+import { extractFileExt } from 'utils/fileUtil'
 
 import FormInput from './FormInput'
 import ProgressBar from './ProgressBar'
@@ -42,12 +43,8 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
 
     const dispatch = useAppDispatch()
 
-    const extractFileExt = (fileName: string): string => {
-        const lastDot = fileName.lastIndexOf('.')
-        return fileName.slice(lastDot)
-    }
-
     // Refs: https://firebase.google.com/docs/storage/web/upload-files#manage_uploads
+    // Upload user image to Firebase storage and save message to Redux store
     const uploadFileToStorage = async (file: File, content: string) => {
         const filePath = `chat/public/${uuid()}.${extractFileExt(file.name)}`
         const storageRef = ref(storage, filePath)
@@ -113,7 +110,6 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
         setUploadState('')
         setUploadProgress(0)
         setUploadError('')
-
         setIsLoading(false)
         setMediaUrl('')
 
@@ -186,30 +182,34 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
                     <h1>Upload image</h1>
                 </Modal.Header>
                 <Modal.Content>
-                    {mediaUrl && userMedia ? (
-                        <img src={mediaUrl} className="max-h-40" />
-                    ) : (
-                        <div className="flex flex-col items-center justify-center bg-slack-sidebar-blur py-10">
-                            <label
-                                htmlFor="upload-file"
-                                className="bg-slack-sidebar-hover text-white px-6 py-2 rounded-md cursor-pointer"
-                            >
-                                Add your image
-                            </label>
-                            <input
-                                type="file"
-                                accept="image/png, image/gif, image/jpeg"
-                                id="upload-file"
-                                hidden
-                                onChange={uploadFile}
-                            />
-                            {uploadError && (
-                                <p className="text-red-600 font-semibold pt-2">
-                                    {uploadError}
-                                </p>
-                            )}
-                        </div>
-                    )}
+                    {
+                        // Show preview image if user upload valid image
+                        // Else show upload image option
+                        mediaUrl && userMedia ? (
+                            <img src={mediaUrl} className="max-h-40" />
+                        ) : (
+                            <div className="flex flex-col items-center justify-center bg-slack-sidebar-blur py-10">
+                                <label
+                                    htmlFor="upload-file"
+                                    className="bg-slack-sidebar-hover text-white px-6 py-2 rounded-md cursor-pointer"
+                                >
+                                    Add your image
+                                </label>
+                                <input
+                                    type="file"
+                                    accept="image/png, image/gif, image/jpeg"
+                                    id="upload-file"
+                                    hidden
+                                    onChange={uploadFile}
+                                />
+                                {uploadError && (
+                                    <p className="text-red-600 font-semibold pt-2">
+                                        {uploadError}
+                                    </p>
+                                )}
+                            </div>
+                        )
+                    }
                     <div className="pt-6">
                         <FormInput
                             label="Description (optional)"

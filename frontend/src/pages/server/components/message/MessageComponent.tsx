@@ -1,10 +1,12 @@
-import React, { FunctionComponent } from 'react'
+import React, { FunctionComponent, useRef } from 'react'
+import { getDateString, getTimeString } from 'utils/timeUtil'
 
 interface MessageComponentProps {
     content?: string
     timestamp?: object
     media?: string
     createdBy: {
+        uid?: string
         username?: string
         photoUrl?: string
     }
@@ -16,15 +18,15 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
     createdBy,
     media,
 }) => {
+    const imageRef = useRef<HTMLImageElement>(null)
+
     // Firebase save timestamp as object, but still number when console log
     // So we need to manually cast to number
     const serverTime = timestamp as unknown as number
 
-    // Get time from timestamp
-    const messageTime = new Date(serverTime).toLocaleString([], {
-        hour: '2-digit',
-        minute: '2-digit',
-    })
+    const messageTime = `${getDateString(serverTime)}${getTimeString(
+        serverTime,
+    )}`
 
     return (
         <div className="flex items-start justify-start py-2 text-gray-500">
@@ -36,16 +38,14 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
                 />
             </span>
             <div className="ml-4">
-                <div className="flex items-center h-full text-xl">
-                    <h4 className="font-semibold text-xl leading-none">
-                        {createdBy.username}
-                    </h4>
-                    <p className="text-slack-text-blur text-sm leading-none px-2">
-                        {messageTime}
-                    </p>
+                <div className="flex items-baseline pb-1">
+                    <h3 className="font-bold">{createdBy.username}</h3>
+                    <h5 className="text-slack-text-blur px-2">{messageTime}</h5>
                 </div>
                 {content && <h5 className="text-lg">{content}</h5>}
-                {media && <img src={media} className="max-h-40 p-2" />}
+                {media && (
+                    <img src={media} className="max-h-40 p-2" ref={imageRef} />
+                )}
             </div>
         </div>
     )

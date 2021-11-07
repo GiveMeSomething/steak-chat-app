@@ -1,7 +1,12 @@
-import { selectCurrentUser } from 'pages/auth/components/user.slice'
-import React, { FunctionComponent } from 'react'
+import React, { FunctionComponent, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
+
+import { selectCurrentUser } from 'pages/auth/components/auth.slice'
+import { selectCurrentChannel } from '../slices/channel.slice'
+
+import SearchModal from '../modal/SearchModal'
 import ProfileDropdown from './ProfileDropdown'
+import { UserStatus } from 'utils/appEnum'
 
 interface ServerNavbarProps {
     handleSignout: Function
@@ -10,25 +15,44 @@ interface ServerNavbarProps {
 const ServerNavbar: FunctionComponent<ServerNavbarProps> = ({
     handleSignout,
 }) => {
-    const currentUser = useAppSelector(selectCurrentUser)
+    const [isSearchModalOpen, setIsSearchModalOpen] = useState<boolean>(false)
 
-    return (
-        <div className="w-full bg-slack-navbar py-2">
-            <div className="flex items-center justify-center relative">
-                <input
-                    type="text"
-                    className="bg-slack-searchbar rounded-md w-2/5 text-slack-text-focus col-start-2 absolute placeholder-white px-4"
-                    placeholder="Search something in ..."
-                />
-                <ProfileDropdown
-                    username={currentUser.user?.displayName}
-                    avatarUrl={currentUser.user?.photoUrl}
-                    status={currentUser.user?.status}
-                    handleSignout={() => handleSignout()}
+    const currentUser = useAppSelector(selectCurrentUser)
+    const currentChannel = useAppSelector(selectCurrentChannel)
+
+    // Open a bigger search 😅
+    const handleOnSearchClick = () => {
+        setIsSearchModalOpen(true)
+    }
+
+    if (currentUser) {
+        const { username, photoUrl, status } = currentUser
+        return (
+            <div className="w-full bg-slack-navbar py-2">
+                <div className="flex items-center justify-center relative">
+                    <input
+                        type="text"
+                        className="bg-slack-searchbar rounded-md w-3/6 text-slack-text-focus col-start-2 absolute placeholder-white px-4 cursor-pointer"
+                        placeholder={`Search something in #${currentChannel.name}`}
+                        readOnly={true}
+                        onClick={handleOnSearchClick}
+                    />
+                    <ProfileDropdown
+                        username={username}
+                        avatarUrl={photoUrl}
+                        userStatus={status || UserStatus.AWAY}
+                        handleSignout={() => handleSignout()}
+                    />
+                </div>
+                <SearchModal
+                    isOpen={isSearchModalOpen}
+                    setOpen={setIsSearchModalOpen}
                 />
             </div>
-        </div>
-    )
+        )
+    } else {
+        return null
+    }
 }
 
 export default ServerNavbar

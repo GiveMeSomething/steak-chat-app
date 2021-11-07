@@ -3,7 +3,7 @@ import React, { FunctionComponent, useState } from 'react'
 import { Button, Dropdown, Icon, Modal } from 'semantic-ui-react'
 import { useForm } from 'react-hook-form'
 import { useAppDispatch } from 'redux/hooks'
-import { addNewChannel } from '../channel.slice'
+import { addNewChannel } from '../slices/channel.slice'
 
 interface AddChannelModalProps {
     isOpen: boolean
