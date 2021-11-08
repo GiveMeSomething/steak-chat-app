@@ -54,6 +54,12 @@ const addChannelToDatabase = async ({
     })
 }
 
+const addChannelCountToDatabase = async ({ id }: ChannelInfo) => {
+    await set(ref(database, 'messageCount'), {
+        [id]: 0,
+    })
+}
+
 const channelInfoFromUser = (
     data: ChannelInfoPayload,
     user: Undefinable<UserInfo>,
@@ -76,6 +82,8 @@ export const addNewChannel = createAsyncThunk<
     const channelInfo = channelInfoFromUser(data, getState().user.user)
 
     await addChannelToDatabase(channelInfo)
+
+    await addChannelCountToDatabase(channelInfo)
 })
 
 const channelSlice = createSlice({

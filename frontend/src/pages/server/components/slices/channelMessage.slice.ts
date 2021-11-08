@@ -1,4 +1,11 @@
-import { get, ref, serverTimestamp, set } from '@firebase/database'
+import {
+    get,
+    increment,
+    ref,
+    serverTimestamp,
+    set,
+    update,
+} from '@firebase/database'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { database } from 'firebase/firebase'
 import { RootState } from 'redux/store'
@@ -45,6 +52,7 @@ const saveMessageToDatabase = async (
     isDirectChannel: boolean,
 ) => {
     let messageRef
+    const messageCountRef = ref(database, `messageCount/${currentChannel.id}`)
 
     // Set messages destination based on public channel or private channel (direct messages)
     if (isDirectChannel) {
@@ -58,6 +66,9 @@ const saveMessageToDatabase = async (
             `channels/${currentChannel.id}/messages/${message.id}`,
         )
     }
+
+    // Add 1 to messageCountRef, based on the server current value
+    await update(messageCountRef, increment(1))
 
     // Set object to database, this will trigger child_added to re-render page
     await set(messageRef, message)
