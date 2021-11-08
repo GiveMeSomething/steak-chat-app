@@ -1,15 +1,8 @@
-import {
-    get,
-    increment,
-    ref,
-    serverTimestamp,
-    set,
-    update,
-} from '@firebase/database'
+import { get, increment, ref, serverTimestamp, set } from '@firebase/database'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { database } from 'firebase/firebase'
 import { RootState } from 'redux/store'
-import { Undefinable } from 'types/commonType'
+import { ThunkState, Undefinable } from 'types/commonType'
 import { v4 as uuid } from 'uuid'
 import { ChannelInfo } from './channel.slice'
 
@@ -68,7 +61,7 @@ const saveMessageToDatabase = async (
     }
 
     // Add 1 to messageCountRef, based on the server current value
-    await update(messageCountRef, increment(1))
+    await set(messageCountRef, increment(1))
 
     // Set object to database, this will trigger child_added to re-render page
     await set(messageRef, message)

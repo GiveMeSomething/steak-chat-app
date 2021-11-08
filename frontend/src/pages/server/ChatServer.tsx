@@ -11,6 +11,7 @@ import {
 
 import {
     addChannel,
+    clearChannels,
     selectCurrentChannel,
     selectIsDirectChannel,
     setMessageCount,
@@ -73,14 +74,16 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
             },
             { onlyOnce: true },
         )
-
-        setIsMessageLoading(false)
     }
 
     useEffect(() => {
+        // Clear channels
+        dispatch(clearChannels())
+
         // Clear users list
         dispatch(clearChannelUsers())
 
+        // Get message count from user info fetch
         dispatch(setMessageCount(currentUser?.messageCount))
 
         const unsubscribeChannels = onChildAdded(channelsRef, (data) => {
@@ -102,8 +105,13 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
         )
 
         const unsubscribeMessageCount = onValue(messageCountRef, (data) => {
-            dispatch(updateNotifications(data.val()))
+            const result = data.val()
+            if (result) {
+                dispatch(updateNotifications(data.val()))
+            }
         })
+
+        setIsMessageLoading(false)
 
         return () => {
             unsubscribeChannels()

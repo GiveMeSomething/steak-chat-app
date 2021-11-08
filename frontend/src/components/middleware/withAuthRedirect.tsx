@@ -3,7 +3,6 @@ import { Redirect } from 'react-router'
 // import { useAppSelector } from 'redux/hooks'
 // import { selectCurrentUser } from 'pages/auth/components/user.slice'
 import { useAppDispatch } from 'redux/hooks'
-import { removeChannels } from 'pages/server/components/slices/channel.slice'
 import { getAuth } from '@firebase/auth'
 import { firebaseApp } from 'firebase/firebase'
 import { fetchUser } from 'pages/auth/components/auth.slice'
@@ -38,8 +37,6 @@ function withAuthRedirect<PropsType>(
                     fetchUserInfo()
                 }
             })
-
-            dispatch(removeChannels())
 
             return () => unsubscribe()
         }, [])

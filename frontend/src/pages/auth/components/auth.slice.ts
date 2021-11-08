@@ -55,6 +55,7 @@ async function updateUserToDatabase(createdUser: User) {
         email: createdUser.email,
         photoUrl: createdUser.photoURL,
         status: UserStatus.ONLINE,
+        messageCount: {},
     })
 }
 
@@ -144,14 +145,6 @@ export const updateUserStatus = createAsyncThunk<
 
 async function getUserFromDatabase(uid: string) {
     const userSnapshot = await get(ref(database, `users/${uid}`))
-
-    // const userInfo: UserInfo = {
-    //     uid,
-    //     email: userSnapshot.child('email').val(),
-    //     photoUrl: userSnapshot.child('photoUrl').val(),
-    //     username: userSnapshot.child('username').val(),
-    //     status: userSnapshot.child('status').val(),
-    // }
 
     const userInfo: UserInfo = userSnapshot.val()
 

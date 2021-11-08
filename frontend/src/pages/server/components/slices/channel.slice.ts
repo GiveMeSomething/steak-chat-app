@@ -98,7 +98,7 @@ export const updateNotifications = createAsyncThunk<
     any,
     ChannelIdAsKeyObject,
     ThunkState
->('channels/setNotifications', async (data, { getState }) => {
+>('channels/updateNotifications', async (data, { getState, dispatch }) => {
     const appState = getState()
 
     // Data is a object which key is channelId and value as messageCount
@@ -106,7 +106,6 @@ export const updateNotifications = createAsyncThunk<
 
     const currentChannel = appState.channels.currentChannel
     const messageCount = appState.channels.messageCount
-    const notifications = appState.channels.notifications
     const currentUser = appState.user.user
 
     // Check with last messageCount to update notifications
@@ -114,21 +113,21 @@ export const updateNotifications = createAsyncThunk<
         // Skip notification count for currentChannel
         if (channelId !== currentChannel.id) {
             if (messageCount[channelId]) {
-                notifications[channelId] =
-                    data[channelId] - messageCount[channelId]
+                const notifications = data[channelId] - messageCount[channelId]
+                dispatch(setChannelNotifications({ channelId, notifications }))
             } else {
-                notifications[channelId] = data[channelId]
+                const notifications = data[channelId]
+                dispatch(setChannelNotifications({ channelId, notifications }))
             }
         }
-
-        // Update current messageCount for all channels
-        messageCount[channelId] = data[channelId]
     })
+
+    // Update current messageCount for all channels
+    dispatch(setChannelMessageCount(data))
 
     // Save to status to users notifications
-    await set(ref(database, `users/${currentUser?.uid}`), {
-        lastMessageCount: messageCount,
-    })
+    const userMessageCountPath = `users/${currentUser?.uid}/messageCount`
+    await set(ref(database, userMessageCountPath), data)
 })
 
 const channelSlice = createSlice({
@@ -147,7 +146,14 @@ const channelSlice = createSlice({
                 }
             }
         },
-        removeChannels: (state) => {
+        setChannelNotifications: (state, action) => {
+            const { channelId, notifications } = action.payload
+            state.notifications[channelId] = notifications
+        },
+        setChannelMessageCount: (state, action) => {
+            state.messageCount = action.payload
+        },
+        clearChannels: (state) => {
             state.channels = []
         },
         addChannel: (state, action) => {
@@ -167,6 +173,8 @@ const channelSlice = createSlice({
         setMessageCount: (state, action) => {
             if (action.payload) {
                 state.messageCount = action.payload
+            } else {
+                state.messageCount = {}
             }
         },
     },
@@ -174,11 +182,13 @@ const channelSlice = createSlice({
 
 export const {
     setChannels,
-    removeChannels,
+    clearChannels,
     addChannel,
     setCurrentChannel,
     setIsDirectChannel,
     setMessageCount,
+    setChannelNotifications,
+    setChannelMessageCount,
 } = channelSlice.actions
 
 // Select all channels
