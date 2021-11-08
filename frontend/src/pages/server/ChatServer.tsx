@@ -13,6 +13,8 @@ import {
     addChannel,
     selectCurrentChannel,
     selectIsDirectChannel,
+    setMessageCount,
+    updateNotifications,
 } from './components/slices/channel.slice'
 
 import ServerLayout from './components/ServerLayout'
@@ -29,6 +31,7 @@ import {
     updateChannelUser,
 } from './components/slices/channelUsers.slice'
 import { onValue, query, orderByChild } from 'firebase/database'
+import { selectCurrentUser } from 'pages/auth/components/auth.slice'
 
 interface ChatServerProps {}
 
@@ -36,6 +39,8 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     const [isMessageLoading, setIsMessageLoading] = useState<boolean>(true)
 
     const dispatch = useAppDispatch()
+
+    const currentUser = useAppSelector(selectCurrentUser)
 
     const currentChannel = useAppSelector(selectCurrentChannel)
     const isDirectChannel = useAppSelector(selectIsDirectChannel)
@@ -76,6 +81,8 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
         // Clear users list
         dispatch(clearChannelUsers())
 
+        dispatch(setMessageCount(currentUser?.messageCount))
+
         const unsubscribeChannels = onChildAdded(channelsRef, (data) => {
             dispatch(addChannel(data.val()))
         })
@@ -95,13 +102,14 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
         )
 
         const unsubscribeMessageCount = onValue(messageCountRef, (data) => {
-            dispatch()
+            dispatch(updateNotifications(data.val()))
         })
 
         return () => {
             unsubscribeChannels()
             unsubscribeChannelUsers()
             unsubscribeChannelUsersChanged()
+            unsubscribeMessageCount()
         }
     }, [])
 

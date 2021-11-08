@@ -104,16 +104,30 @@ export const updateNotifications = createAsyncThunk<
     // Data is a object which key is channelId and value as messageCount
     const channelIds = Object.keys(data)
 
+    const currentChannel = appState.channels.currentChannel
     const messageCount = appState.channels.messageCount
     const notifications = appState.channels.notifications
+    const currentUser = appState.user.user
 
     // Check with last messageCount to update notifications
     channelIds.forEach((channelId) => {
-        if (messageCount[channelId]) {
-            notifications[channelId] = data[channelId] - messageCount[channelId]
-        } else {
-            notifications[channelId] = data[channelId]
+        // Skip notification count for currentChannel
+        if (channelId !== currentChannel.id) {
+            if (messageCount[channelId]) {
+                notifications[channelId] =
+                    data[channelId] - messageCount[channelId]
+            } else {
+                notifications[channelId] = data[channelId]
+            }
         }
+
+        // Update current messageCount for all channels
+        messageCount[channelId] = data[channelId]
+    })
+
+    // Save to status to users notifications
+    await set(ref(database, `users/${currentUser?.uid}`), {
+        lastMessageCount: messageCount,
     })
 })
 
@@ -150,6 +164,11 @@ const channelSlice = createSlice({
         setIsDirectChannel: (state, action) => {
             state.isDirectChannel = action.payload
         },
+        setMessageCount: (state, action) => {
+            if (action.payload) {
+                state.messageCount = action.payload
+            }
+        },
     },
 })
 
@@ -159,6 +178,7 @@ export const {
     addChannel,
     setCurrentChannel,
     setIsDirectChannel,
+    setMessageCount,
 } = channelSlice.actions
 
 // Select all channels

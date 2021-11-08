@@ -29,7 +29,7 @@ export interface UserInfo {
     photoUrl: string
     email: string
     status?: UserStatus
-    notifications: ChannelIdAsKeyObject
+    messageCount: ChannelIdAsKeyObject
 }
 
 export interface AuthPayload {
