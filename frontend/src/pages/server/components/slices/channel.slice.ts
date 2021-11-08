@@ -4,7 +4,7 @@ import { database } from 'firebase/firebase'
 import { v4 as uuid } from 'uuid'
 import { ref, set } from '@firebase/database'
 import { UserInfo } from 'pages/auth/components/auth.slice'
-import { Undefinable } from 'types/commonType'
+import { ThunkState, Undefinable } from 'types/commonType'
 
 export interface ChannelInfo {
     id: string
@@ -22,11 +22,17 @@ interface ChannelInfoPayload {
     channelDesc: string
 }
 
+export interface ChannelIdAsKeyObject {
+    [channelId: string]: number
+}
+
 interface channelSliceInitialState {
     channels: ChannelInfo[]
     channelError: any
     currentChannel: ChannelInfo
     isDirectChannel: boolean
+    messageCount: ChannelIdAsKeyObject
+    notifications: ChannelIdAsKeyObject
 }
 
 const initalState: channelSliceInitialState = {
@@ -37,6 +43,8 @@ const initalState: channelSliceInitialState = {
         name: '',
     },
     isDirectChannel: false,
+    messageCount: {},
+    notifications: {},
 }
 
 const addChannelToDatabase = async ({
@@ -77,13 +85,36 @@ const channelInfoFromUser = (
 export const addNewChannel = createAsyncThunk<
     void,
     ChannelInfoPayload,
-    { state: RootState }
+    ThunkState
 >('channels/create', async (data: ChannelInfoPayload, { getState }) => {
     const channelInfo = channelInfoFromUser(data, getState().user.user)
 
     await addChannelToDatabase(channelInfo)
 
     await addChannelCountToDatabase(channelInfo)
+})
+
+export const updateNotifications = createAsyncThunk<
+    any,
+    ChannelIdAsKeyObject,
+    ThunkState
+>('channels/setNotifications', async (data, { getState }) => {
+    const appState = getState()
+
+    // Data is a object which key is channelId and value as messageCount
+    const channelIds = Object.keys(data)
+
+    const messageCount = appState.channels.messageCount
+    const notifications = appState.channels.notifications
+
+    // Check with last messageCount to update notifications
+    channelIds.forEach((channelId) => {
+        if (messageCount[channelId]) {
+            notifications[channelId] = data[channelId] - messageCount[channelId]
+        } else {
+            notifications[channelId] = data[channelId]
+        }
+    })
 })
 
 const channelSlice = createSlice({

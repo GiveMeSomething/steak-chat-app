@@ -79,7 +79,7 @@ const saveMessageToDatabase = async (
 export const sendMessage = createAsyncThunk<
     void,
     SendMessagePayload,
-    { state: RootState }
+    ThunkState
 >(
     'message/sendMessage',
     async ({ content, mediaPath = '' }, { getState, dispatch }) => {

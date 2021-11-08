@@ -19,7 +19,8 @@ import {
 } from '@reduxjs/toolkit'
 import md5 from 'md5'
 import { UserStatus } from 'utils/appEnum'
-import { Undefinable } from 'types/commonType'
+import { ThunkState, Undefinable } from 'types/commonType'
+import { ChannelIdAsKeyObject } from 'pages/server/components/slices/channel.slice'
 
 // TODO: Maybe functions need to be in async/await
 export interface UserInfo {
@@ -28,6 +29,7 @@ export interface UserInfo {
     photoUrl: string
     email: string
     status?: UserStatus
+    notifications: ChannelIdAsKeyObject
 }
 
 export interface AuthPayload {
@@ -110,19 +112,18 @@ export const signUpAndSaveUser = createAsyncThunk<
     return undefined
 })
 
-export const signOutAndRemoveUser = createAsyncThunk<
-    void,
-    void,
-    { state: RootState }
->('user/signOut', async (_, { getState }) => {
-    const currentUser = getState().user.user
+export const signOutAndRemoveUser = createAsyncThunk<void, void, ThunkState>(
+    'user/signOut',
+    async (_, { getState }) => {
+        const currentUser = getState().user.user
 
-    if (currentUser) {
-        updateUserStatusToDatabase(currentUser.uid, UserStatus.AWAY)
-    }
+        if (currentUser) {
+            updateUserStatusToDatabase(currentUser.uid, UserStatus.AWAY)
+        }
 
-    await signOut(getAuth(firebaseApp))
-})
+        await signOut(getAuth(firebaseApp))
+    },
+)
 
 export const fetchUser = createAsyncThunk('user/fetchInfo', async () => {
     if (auth.currentUser) {

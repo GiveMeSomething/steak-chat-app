@@ -42,6 +42,7 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
 
     const channelsRef = ref(database, 'channels')
     const channelUsersRef = ref(database, 'users')
+    const messageCountRef = ref(database, 'messageCount')
 
     // Get messageRef based on public or private channel (direct messages)
     const getMessageRef = (): DatabaseReference => {
@@ -92,6 +93,10 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
                 dispatch(updateChannelUser(data.val()))
             },
         )
+
+        const unsubscribeMessageCount = onValue(messageCountRef, (data) => {
+            dispatch()
+        })
 
         return () => {
             unsubscribeChannels()
