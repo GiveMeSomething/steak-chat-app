@@ -1,8 +1,9 @@
 import React, { FunctionComponent, MouseEventHandler } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
-import { Accordion, Icon, Popup } from 'semantic-ui-react'
+import { Accordion, Icon, Label, Popup } from 'semantic-ui-react'
 import {
     ChannelInfo,
+    selectChannelNotifications,
     selectChannels,
     selectCurrentChannel,
     setCurrentChannel,
@@ -24,11 +25,12 @@ const ChannelsDropdown: FunctionComponent<ChannelsDropdownProps> = ({
 
     const channels = useAppSelector(selectChannels)
     const currentChannel = useAppSelector(selectCurrentChannel)
+    const notifications = useAppSelector(selectChannelNotifications)
 
     // Select current channel
-    const handleOnChannelClick = (channelInfo: ChannelInfo) => {
+    const handleOnChannelClick = async (channelInfo: ChannelInfo) => {
         dispatch(setIsDirectChannel(false))
-        dispatch(setCurrentChannel(channelInfo))
+        await dispatch(setCurrentChannel(channelInfo))
     }
 
     const handleOnChannelMenuClick = () => {
@@ -76,6 +78,9 @@ const ChannelsDropdown: FunctionComponent<ChannelsDropdownProps> = ({
                             <div className="flex items-baseline px-4 py-2">
                                 <Icon name="hashtag" className="m-0" />
                                 <h4 className="leading-6">{channel.name}</h4>
+                                {notifications[channel.id] > 0 && (
+                                    <Label>{notifications[channel.id]}</Label>
+                                )}
                             </div>
                             <div className="ml-auto pr-4">
                                 <div className="flex items-baseline cursor-pointer">

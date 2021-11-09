@@ -119,6 +119,13 @@ export const updateNotifications = createAsyncThunk<
                 const notifications = data[channelId]
                 dispatch(setChannelNotifications({ channelId, notifications }))
             }
+        } else {
+            dispatch(
+                setOneChannelMessageCount({
+                    channelId: channelId,
+                    messageCount: data[channelId],
+                }),
+            )
         }
     })
 })
@@ -245,5 +252,8 @@ export const selectCurrentChannel = (state: RootState) =>
 // Select isDirectMessage for logic check
 export const selectIsDirectChannel = (state: RootState) =>
     state.channels.isDirectChannel
+
+export const selectChannelNotifications = (state: RootState) =>
+    state.channels.notifications
 
 export default channelSlice.reducer
