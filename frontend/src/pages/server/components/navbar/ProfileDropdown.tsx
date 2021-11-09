@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react'
 import { Dropdown } from 'semantic-ui-react'
-import { DropdownOptions } from 'types/semantic-ui-type'
+import { userOptions } from 'utils/appConst'
 
 interface ProfileDropdownProps {
     username: string
@@ -15,24 +15,7 @@ const ProfileDropdown: FunctionComponent<ProfileDropdownProps> = ({
     userStatus,
     handleSignout,
 }) => {
-    const userSettings: DropdownOptions[] = [
-        {
-            key: 'profile',
-            text: 'Profile',
-            value: 'profile',
-            disabled: true,
-        },
-        {
-            key: 'setting',
-            text: 'Preferences',
-            value: 'settings',
-        },
-        {
-            key: 'signout',
-            text: 'Sign out',
-            value: 'signout',
-        },
-    ]
+    const userSettings = userOptions
 
     const onSignoutClick = () => {
         handleSignout()

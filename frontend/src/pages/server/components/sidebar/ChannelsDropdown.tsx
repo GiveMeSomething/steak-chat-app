@@ -1,4 +1,4 @@
-import React, { FunctionComponent, MouseEventHandler } from 'react'
+import React, { FunctionComponent, MouseEventHandler, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { Accordion, Icon, Label, Popup } from 'semantic-ui-react'
 import {
@@ -9,6 +9,7 @@ import {
     setCurrentChannel,
     setIsDirectChannel,
 } from '../slices/channel.slice'
+import ChannelOptionsDropdown from './ChannelOptionsDropdown'
 
 interface ChannelsDropdownProps {
     onAddClick: MouseEventHandler<HTMLDivElement>
@@ -21,6 +22,8 @@ const ChannelsDropdown: FunctionComponent<ChannelsDropdownProps> = ({
     isActive,
     setActive,
 }) => {
+    const [selectedChannel, setSelectedChannel] = useState<ChannelInfo>()
+
     const dispatch = useAppDispatch()
 
     const channels = useAppSelector(selectChannels)
@@ -31,6 +34,28 @@ const ChannelsDropdown: FunctionComponent<ChannelsDropdownProps> = ({
     const handleOnChannelClick = async (channelInfo: ChannelInfo) => {
         dispatch(setIsDirectChannel(false))
         await dispatch(setCurrentChannel(channelInfo))
+    }
+
+    const handleChannelRightClick = (
+        event: React.MouseEvent<HTMLDivElement>,
+        channel: ChannelInfo,
+    ) => {
+        // Prevent open context menu
+        event.preventDefault()
+
+        // Prevent event bubbling to onClick
+        event.stopPropagation()
+
+        setSelectedChannel(channel)
+    }
+
+    const closeChannelOptions = (event: React.MouseEvent<HTMLDivElement>) => {
+        event.preventDefault()
+
+        // Prevent event bubbling to onClick
+        event.stopPropagation()
+
+        setSelectedChannel(undefined)
     }
 
     const handleOnChannelMenuClick = () => {
@@ -74,6 +99,9 @@ const ChannelsDropdown: FunctionComponent<ChannelsDropdownProps> = ({
                                     }`}
                             key={channel.id}
                             onClick={() => handleOnChannelClick(channel)}
+                            onContextMenu={(e) =>
+                                handleChannelRightClick(e, channel)
+                            }
                         >
                             <div className="flex items-baseline px-4 py-2">
                                 <Icon name="hashtag" className="m-0" />
@@ -88,7 +116,28 @@ const ChannelsDropdown: FunctionComponent<ChannelsDropdownProps> = ({
                             </div>
                             <div className="ml-auto pr-4">
                                 <div className="flex items-baseline cursor-pointer">
-                                    <Icon name="ellipsis horizontal" />
+                                    {selectedChannel?.id === channel.id ? (
+                                        <>
+                                            <div className="z-20">
+                                                <ChannelOptionsDropdown
+                                                    starred={false}
+                                                    selectedChannel={channel}
+                                                    isOpen={true}
+                                                    closeDropdown={
+                                                        closeChannelOptions
+                                                    }
+                                                />
+                                            </div>
+                                            <div
+                                                className="absolute h-screen w-screen top-0 left-0 z-10"
+                                                onClick={(e) =>
+                                                    closeChannelOptions(e)
+                                                }
+                                            ></div>
+                                        </>
+                                    ) : (
+                                        <Icon name="ellipsis horizontal" />
+                                    )}
                                 </div>
                             </div>
                         </div>

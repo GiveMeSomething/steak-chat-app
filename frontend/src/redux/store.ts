@@ -10,7 +10,7 @@ export const store = configureStore({
         user: authSlice,
         channels: channelSlice,
         messages: messageSlice,
-        channelUsers: channelUsersSlice
+        channelUsers: channelUsersSlice,
     },
 })
 

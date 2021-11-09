@@ -2,6 +2,7 @@ import { selectCurrentUser, UserInfo } from 'pages/auth/components/auth.slice'
 import React, { FunctionComponent } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { Accordion, Icon } from 'semantic-ui-react'
+import { CHANNEL_NAME_SEPARATOR } from 'utils/appConst'
 import {
     ChannelInfo,
     selectCurrentChannel,
@@ -30,9 +31,9 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
         if (currentUser) {
             // Create direct channel id based on userId and currentUser
             if (userId < currentUser.uid) {
-                return `${userId}/${currentUser.uid}`
+                return `${userId}${CHANNEL_NAME_SEPARATOR}${currentUser.uid}`
             } else {
-                return `${currentUser.uid}/${userId}`
+                return `${currentUser.uid}${CHANNEL_NAME_SEPARATOR}${userId}`
             }
         }
 
