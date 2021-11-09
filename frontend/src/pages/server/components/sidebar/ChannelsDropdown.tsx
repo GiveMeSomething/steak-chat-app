@@ -77,9 +77,13 @@ const ChannelsDropdown: FunctionComponent<ChannelsDropdownProps> = ({
                         >
                             <div className="flex items-baseline px-4 py-2">
                                 <Icon name="hashtag" className="m-0" />
-                                <h4 className="leading-6">{channel.name}</h4>
+                                <h4 className="leading-6 mr-2">
+                                    {channel.name}
+                                </h4>
                                 {notifications[channel.id] > 0 && (
-                                    <Label>{notifications[channel.id]}</Label>
+                                    <Label circular color="red">
+                                        {notifications[channel.id]}
+                                    </Label>
                                 )}
                             </div>
                             <div className="ml-auto pr-4">

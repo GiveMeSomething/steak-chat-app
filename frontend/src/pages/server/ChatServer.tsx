@@ -7,14 +7,16 @@ import {
     onChildAdded,
     onChildChanged,
     ref,
+    set,
 } from '@firebase/database'
 
 import {
     addChannel,
     clearChannels,
+    selectChannelMessageCount,
     selectCurrentChannel,
     selectIsDirectChannel,
-    setMessageCount,
+    setChannelMessageCount,
     updateNotifications,
 } from './components/slices/channel.slice'
 
@@ -46,6 +48,8 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     const currentChannel = useAppSelector(selectCurrentChannel)
     const isDirectChannel = useAppSelector(selectIsDirectChannel)
 
+    const channelMessageCount = useAppSelector(selectChannelMessageCount)
+
     const channelsRef = ref(database, 'channels')
     const channelUsersRef = ref(database, 'users')
     const messageCountRef = ref(database, 'messageCount')
@@ -76,6 +80,12 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
         )
     }
 
+    const updateUserMessageCount = async () => {
+        // Save status to users notifications
+        const userMessageCountPath = `users/${currentUser?.uid}/messageCount`
+        await set(ref(database, userMessageCountPath), channelMessageCount)
+    }
+
     useEffect(() => {
         // Clear channels
         dispatch(clearChannels())
@@ -84,7 +94,7 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
         dispatch(clearChannelUsers())
 
         // Get message count from user info fetch
-        dispatch(setMessageCount(currentUser?.messageCount))
+        dispatch(setChannelMessageCount(currentUser?.messageCount))
 
         const unsubscribeChannels = onChildAdded(channelsRef, (data) => {
             dispatch(addChannel(data.val()))
@@ -136,6 +146,8 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
             // Fetch currentChannel's message with orderBy timestamp
             // This will override onChildAdded initial result (unordered)
             fetchChannelMessages()
+
+            updateUserMessageCount()
 
             return () => unsubscribeMessages()
         }

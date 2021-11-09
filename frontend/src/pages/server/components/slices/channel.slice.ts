@@ -114,6 +114,8 @@ export const updateNotifications = createAsyncThunk<
         if (channelId !== currentChannel.id) {
             if (messageCount[channelId]) {
                 const notifications = data[channelId] - messageCount[channelId]
+                console.log(notifications)
+
                 dispatch(setChannelNotifications({ channelId, notifications }))
             } else {
                 const notifications = data[channelId]
@@ -137,34 +139,35 @@ export const setCurrentChannel = createAsyncThunk<
 >('channels/setCurrentChannel', async (data, { getState, dispatch }) => {
     const appState = getState()
 
-    const currentUser = appState.user.user
     const channelMessageCount = appState.channels.messageCount
     const channelNotifications = appState.channels.notifications
 
     // Update messageCount for currentChannel
     // Message count can be calculated as current messageCount + number of notifications of that channel
-    let currentMessageCount =
-        channelMessageCount[data.id] + channelNotifications[data.id]
+    if (channelMessageCount && channelNotifications) {
+        console.log(data.id)
 
-    // Prevent NaN when a channel does not exist in notifications or messageCount
-    if (isNaN(currentMessageCount)) {
-        currentMessageCount = 0
+        // Prevent NaN when a channel does not exist in notifications or messageCount
+        const messageCount = channelMessageCount[data.id]
+            ? channelMessageCount[data.id]
+            : 0
+        const notificationCount = channelNotifications[data.id]
+            ? channelNotifications[data.id]
+            : 0
+
+        const currentMessageCount = messageCount + notificationCount
+
+        // Update currentChannel messageCount to the lastest value
+        dispatch(
+            setOneChannelMessageCount({
+                channelId: data.id,
+                messageCount: currentMessageCount,
+            }),
+        )
+
+        // Clear notifications of currentChannel
+        dispatch(clearOneChannelNotifications({ channelId: data.id }))
     }
-
-    // Update currentChannel messageCount to the lastest value
-    dispatch(
-        setOneChannelMessageCount({
-            channelId: data.id,
-            messageCount: currentMessageCount,
-        }),
-    )
-
-    // Clear notifications of currentChannel
-    dispatch(clearOneChannelNotifications({ channelId: data.id }))
-
-    // Save status to users notifications
-    const userMessageCountPath = `users/${currentUser?.uid}/messageCount/${data.id}`
-    await set(ref(database, userMessageCountPath), currentMessageCount)
 
     // Return this to set currentChannel as normal
     return data
@@ -174,6 +177,14 @@ const channelSlice = createSlice({
     name: 'channel',
     initialState: initalState,
     reducers: {
+        addChannel: (state, action) => {
+            state.channels.push(action.payload)
+
+            // Set first loaded channel as currenty active channel
+            if (state.channels.length === 1) {
+                state.currentChannel = state.channels[0]
+            }
+        },
         setChannels: (state, action) => {
             // Get property value as a channelInfo object
             // Firebase return object with channelId as property name
@@ -191,11 +202,19 @@ const channelSlice = createSlice({
             state.notifications[channelId] = notifications
         },
         setChannelMessageCount: (state, action) => {
-            state.messageCount = action.payload
+            if (action.payload) {
+                state.messageCount = action.payload
+            } else {
+                // Avoid undefined
+                state.messageCount = {}
+            }
         },
         setOneChannelMessageCount: (state, action) => {
             const { channelId, messageCount } = action.payload
             state.messageCount[channelId] = messageCount
+        },
+        setIsDirectChannel: (state, action) => {
+            state.isDirectChannel = action.payload
         },
         clearOneChannelNotifications: (state, action) => {
             const { channelId } = action.payload
@@ -203,24 +222,6 @@ const channelSlice = createSlice({
         },
         clearChannels: (state) => {
             state.channels = []
-        },
-        addChannel: (state, action) => {
-            state.channels.push(action.payload)
-
-            // Set first loaded channel as currenty active channel
-            if (state.channels.length === 1) {
-                state.currentChannel = state.channels[0]
-            }
-        },
-        setIsDirectChannel: (state, action) => {
-            state.isDirectChannel = action.payload
-        },
-        setMessageCount: (state, action) => {
-            if (action.payload) {
-                state.messageCount = action.payload
-            } else {
-                state.messageCount = {}
-            }
         },
     },
     extraReducers: (builder) => {
@@ -235,7 +236,6 @@ export const {
     clearChannels,
     addChannel,
     setIsDirectChannel,
-    setMessageCount,
     setChannelNotifications,
     setChannelMessageCount,
     setOneChannelMessageCount,
@@ -255,5 +255,8 @@ export const selectIsDirectChannel = (state: RootState) =>
 
 export const selectChannelNotifications = (state: RootState) =>
     state.channels.notifications
+
+export const selectChannelMessageCount = (state: RootState) =>
+    state.channels.messageCount
 
 export default channelSlice.reducer
