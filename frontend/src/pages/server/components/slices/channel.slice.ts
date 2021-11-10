@@ -5,6 +5,11 @@ import { v4 as uuid } from 'uuid'
 import { ref, set } from '@firebase/database'
 import { UserInfo } from 'pages/auth/components/auth.slice'
 import { ThunkState, Undefinable } from 'types/commonType'
+import {
+    clearOneChannelNotifications,
+    setChannelNotifications,
+    setOneChannelMessageCount,
+} from './notification.slice'
 
 export interface ChannelInfo {
     id: string
@@ -26,16 +31,15 @@ export interface ChannelIdAsKeyObject {
     [channelId: string]: number
 }
 
-interface channelSliceInitialState {
+interface ChannelSliceInitialState {
     channels: ChannelInfo[]
     channelError: any
     currentChannel: ChannelInfo
     isDirectChannel: boolean
-    messageCount: ChannelIdAsKeyObject
-    notifications: ChannelIdAsKeyObject
+    starred: ChannelInfo[]
 }
 
-const initalState: channelSliceInitialState = {
+const initalState: ChannelSliceInitialState = {
     channels: [],
     channelError: '',
     currentChannel: {
@@ -43,8 +47,7 @@ const initalState: channelSliceInitialState = {
         name: '',
     },
     isDirectChannel: false,
-    messageCount: {},
-    notifications: {},
+    starred: [],
 }
 
 const addChannelToDatabase = async ({
@@ -94,6 +97,16 @@ export const addNewChannel = createAsyncThunk<
     await addChannelCountToDatabase(channelInfo)
 })
 
+export const starSelectedChannel = createAsyncThunk<
+    void,
+    ChannelInfo,
+    ThunkState
+>('channels/star', async (channelInfo) => {
+    // Save starred to database
+    const starredChannelRef = ref(database, `starredChannels/${channelInfo.id}`)
+    await set(starredChannelRef, channelInfo)
+})
+
 export const updateNotifications = createAsyncThunk<
     any,
     ChannelIdAsKeyObject,
@@ -105,7 +118,7 @@ export const updateNotifications = createAsyncThunk<
     const channelIds = Object.keys(data)
 
     const currentChannel = appState.channels.currentChannel
-    const messageCount = appState.channels.messageCount
+    const messageCount = appState.notifications.messageCount
 
     // TODO: Clear notifications when change to that channel
     // Check with last messageCount to update notifications
@@ -114,7 +127,6 @@ export const updateNotifications = createAsyncThunk<
         if (channelId !== currentChannel.id) {
             if (messageCount[channelId]) {
                 const notifications = data[channelId] - messageCount[channelId]
-                console.log(notifications)
 
                 dispatch(setChannelNotifications({ channelId, notifications }))
             } else {
@@ -139,8 +151,8 @@ export const setCurrentChannel = createAsyncThunk<
 >('channels/setCurrentChannel', async (data, { getState, dispatch }) => {
     const appState = getState()
 
-    const channelMessageCount = appState.channels.messageCount
-    const channelNotifications = appState.channels.notifications
+    const channelMessageCount = appState.notifications.messageCount
+    const channelNotifications = appState.notifications.notifications
 
     // Update messageCount for currentChannel
     // Message count can be calculated as current messageCount + number of notifications of that channel
@@ -177,14 +189,6 @@ const channelSlice = createSlice({
     name: 'channel',
     initialState: initalState,
     reducers: {
-        addChannel: (state, action) => {
-            state.channels.push(action.payload)
-
-            // Set first loaded channel as currenty active channel
-            if (state.channels.length === 1) {
-                state.currentChannel = state.channels[0]
-            }
-        },
         setChannels: (state, action) => {
             // Get property value as a channelInfo object
             // Firebase return object with channelId as property name
@@ -197,31 +201,36 @@ const channelSlice = createSlice({
                 }
             }
         },
-        setChannelNotifications: (state, action) => {
-            const { channelId, notifications } = action.payload
-            state.notifications[channelId] = notifications
-        },
-        setChannelMessageCount: (state, action) => {
-            if (action.payload) {
-                state.messageCount = action.payload
-            } else {
-                // Avoid undefined
-                state.messageCount = {}
+        addChannel: (state, action) => {
+            state.channels.push(action.payload)
+
+            // Set first loaded channel as currenty active channel
+            if (state.channels.length === 1) {
+                state.currentChannel = state.channels[0]
             }
-        },
-        setOneChannelMessageCount: (state, action) => {
-            const { channelId, messageCount } = action.payload
-            state.messageCount[channelId] = messageCount
-        },
-        setIsDirectChannel: (state, action) => {
-            state.isDirectChannel = action.payload
-        },
-        clearOneChannelNotifications: (state, action) => {
-            const { channelId } = action.payload
-            state.notifications[channelId] = 0
         },
         clearChannels: (state) => {
             state.channels = []
+        },
+
+        setIsDirectChannel: (state, action) => {
+            state.isDirectChannel = action.payload
+        },
+
+        setStarredChannels: (state, action) => {
+            // Get property value as a channelInfo object
+            // Firebase return object with channelId as property name
+            if (action.payload) {
+                state.starred = Object.values(action.payload)
+            }
+        },
+        addStarredChannel: (state, action) => {
+            if (action.payload) {
+                state.starred.push(action.payload)
+            }
+        },
+        clearStarredChannel: (state) => {
+            state.starred = []
         },
     },
     extraReducers: (builder) => {
@@ -236,14 +245,17 @@ export const {
     clearChannels,
     addChannel,
     setIsDirectChannel,
-    setChannelNotifications,
-    setChannelMessageCount,
-    setOneChannelMessageCount,
-    clearOneChannelNotifications,
+    setStarredChannels,
+    addStarredChannel,
+    clearStarredChannel,
 } = channelSlice.actions
 
 // Select all channels
 export const selectChannels = (state: RootState) => state.channels.channels
+
+// Select all starred channels
+export const selectStarredChannels = (state: RootState) =>
+    state.channels.starred
 
 // Select currently selected channel, first channel by default
 export const selectCurrentChannel = (state: RootState) =>
@@ -252,11 +264,5 @@ export const selectCurrentChannel = (state: RootState) =>
 // Select isDirectMessage for logic check
 export const selectIsDirectChannel = (state: RootState) =>
     state.channels.isDirectChannel
-
-export const selectChannelNotifications = (state: RootState) =>
-    state.channels.notifications
-
-export const selectChannelMessageCount = (state: RootState) =>
-    state.channels.messageCount
 
 export default channelSlice.reducer

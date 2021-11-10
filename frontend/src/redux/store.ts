@@ -4,6 +4,7 @@ import authSlice from 'pages/auth/components/auth.slice'
 import channelSlice from 'pages/server/components/slices/channel.slice'
 import messageSlice from 'pages/server/components/slices/channelMessage.slice'
 import channelUsersSlice from 'pages/server/components/slices/channelUsers.slice'
+import notificationSlice from 'pages/server/components/slices/notification.slice'
 
 export const store = configureStore({
     reducer: {
@@ -11,6 +12,7 @@ export const store = configureStore({
         channels: channelSlice,
         messages: messageSlice,
         channelUsers: channelUsersSlice,
+        notifications: notificationSlice,
     },
 })
 

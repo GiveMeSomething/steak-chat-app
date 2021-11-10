@@ -3,12 +3,12 @@ import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { Accordion, Icon, Label, Popup } from 'semantic-ui-react'
 import {
     ChannelInfo,
-    selectChannelNotifications,
     selectChannels,
     selectCurrentChannel,
     setCurrentChannel,
     setIsDirectChannel,
 } from '../slices/channel.slice'
+import { selectChannelNotifications } from '../slices/notification.slice'
 import ChannelOptionsDropdown from './ChannelOptionsDropdown'
 
 interface ChannelsDropdownProps {
@@ -29,6 +29,11 @@ const ChannelsDropdown: FunctionComponent<ChannelsDropdownProps> = ({
     const channels = useAppSelector(selectChannels)
     const currentChannel = useAppSelector(selectCurrentChannel)
     const notifications = useAppSelector(selectChannelNotifications)
+
+    // Handle on dropdown click
+    const handleOnChannelMenuClick = () => {
+        setActive(!isActive)
+    }
 
     // Select current channel
     const handleOnChannelClick = async (channelInfo: ChannelInfo) => {
@@ -56,10 +61,6 @@ const ChannelsDropdown: FunctionComponent<ChannelsDropdownProps> = ({
         event.stopPropagation()
 
         setSelectedChannel(undefined)
-    }
-
-    const handleOnChannelMenuClick = () => {
-        setActive(!isActive)
     }
 
     return (

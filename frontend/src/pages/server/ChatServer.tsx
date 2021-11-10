@@ -8,20 +8,20 @@ import {
     onChildChanged,
     ref,
     set,
+    onValue,
+    query,
+    orderByChild,
 } from '@firebase/database'
 
 import {
     addChannel,
+    addStarredChannel,
     clearChannels,
-    selectChannelMessageCount,
+    clearStarredChannel,
     selectCurrentChannel,
     selectIsDirectChannel,
-    setChannelMessageCount,
     updateNotifications,
 } from './components/slices/channel.slice'
-
-import ServerLayout from './components/ServerLayout'
-import withAuthRedirect from 'components/middleware/withAuthRedirect'
 import {
     addMessage,
     clearMessages,
@@ -33,8 +33,14 @@ import {
     clearChannelUsers,
     updateChannelUser,
 } from './components/slices/channelUsers.slice'
-import { onValue, query, orderByChild } from 'firebase/database'
+import {
+    selectChannelMessageCount,
+    setOneChannelMessageCount,
+} from './components/slices/notification.slice'
 import { selectCurrentUser } from 'pages/auth/components/auth.slice'
+
+import ServerLayout from './components/ServerLayout'
+import withAuthRedirect from 'components/middleware/withAuthRedirect'
 
 interface ChatServerProps {}
 
@@ -53,6 +59,7 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     const channelsRef = ref(database, 'channels')
     const channelUsersRef = ref(database, 'users')
     const messageCountRef = ref(database, 'messageCount')
+    const starredChannelRef = ref(database, 'starredChannels')
 
     // Get messageRef based on public or private channel (direct messages)
     const getMessageRef = (): DatabaseReference => {
@@ -64,8 +71,8 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     }
     const messagesRef = getMessageRef()
 
+    // Get all messages of currentChannel, order by ascending timestamp
     const fetchChannelMessages = () => {
-        // Fetch messages of current channel
         onValue(
             query(messagesRef, orderByChild('timestamp')),
             (data) => {
@@ -80,6 +87,7 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
         )
     }
 
+    // Update message count to database, with user id as key
     const updateUserMessageCount = async () => {
         // Save status to users notifications
         const userMessageCountPath = `users/${currentUser?.uid}/messageCount`
@@ -90,11 +98,14 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
         // Clear channels
         dispatch(clearChannels())
 
+        // Clear currentUser starred channel
+        dispatch(clearStarredChannel())
+
         // Clear users list
         dispatch(clearChannelUsers())
 
         // Get message count from user info fetch
-        dispatch(setChannelMessageCount(currentUser?.messageCount))
+        dispatch(setOneChannelMessageCount(currentUser?.messageCount))
 
         const unsubscribeChannels = onChildAdded(channelsRef, (data) => {
             dispatch(addChannel(data.val()))
@@ -107,7 +118,14 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
             },
         )
 
-        const unsubscribeChannelUsersChanged = onChildChanged(
+        const unsubscribeStarredChannel = onChildAdded(
+            starredChannelRef,
+            (data) => {
+                dispatch(addStarredChannel(data.val()))
+            },
+        )
+
+        const unsubscribeChannelUsersStatusChanged = onChildChanged(
             channelUsersRef,
             (data) => {
                 dispatch(updateChannelUser(data.val()))
@@ -126,7 +144,8 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
         return () => {
             unsubscribeChannels()
             unsubscribeChannelUsers()
-            unsubscribeChannelUsersChanged()
+            unsubscribeStarredChannel()
+            unsubscribeChannelUsersStatusChanged()
             unsubscribeMessageCount()
         }
     }, [])

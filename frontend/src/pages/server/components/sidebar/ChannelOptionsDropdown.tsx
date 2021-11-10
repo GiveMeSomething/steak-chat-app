@@ -1,7 +1,8 @@
 import React, { FunctionComponent } from 'react'
+import { useAppDispatch } from 'redux/hooks'
 import { Dropdown, Icon } from 'semantic-ui-react'
 import { channelOptions } from 'utils/appConst'
-import { ChannelInfo } from '../slices/channel.slice'
+import { ChannelInfo, starSelectedChannel } from '../slices/channel.slice'
 
 interface ChannelOptionsDropdownProps {
     starred: boolean
@@ -12,13 +13,16 @@ interface ChannelOptionsDropdownProps {
 
 const ChannelOptionsDropdown: FunctionComponent<ChannelOptionsDropdownProps> =
     ({ starred, isOpen, selectedChannel, closeDropdown }) => {
+        const dispatch = useAppDispatch()
+
         const dropdownOptions = channelOptions(starred)
 
-        const starSelectedChannel = (
+        const handleOnStarChannel = async (
             event: React.MouseEvent<HTMLDivElement>,
         ) => {
-            console.log(selectedChannel?.id)
-
+            if (selectedChannel) {
+                await dispatch(starSelectedChannel(selectedChannel))
+            }
             closeDropdown(event)
         }
 
@@ -40,7 +44,7 @@ const ChannelOptionsDropdown: FunctionComponent<ChannelOptionsDropdownProps> =
                     <Dropdown.Item
                         {...dropdownOptions[4]}
                         className="hover:text-white hover:bg-slack-sidebar-focus"
-                        onClick={(e) => starSelectedChannel(e)}
+                        onClick={(e) => handleOnStarChannel(e)}
                     />
                     <Dropdown.Divider />
                     <Dropdown.Item {...dropdownOptions[5]} />

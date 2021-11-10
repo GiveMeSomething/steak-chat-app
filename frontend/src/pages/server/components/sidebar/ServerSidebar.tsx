@@ -3,6 +3,7 @@ import { useAppSelector } from 'redux/hooks'
 import { selectCurrentChannel } from '../slices/channel.slice'
 
 import ChannelsDropdown from './ChannelsDropdown'
+import StarredChannelsDropdown from './starred/StarredChannelsDropdown'
 import UsersDropdown from './usersDropdown/UsersDropdown'
 
 interface SidebarProps {
@@ -11,9 +12,10 @@ interface SidebarProps {
 
 const ServerSidebar: FunctionComponent<SidebarProps> = (props) => {
     // Always open channels menu on mount
+    const [isStarredChannelActive, setStarredChannelActive] =
+        useState<boolean>(true)
     const [isChannelsActive, setChannelsActive] = useState<boolean>(true)
     const [isUsersActive, setUsersActive] = useState<boolean>(true)
-
     const currentChannel = useAppSelector(selectCurrentChannel)
 
     const handleOnAddChannelClick = (e: MouseEvent<HTMLDivElement>) => {
@@ -32,6 +34,12 @@ const ServerSidebar: FunctionComponent<SidebarProps> = (props) => {
                 </div>
             </div>
             <div className="py-4">
+                <div className="py-2">
+                    <StarredChannelsDropdown
+                        isActive={isStarredChannelActive}
+                        setActive={setStarredChannelActive}
+                    />
+                </div>
                 <div className="py-2">
                     <ChannelsDropdown
                         onAddClick={handleOnAddChannelClick}
