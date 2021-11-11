@@ -9,7 +9,7 @@ const ServerMessages: FunctionComponent<ServerMessagesProps> = () => {
     const [isAddMediaModalOpen, setAddMediaModalOpen] = useState<boolean>(false)
     return (
         <div className="flex flex-col h-full relative">
-            <div className="">
+            <div>
                 <MessagesHeader />
             </div>
             <MessagesPanel />
