@@ -4,9 +4,9 @@ import { Dropdown, Icon } from 'semantic-ui-react'
 import { channelOptions } from 'utils/appConst'
 import {
     ChannelInfo,
-    starSelectedChannel,
     unStarSelectedChannel,
-} from '../slices/channel.slice'
+    starSelectedChannel,
+} from '../../slices/channel.slice'
 
 interface ChannelOptionsDropdownProps {
     starred: boolean

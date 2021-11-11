@@ -1,9 +1,8 @@
 import React, { FunctionComponent, MouseEvent, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
 import { selectCurrentChannel } from '../slices/channel.slice'
-
-import ChannelsDropdown from './ChannelsDropdown'
-import StarredChannelsDropdown from './starred/StarredChannelsDropdown'
+import ChannelsDropdown from './channelDropdown/ChannelsDropdown'
+import StarredChannelsDropdown from './channelDropdown/StarredChannelsDropdown'
 import UsersDropdown from './usersDropdown/UsersDropdown'
 
 interface SidebarProps {

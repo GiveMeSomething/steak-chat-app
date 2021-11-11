@@ -3,30 +3,36 @@ import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { Accordion, Icon, Label, Popup } from 'semantic-ui-react'
 import {
     ChannelInfo,
-    selectChannels,
     selectCurrentChannel,
-    setCurrentChannel,
     setIsDirectChannel,
-} from '../slices/channel.slice'
-import { selectChannelNotifications } from '../slices/notification.slice'
+    setCurrentChannel,
+} from '../../slices/channel.slice'
+import { selectChannelNotifications } from '../../slices/notification.slice'
 import ChannelOptionsDropdown from './ChannelOptionsDropdown'
 
-interface ChannelsDropdownProps {
-    onAddClick: MouseEventHandler<HTMLDivElement>
+interface ChannelDropdownLayoutProps {
+    onAddClick?: MouseEventHandler<HTMLDivElement>
     isActive: boolean
     setActive: React.Dispatch<React.SetStateAction<boolean>>
+    haveAddNewOption: boolean
+    label: string
+    starred: boolean
+    listItems: ChannelInfo[]
 }
 
-const ChannelsDropdown: FunctionComponent<ChannelsDropdownProps> = ({
+const ChannelDropdownLayout: FunctionComponent<ChannelDropdownLayoutProps> = ({
     onAddClick,
     isActive,
     setActive,
+    haveAddNewOption,
+    label,
+    starred,
+    listItems,
 }) => {
     const [selectedChannel, setSelectedChannel] = useState<ChannelInfo>()
 
     const dispatch = useAppDispatch()
 
-    const channels = useAppSelector(selectChannels)
     const currentChannel = useAppSelector(selectCurrentChannel)
     const notifications = useAppSelector(selectChannelNotifications)
 
@@ -72,32 +78,34 @@ const ChannelsDropdown: FunctionComponent<ChannelsDropdownProps> = ({
                 <div className="flex h-full items-center justify-between px-4 hover:bg-slack-sidebar-hover text-white">
                     <div className="flex items-baseline">
                         <Icon name="dropdown" />
-                        <h4>Channels</h4>
+                        <h4>{label}</h4>
                     </div>
 
-                    <Popup
-                        content="Add new channel"
-                        trigger={
-                            <div
-                                className="flex items-baseline justify-center hover:bg-slack-sidebar-focus leading-6 align-middle px-2 rounded-md cursor-pointer"
-                                onClick={onAddClick}
-                            >
-                                <h3>+</h3>
-                            </div>
-                        }
-                    />
+                    {haveAddNewOption && (
+                        <Popup
+                            content="Add new channel"
+                            trigger={
+                                <div
+                                    className="flex items-baseline justify-center hover:bg-slack-sidebar-focus leading-6 align-middle px-2 rounded-md cursor-pointer"
+                                    onClick={onAddClick}
+                                >
+                                    <h3>+</h3>
+                                </div>
+                            }
+                        />
+                    )}
                 </div>
             </Accordion.Title>
             <Accordion.Content active={isActive}>
-                {Object.values(channels).map((channel) => {
+                {Object.values(listItems).map((channel) => {
                     return (
                         <div
                             className={`flex items-center justify-between h-full w-full pl-4 cursor-pointer font-semibold
-                                    ${
-                                        channel.id === currentChannel.id
-                                            ? 'sidebar-dropdown-item__active'
-                                            : 'sidebar-dropdown-item__inactive'
-                                    }`}
+                                  ${
+                                      channel.id === currentChannel.id
+                                          ? 'sidebar-dropdown-item__active'
+                                          : 'sidebar-dropdown-item__inactive'
+                                  }`}
                             key={channel.id}
                             onClick={() => handleOnChannelClick(channel)}
                             onContextMenu={(e) =>
@@ -121,7 +129,7 @@ const ChannelsDropdown: FunctionComponent<ChannelsDropdownProps> = ({
                                         <>
                                             <div className="z-20">
                                                 <ChannelOptionsDropdown
-                                                    starred={false}
+                                                    starred={starred}
                                                     selectedChannel={channel}
                                                     isOpen={true}
                                                     closeDropdown={
@@ -149,4 +157,4 @@ const ChannelsDropdown: FunctionComponent<ChannelsDropdownProps> = ({
     )
 }
 
-export default ChannelsDropdown
+export default ChannelDropdownLayout
