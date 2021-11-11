@@ -10,7 +10,7 @@ interface MetaPanelInitialState {
 }
 
 const initialState: MetaPanelInitialState = {
-    isOpen: false,
+    isOpen: true,
     currentData: undefined,
 }
 
