@@ -10,6 +10,7 @@ import {
     setChannelNotifications,
     setOneChannelMessageCount,
 } from './notification.slice'
+import { remove } from 'firebase/database'
 
 export interface ChannelInfo {
     id: string
@@ -105,6 +106,16 @@ export const starSelectedChannel = createAsyncThunk<
     // Save starred to database
     const starredChannelRef = ref(database, `starredChannels/${channelInfo.id}`)
     await set(starredChannelRef, channelInfo)
+})
+
+export const unStarSelectedChannel = createAsyncThunk<
+    void,
+    ChannelInfo,
+    ThunkState
+>('channel/unstar', async (channelInfo) => {
+    // Remove starred channel
+    const starredChannelRef = ref(database, `starredChannels/${channelInfo.id}`)
+    await remove(starredChannelRef)
 })
 
 export const updateNotifications = createAsyncThunk<
@@ -224,9 +235,24 @@ const channelSlice = createSlice({
                 state.starred = Object.values(action.payload)
             }
         },
-        addStarredChannel: (state, action) => {
+        addStarredChannel: (state, action: { payload: ChannelInfo }) => {
             if (action.payload) {
+                state.channels = state.channels.filter(
+                    (channel) => channel.id !== action.payload.id,
+                )
+
+                // Add channel to starred dropdown
                 state.starred.push(action.payload)
+            }
+        },
+        unStarChannel: (state, action: { payload: ChannelInfo }) => {
+            if (action.payload) {
+                state.starred = state.starred.filter(
+                    (channel) => channel.id !== action.payload.id,
+                )
+
+                // Add channel to channel dropdown
+                state.channels.push(action.payload)
             }
         },
         clearStarredChannel: (state) => {
@@ -248,6 +274,7 @@ export const {
     setStarredChannels,
     addStarredChannel,
     clearStarredChannel,
+    unStarChannel,
 } = channelSlice.actions
 
 // Select all channels

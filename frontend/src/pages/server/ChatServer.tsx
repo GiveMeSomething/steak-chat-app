@@ -11,6 +11,7 @@ import {
     onValue,
     query,
     orderByChild,
+    onChildRemoved,
 } from '@firebase/database'
 
 import {
@@ -20,6 +21,7 @@ import {
     clearStarredChannel,
     selectCurrentChannel,
     selectIsDirectChannel,
+    unStarChannel,
     updateNotifications,
 } from './components/slices/channel.slice'
 import {
@@ -35,7 +37,7 @@ import {
 } from './components/slices/channelUsers.slice'
 import {
     selectChannelMessageCount,
-    setOneChannelMessageCount,
+    setChannelMessageCount,
 } from './components/slices/notification.slice'
 import { selectCurrentUser } from 'pages/auth/components/auth.slice'
 
@@ -105,7 +107,7 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
         dispatch(clearChannelUsers())
 
         // Get message count from user info fetch
-        dispatch(setOneChannelMessageCount(currentUser?.messageCount))
+        dispatch(setChannelMessageCount(currentUser?.messageCount))
 
         const unsubscribeChannels = onChildAdded(channelsRef, (data) => {
             dispatch(addChannel(data.val()))
@@ -122,6 +124,13 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
             starredChannelRef,
             (data) => {
                 dispatch(addStarredChannel(data.val()))
+            },
+        )
+
+        const unsubscribeUnStarChannel = onChildRemoved(
+            starredChannelRef,
+            (data) => {
+                dispatch(unStarChannel(data.val()))
             },
         )
 
@@ -145,6 +154,7 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
             unsubscribeChannels()
             unsubscribeChannelUsers()
             unsubscribeStarredChannel()
+            unsubscribeUnStarChannel()
             unsubscribeChannelUsersStatusChanged()
             unsubscribeMessageCount()
         }

@@ -2,7 +2,11 @@ import React, { FunctionComponent } from 'react'
 import { useAppDispatch } from 'redux/hooks'
 import { Dropdown, Icon } from 'semantic-ui-react'
 import { channelOptions } from 'utils/appConst'
-import { ChannelInfo, starSelectedChannel } from '../slices/channel.slice'
+import {
+    ChannelInfo,
+    starSelectedChannel,
+    unStarSelectedChannel,
+} from '../slices/channel.slice'
 
 interface ChannelOptionsDropdownProps {
     starred: boolean
@@ -21,7 +25,11 @@ const ChannelOptionsDropdown: FunctionComponent<ChannelOptionsDropdownProps> =
             event: React.MouseEvent<HTMLDivElement>,
         ) => {
             if (selectedChannel) {
-                await dispatch(starSelectedChannel(selectedChannel))
+                if (starred) {
+                    await dispatch(unStarSelectedChannel(selectedChannel))
+                } else {
+                    await dispatch(starSelectedChannel(selectedChannel))
+                }
             }
             closeDropdown(event)
         }
