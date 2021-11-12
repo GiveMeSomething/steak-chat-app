@@ -69,7 +69,12 @@ const MetaPanel: FunctionComponent<MetaPanelProps> = () => {
                     className="leading-none"
                 />
             </div>
-            {metaPanelContent()}
+            <div
+                className="flex flex-1 flex-col overflow-auto"
+                id="member-panel__content"
+            >
+                {metaPanelContent()}
+            </div>
         </div>
     )
 }
