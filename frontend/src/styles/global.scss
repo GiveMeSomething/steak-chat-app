@@ -77,6 +77,10 @@ i .icon {
     max-height: 70vh;
 }
 
+#member-panel__content {
+    max-height: 85vh;
+}
+
 /* Custom basic button styles */
 // Override semantic ui style
 #custom-no-outline-button {
@@ -86,4 +90,13 @@ i .icon {
 // Keep semantic ui style when hover
 #custom-no-outline-button:hover {
     box-shadow: 0 0 0 1px inset !important;
+}
+
+/* Meta panel custom styles */
+.meta-panel__item {
+    @apply hover:bg-gray-200 cursor-pointer;
+}
+
+.meta-panel__danger {
+    @apply hover:bg-red-600 hover:text-white cursor-pointer;
 }

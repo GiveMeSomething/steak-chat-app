@@ -1,4 +1,6 @@
+import { selectCurrentUser } from 'pages/auth/components/auth.slice'
 import React, { FunctionComponent, useState } from 'react'
+import { useAppSelector } from 'redux/hooks'
 import {
     Accordion,
     AccordionTitleProps,
@@ -6,6 +8,7 @@ import {
     Segment,
 } from 'semantic-ui-react'
 import { ChannelInfo } from '../slices/channel.slice'
+import { selectChannelUsers } from '../slices/channelUsers.slice'
 
 interface ChannelDetailPanelProps {
     data: ChannelInfo
@@ -15,6 +18,11 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
     data,
 }) => {
     const [activeIndex, setActiveIndex] = useState<number>(0)
+
+    const currentUser = useAppSelector(selectCurrentUser)
+    const channelUsers = useAppSelector(selectChannelUsers)
+
+    console.log(channelUsers)
 
     const handleClick = (
         e: React.MouseEvent<HTMLDivElement, MouseEvent>,
@@ -28,7 +36,7 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
     }
 
     return (
-        <div className="h-full">
+        <div className="w-full h-full">
             <div className="flex items-center justify-center py-4">
                 <div className="flex items-center">
                     <Icon name="hashtag" size="large" />
@@ -47,12 +55,12 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
                 </Accordion.Title>
                 <Accordion.Content active={activeIndex === 0}>
                     <div className="px-4">
-                        <Segment className="hover:bg-gray-200">
+                        <Segment className="meta-panel__item">
                             <h4 className="font-semibold mb-1">Channel name</h4>
                             <h4>{data.name}</h4>
                         </Segment>
                         <Segment.Group>
-                            <Segment className="hover:bg-gray-200">
+                            <Segment className="meta-panel__item">
                                 <div>
                                     <h4 className="font-semibold mb-1">
                                         Description
@@ -68,7 +76,7 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
                                     )}
                                 </div>
                             </Segment>
-                            <Segment className="hover:bg-gray-200">
+                            <Segment className="meta-panel__item">
                                 <div>
                                     <h4 className="font-semibold mb-1">
                                         Created by
@@ -88,7 +96,7 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
                                     </div>
                                 </div>
                             </Segment>
-                            <Segment className="hover:bg-red-600 hover:text-white">
+                            <Segment className="meta-panel__danger">
                                 <div>
                                     <h4 className="font-semibold">
                                         Leave channel
@@ -106,10 +114,37 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
                 >
                     <Icon name="dropdown" />
                     <Icon name="edit" />
-                    <span className="text-xl ml-1">Top Posters</span>
+                    <span className="text-xl ml-1">Members</span>
                 </Accordion.Title>
                 <Accordion.Content active={activeIndex === 1}>
-                    Something something
+                    <div className="flex flex-col px-4">
+                        <div className="flex items-baseline px-2 py-3 meta-panel__item rounded-md cursor-pointer">
+                            <Icon name="plus" />
+                            <h3 className="leading-6">
+                                <span>Add new user</span>
+                            </h3>
+                        </div>
+                        {channelUsers.map((user) => (
+                            <div
+                                className="flex items-center p-2 meta-panel__item rounded-md"
+                                key={user.uid}
+                            >
+                                <div className="rounded-md max-h-8 w-8 mr-2 relative">
+                                    <img
+                                        src={user.photoUrl}
+                                        className="rounded-md"
+                                    />
+                                </div>
+                                <h3 className="leading-6">
+                                    <span>{`${user.username}${
+                                        user.uid === currentUser?.uid
+                                            ? ' (you)'
+                                            : ''
+                                    }`}</span>
+                                </h3>
+                            </div>
+                        ))}
+                    </div>
                 </Accordion.Content>
 
                 <Accordion.Title
@@ -124,7 +159,7 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
                 <Accordion.Content active={activeIndex === 2}>
                     <div className="px-4">
                         <Segment.Group>
-                            <Segment className="hover:bg-gray-200">
+                            <Segment className="meta-panel__item">
                                 <div>
                                     <h4 className="font-semibold mb-1">
                                         Notifications
@@ -132,7 +167,7 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
                                     <h5>On</h5>
                                 </div>
                             </Segment>
-                            <Segment className="hover:bg-red-600 hover:text-white">
+                            <Segment className="meta-panel__danger">
                                 <div>
                                     <h4 className="font-semibold">
                                         Delete channel
