@@ -1,6 +1,7 @@
 import { selectCurrentUser, UserInfo } from 'pages/auth/components/auth.slice'
 import React, { FunctionComponent } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
+import { Button } from 'semantic-ui-react'
 import { ChannelInfo, selectCurrentChannel } from '../slices/channel.slice'
 import {
     selectMetaPanelCurrentData,
@@ -41,10 +42,10 @@ const MetaPanel: FunctionComponent<MetaPanelProps> = () => {
     const metaPanelContent = () => {
         if (currentMetaPanelData) {
             if (isChannelInfo(currentMetaPanelData)) {
-                return <ChannelDetailPanel />
+                return <ChannelDetailPanel data={currentMetaPanelData} />
             }
             if (isUserInfo(currentMetaPanelData)) {
-                return <UserDetailPanel />
+                return <UserDetailPanel data={currentMetaPanelData} />
             }
         } else {
             return (
@@ -57,8 +58,16 @@ const MetaPanel: FunctionComponent<MetaPanelProps> = () => {
 
     return (
         <div className="flex w-full h-full flex-col border-l-2">
-            <div className="flex items-center px-4 py-3 border-b-2">
-                <h3 className="font-semibold">Channel Details</h3>
+            <div className="flex items-center justify-between px-4 border-b-2 py-2">
+                <h3 className="font-semibold leading-none">Channel Details</h3>
+                <Button
+                    basic
+                    icon="x"
+                    color="red"
+                    id="custom-no-outline-button"
+                    size="tiny"
+                    className="leading-none"
+                />
             </div>
             {metaPanelContent()}
         </div>

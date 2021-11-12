@@ -59,6 +59,7 @@ i .icon {
     @apply text-slack-searchbar;
 }
 
+/* Custom search bar modal */
 #custom__modal .ui.tiny.modal {
     margin: 0 !important;
 }
@@ -74,4 +75,15 @@ i .icon {
 
 #message-panel__content {
     max-height: 70vh;
+}
+
+/* Custom basic button styles */
+// Override semantic ui style
+#custom-no-outline-button {
+    box-shadow: none !important;
+}
+
+// Keep semantic ui style when hover
+#custom-no-outline-button:hover {
+    box-shadow: 0 0 0 1px inset !important;
 }
