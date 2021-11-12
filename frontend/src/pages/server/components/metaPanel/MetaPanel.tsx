@@ -1,7 +1,8 @@
 import { selectCurrentUser, UserInfo } from 'pages/auth/components/auth.slice'
-import React, { FunctionComponent } from 'react'
+import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { Button } from 'semantic-ui-react'
+import { Undefinable } from 'types/commonType'
 import { ChannelInfo, selectCurrentChannel } from '../slices/channel.slice'
 import {
     selectMetaPanelCurrentData,
@@ -12,20 +13,40 @@ import UserDetailPanel from './UserDetailPanel'
 
 interface MetaPanelProps {}
 
+enum ItemDataType {
+    ChannelInfo = 'Channel Details',
+    UserInfo = 'User Details',
+}
+
 const MetaPanel: FunctionComponent<MetaPanelProps> = () => {
+    const [currentDataType, setCurrentDataType] =
+        useState<Undefinable<ItemDataType>>(undefined)
+
     const dispatch = useAppDispatch()
 
     const currentMetaPanelData = useAppSelector(selectMetaPanelCurrentData)
     const currentChannel = useAppSelector(selectCurrentChannel)
     const currentUser = useAppSelector(selectCurrentUser)
 
+    useEffect(() => {
+        if (currentMetaPanelData) {
+            if (isChannelInfo(currentMetaPanelData)) {
+                setCurrentDataType(ItemDataType.ChannelInfo)
+            }
+            if (isUserInfo(currentMetaPanelData)) {
+                setCurrentDataType(ItemDataType.UserInfo)
+            }
+        }
+    }, [currentMetaPanelData])
+
+    // To get mock data, will be removed later
     if (currentUser) {
         // Bypass TS check to run test on channelInfo or currentUser 😅
         console.log(currentChannel)
         console.log(currentUser)
 
-        dispatch(setCurrentData(currentChannel))
-        // dispatch(setCurrentData(currentUser))
+        // dispatch(setCurrentData(currentChannel))
+        dispatch(setCurrentData(currentUser))
     }
 
     // TODO: Move this into util file if used again
@@ -38,45 +59,52 @@ const MetaPanel: FunctionComponent<MetaPanelProps> = () => {
     const isUserInfo = (object: any): object is UserInfo =>
         (object as UserInfo).uid !== undefined
 
-    // Decide meta panel content based on currentData type (ChannelInfo | UserInfo)
-    const metaPanelContent = () => {
-        if (currentMetaPanelData) {
-            if (isChannelInfo(currentMetaPanelData)) {
-                return <ChannelDetailPanel data={currentMetaPanelData} />
+    if (currentMetaPanelData) {
+        // Decide meta panel content based on currentData type (ChannelInfo | UserInfo)
+        const metaPanelContent = () => {
+            switch (currentDataType) {
+                case ItemDataType.ChannelInfo:
+                    return (
+                        <ChannelDetailPanel
+                            data={currentMetaPanelData as ChannelInfo}
+                        />
+                    )
+                case ItemDataType.UserInfo:
+                    return (
+                        <UserDetailPanel
+                            data={currentMetaPanelData as UserInfo}
+                        />
+                    )
+                default:
+                    return null
             }
-            if (isUserInfo(currentMetaPanelData)) {
-                return <UserDetailPanel data={currentMetaPanelData} />
-            }
-        } else {
-            return (
-                <div className="flex items-center justify-center">
-                    Nothing is selected
-                </div>
-            )
         }
-    }
 
-    return (
-        <div className="flex w-full h-full flex-col border-l-2">
-            <div className="flex items-center justify-between px-4 border-b-2 py-2">
-                <h3 className="font-semibold leading-none">Channel Details</h3>
-                <Button
-                    basic
-                    icon="x"
-                    color="red"
-                    id="custom-no-outline-button"
-                    size="tiny"
-                    className="leading-none"
-                />
+        return (
+            <div className="flex w-full h-full flex-col border-l-2">
+                <div className="flex items-center justify-between px-4 border-b-2 py-2">
+                    <h3 className="font-semibold leading-none">
+                        {currentDataType}
+                    </h3>
+                    <Button
+                        basic
+                        icon="x"
+                        color="red"
+                        id="custom-no-outline-button"
+                        size="tiny"
+                    />
+                </div>
+                <div
+                    className="flex flex-1 flex-col overflow-auto"
+                    id="member-panel__content"
+                >
+                    {metaPanelContent()}
+                </div>
             </div>
-            <div
-                className="flex flex-1 flex-col overflow-auto"
-                id="member-panel__content"
-            >
-                {metaPanelContent()}
-            </div>
-        </div>
-    )
+        )
+    } else {
+        return null
+    }
 }
 
 export default MetaPanel
