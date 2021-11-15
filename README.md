@@ -27,6 +27,9 @@ Then you can go to:
   - https://localhost:3000/servers/1 - Example Chat Server
   - Change between channels on sidebar to see its messages
 
+- Live Deploy at
+  - https://steak-chat-app.netlify.app/
+
 ## Repository Structure (top-level directories)
 
 - frontend
