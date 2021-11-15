@@ -11,6 +11,7 @@ import {
     setOneChannelMessageCount,
 } from './notification.slice'
 import { remove } from 'firebase/database'
+import { MESSAGE_COUNT_REF } from 'utils/databaseRef'
 
 export interface ChannelInfo {
     id: string
@@ -67,7 +68,7 @@ const addChannelToDatabase = async ({
 }
 
 const addChannelCountToDatabase = async ({ id }: ChannelInfo) => {
-    await set(ref(database, 'messageCount'), {
+    await set(MESSAGE_COUNT_REF, {
         [id]: 0,
     })
 }
@@ -168,8 +169,6 @@ export const setCurrentChannel = createAsyncThunk<
     // Update messageCount for currentChannel
     // Message count can be calculated as current messageCount + number of notifications of that channel
     if (channelMessageCount && channelNotifications) {
-        console.log(data.id)
-
         // Prevent NaN when a channel does not exist in notifications or messageCount
         const messageCount = channelMessageCount[data.id]
             ? channelMessageCount[data.id]

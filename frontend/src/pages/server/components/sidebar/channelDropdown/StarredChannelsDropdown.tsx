@@ -16,10 +16,10 @@ const StarredChannelsDropdown: FunctionComponent<StarredChannelsDropdownProps> =
             <ChannelDropdownLayout
                 haveAddNewOption={false}
                 isActive={isActive}
-                label="Channels"
+                label="Starred"
                 listItems={starredChannel}
                 setActive={setActive}
-                starred={false}
+                starred={true}
             />
         )
     }

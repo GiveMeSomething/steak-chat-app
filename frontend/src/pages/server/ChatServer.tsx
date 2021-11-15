@@ -43,6 +43,12 @@ import { selectCurrentUser } from 'pages/auth/components/auth.slice'
 
 import ServerLayout from './components/ServerLayout'
 import withAuthRedirect from 'components/middleware/withAuthRedirect'
+import {
+    CHANNELS_REF,
+    MESSAGE_COUNT_REF,
+    STARRED_REF,
+    USERS_REF,
+} from 'utils/databaseRef'
 
 interface ChatServerProps {}
 
@@ -58,20 +64,14 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
 
     const channelMessageCount = useAppSelector(selectChannelMessageCount)
 
-    const channelsRef = ref(database, 'channels')
-    const channelUsersRef = ref(database, 'users')
-    const messageCountRef = ref(database, 'messageCount')
-    const starredChannelRef = ref(database, 'starredChannels')
-
     // Get messageRef based on public or private channel (direct messages)
-    const getMessageRef = (): DatabaseReference => {
+    const messagesRef = ((): DatabaseReference => {
         if (isDirectChannel) {
             return ref(database, `direct-message/${currentChannel.id}/messages`)
         } else {
             return ref(database, `channels/${currentChannel.id}/messages`)
         }
-    }
-    const messagesRef = getMessageRef()
+    })()
 
     // Get all messages of currentChannel, order by ascending timestamp
     const fetchChannelMessages = () => {
@@ -109,39 +109,30 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
         // Get message count from user info fetch
         dispatch(setChannelMessageCount(currentUser?.messageCount))
 
-        const unsubscribeChannels = onChildAdded(channelsRef, (data) => {
+        const unsubscribeChannels = onChildAdded(CHANNELS_REF, (data) => {
             dispatch(addChannel(data.val()))
         })
 
-        const unsubscribeChannelUsers = onChildAdded(
-            channelUsersRef,
-            (data) => {
-                dispatch(addChannelUser(data.val()))
-            },
-        )
-
-        const unsubscribeStarredChannel = onChildAdded(
-            starredChannelRef,
-            (data) => {
-                dispatch(addStarredChannel(data.val()))
-            },
-        )
-
-        const unsubscribeUnStarChannel = onChildRemoved(
-            starredChannelRef,
-            (data) => {
-                dispatch(unStarChannel(data.val()))
-            },
-        )
+        const unsubscribeChannelUsers = onChildAdded(USERS_REF, (data) => {
+            dispatch(addChannelUser(data.val()))
+        })
 
         const unsubscribeChannelUsersStatusChanged = onChildChanged(
-            channelUsersRef,
+            USERS_REF,
             (data) => {
                 dispatch(updateChannelUser(data.val()))
             },
         )
 
-        const unsubscribeMessageCount = onValue(messageCountRef, (data) => {
+        const unsubscribeStarredChannel = onChildAdded(STARRED_REF, (data) => {
+            dispatch(addStarredChannel(data.val()))
+        })
+
+        const unsubscribeUnStarChannel = onChildRemoved(STARRED_REF, (data) => {
+            dispatch(unStarChannel(data.val()))
+        })
+
+        const unsubscribeMessageCount = onValue(MESSAGE_COUNT_REF, (data) => {
             const result = data.val()
             if (result) {
                 dispatch(updateNotifications(data.val()))
