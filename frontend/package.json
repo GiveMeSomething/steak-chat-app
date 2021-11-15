@@ -6,7 +6,8 @@
         "start:dev": "craco start",
         "lint": "eslint \"**/*.{js,jsx,ts,tsx}\"",
         "format": "prettier --write \"**/*.{js,jsx,ts,tsx}\"",
-        "lint:staged": "yarn lint-staged"
+        "lint:staged": "yarn lint-staged",
+        "build": "craco build"
     },
     "dependencies": {
         "@craco/craco": "^6.3.0",
