@@ -17,6 +17,8 @@
         "frontend:start": "yarn workspace frontend start:dev",
         "frontend:lint": "yarn workspace frontend lint && yarn workspace frontend format",
         "prepare": "husky install",
-        "lint:staged": "yarn workspace frontend lint:staged"
+        "lint:staged": "yarn workspace frontend lint:staged",
+        "frontend:build": "yarn workspace frontend build",
+        "build": "yarn frontend:build"
     }
 }
