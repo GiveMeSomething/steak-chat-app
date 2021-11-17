@@ -1,13 +1,18 @@
-import { selectCurrentUser, UserInfo } from 'pages/auth/components/auth.slice'
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
-import { Button } from 'semantic-ui-react'
+
+import { UserInfo } from 'pages/auth/components/auth.slice'
+import { ChannelInfo } from '../slices/channel.slice'
+
 import { Undefinable } from 'types/commonType'
-import { ChannelInfo, selectCurrentChannel } from '../slices/channel.slice'
+
 import {
+    clearCurrentMetaPanelData,
     selectMetaPanelCurrentData,
-    setCurrentData,
+    setMetaPanelOpen,
 } from '../slices/metaPanel.slice'
+import { Button } from 'semantic-ui-react'
+
 import ChannelDetailPanel from './ChannelDetailPanel'
 import UserDetailPanel from './UserDetailPanel'
 
@@ -25,8 +30,6 @@ const MetaPanel: FunctionComponent<MetaPanelProps> = () => {
     const dispatch = useAppDispatch()
 
     const currentMetaPanelData = useAppSelector(selectMetaPanelCurrentData)
-    const currentChannel = useAppSelector(selectCurrentChannel)
-    const currentUser = useAppSelector(selectCurrentUser)
 
     useEffect(() => {
         if (currentMetaPanelData) {
@@ -39,14 +42,10 @@ const MetaPanel: FunctionComponent<MetaPanelProps> = () => {
         }
     }, [currentMetaPanelData])
 
-    // To get mock data, will be removed later
-    if (currentUser) {
-        // Bypass TS check to run test on channelInfo or currentUser 😅
-        console.log(currentChannel)
-        console.log(currentUser)
+    const handleOnCloseClick = () => {
+        dispatch(setMetaPanelOpen(false))
 
-        // dispatch(setCurrentData(currentChannel))
-        dispatch(setCurrentData(currentUser))
+        dispatch(clearCurrentMetaPanelData())
     }
 
     // TODO: Move this into util file if used again
@@ -92,6 +91,7 @@ const MetaPanel: FunctionComponent<MetaPanelProps> = () => {
                         color="red"
                         id="custom-no-outline-button"
                         size="tiny"
+                        onClick={handleOnCloseClick}
                     />
                 </div>
                 <div

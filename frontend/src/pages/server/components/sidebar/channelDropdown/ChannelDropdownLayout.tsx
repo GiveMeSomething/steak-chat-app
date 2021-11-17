@@ -8,7 +8,7 @@ import {
     setCurrentChannel,
 } from '../../slices/channel.slice'
 import { selectChannelNotifications } from '../../slices/notification.slice'
-import ChannelOptionsDropdown from './ChannelOptionsDropdown'
+import ChannelOptionsDropdown from './ChannelOptions'
 
 interface ChannelDropdownLayoutProps {
     onAddClick?: MouseEventHandler<HTMLDivElement>

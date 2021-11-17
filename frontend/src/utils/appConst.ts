@@ -37,7 +37,6 @@ export const channelOptions = (starred: boolean): DropdownOptions[] => [
         key: 'channel/details',
         text: 'Open channel details',
         value: 'channel/details',
-        disabled: true,
     },
     {
         key: 'channel/leave',

@@ -30,7 +30,7 @@ const ProfileDropdown: FunctionComponent<ProfileDropdownProps> = ({
                     </span>
                 }
                 icon={null}
-                id="userSetting"
+                id="user-settings"
             >
                 <Dropdown.Menu className="left text-black">
                     <div className="flex items-center justify-start m-4 pr-32">

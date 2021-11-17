@@ -100,3 +100,8 @@ i .icon {
 .meta-panel__danger {
     @apply hover:bg-red-600 hover:text-white cursor-pointer;
 }
+
+/* Channel options menu styles */
+#channel-settings .item {
+    @apply hover:text-white hover:bg-slack-sidebar-focus;
+}

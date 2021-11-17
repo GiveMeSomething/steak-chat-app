@@ -10,7 +10,7 @@ interface MetaPanelInitialState {
 }
 
 const initialState: MetaPanelInitialState = {
-    isOpen: true,
+    isOpen: false,
     currentData: undefined,
 }
 
@@ -18,14 +18,17 @@ const metaPanelSlice = createSlice({
     name: 'metaPanelState',
     initialState,
     reducers: {
-        setOpen: (state, action: WithPayload<boolean>) => {
+        setMetaPanelOpen: (state, action: WithPayload<boolean>) => {
             state.isOpen = action.payload
         },
-        setCurrentData: (
+        setCurrentMetaPanelData: (
             state,
             action: WithPayload<ChannelInfo | UserInfo>,
         ) => {
             state.currentData = action.payload
+        },
+        clearCurrentMetaPanelData: (state) => {
+            state.currentData = undefined
         },
     },
 })
@@ -36,6 +39,10 @@ export const selectIsMetaPanelOpen = (state: RootState) =>
 export const selectMetaPanelCurrentData = (state: RootState) =>
     state.metaPanelState.currentData
 
-export const { setOpen, setCurrentData } = metaPanelSlice.actions
+export const {
+    setMetaPanelOpen,
+    setCurrentMetaPanelData,
+    clearCurrentMetaPanelData,
+} = metaPanelSlice.actions
 
 export default metaPanelSlice.reducer
