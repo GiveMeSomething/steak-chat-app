@@ -1,9 +1,12 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
+
 import {
+    selectIsSearching,
     selectMessages,
     selectSearchMessages,
 } from '../slices/channelMessage.slice'
+
 import MessageComponent from './MessageComponent'
 
 interface MessagePanelProps {}
@@ -13,6 +16,7 @@ const MessagesPanel: FunctionComponent<MessagePanelProps> = () => {
 
     const messages = useAppSelector(selectMessages)
     const searchMessages = useAppSelector(selectSearchMessages)
+    const isSearching = useAppSelector(selectIsSearching)
 
     const scrollToBottomDiv = useRef<HTMLDivElement>(null)
 
@@ -32,20 +36,29 @@ const MessagesPanel: FunctionComponent<MessagePanelProps> = () => {
 
     // Display messages based on searchMessages and messages existance
     const messagePanelContent = () => {
-        if (searchMessages && searchMessages.length > 0) {
-            // Display search messages if have any
-            return searchMessages.map((message) => (
-                <MessageComponent {...message} key={message.id} />
-            ))
-        } else if (messages && messages.length > 0) {
-            // Else display normal messages
+        // Display search messages if in searching mode and if have any
+        if (isSearching) {
+            if (searchMessages.length > 0) {
+                return searchMessages.map((searchMessage) => (
+                    <MessageComponent
+                        {...searchMessage}
+                        key={searchMessage.id}
+                    />
+                ))
+            } else {
+                return <div>No message found (will make this pretty later)</div>
+            }
+        }
+
+        // Display messages if not in searching mode
+        if (!isSearching && messages && messages.length > 0) {
             return messages.map((message) => (
                 <MessageComponent {...message} key={message.id} />
             ))
-        } else {
-            // Or display welcome message if there are no messages
-            return <div>Display welcome message if there is no message</div>
         }
+
+        // Display welcome message if there are no messages
+        return <div>Display welcome message if there is no message</div>
     }
 
     return (

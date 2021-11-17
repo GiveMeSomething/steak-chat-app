@@ -64,23 +64,23 @@ const SearchModal: FunctionComponent<SearchModalProps> = ({
     }
 
     const onSubmit = (data: FormValues) => {
-        if (messages) {
+        // Display as normal when submit empty value
+        if (!data.keyword || data.keyword.trim().length <= 0) {
+            dispatch(clearSearchMessage())
+        } else if (messages) {
             setIsLoading(true)
 
             const searchMessages = [...messages]
-            const messageRegex = new RegExp(data.keyword, 'gi')
+            const messageRegex = new RegExp(`${data.keyword.trim()}`, 'i')
 
             // Currently only search for messages in currentChannel
-            const result = searchMessages.filter(
-                (message: Message) =>
-                    message.content && message.content.match(messageRegex),
+            const result = searchMessages.filter((message: Message) =>
+                messageRegex.test(message.content),
             )
 
             dispatch(setSearchMessages(result))
 
-            setTimeout(() => {
-                setIsLoading(false)
-            }, 500)
+            setIsLoading(false)
         }
     }
 
