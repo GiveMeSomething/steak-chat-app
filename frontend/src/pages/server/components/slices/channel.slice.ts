@@ -2,16 +2,16 @@ import { RootState } from 'redux/store'
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { database } from 'firebase/firebase'
 import { v4 as uuid } from 'uuid'
-import { ref, set } from '@firebase/database'
+import { ref, set, update } from '@firebase/database'
 import { UserInfo } from 'pages/auth/components/auth.slice'
-import { ThunkState, Undefinable } from 'types/commonType'
+import { ThunkState, Undefinable, WithPayload } from 'types/commonType'
 import {
     clearOneChannelNotifications,
     setChannelNotifications,
     setOneChannelMessageCount,
 } from './notification.slice'
 import { remove } from 'firebase/database'
-import { MESSAGE_COUNT_REF } from 'utils/databaseRef'
+import { CHANNELS_REF, MESSAGE_COUNT_REF } from 'utils/databaseRef'
 
 export interface ChannelInfo {
     id: string
@@ -27,6 +27,11 @@ export interface ChannelInfo {
 interface ChannelInfoPayload {
     channelName: string
     channelDesc: string
+}
+
+interface UpdateChannelInfoPayload {
+    channelId: string
+    content: string // This work with both channelName and channelDesc
 }
 
 export interface ChannelIdAsKeyObject {
@@ -113,7 +118,7 @@ export const unStarSelectedChannel = createAsyncThunk<
     void,
     ChannelInfo,
     ThunkState
->('channel/unstar', async (channelInfo) => {
+>('channels/unstar', async (channelInfo) => {
     // Remove starred channel
     const starredChannelRef = ref(database, `starredChannels/${channelInfo.id}`)
     await remove(starredChannelRef)
@@ -126,26 +131,27 @@ export const updateNotifications = createAsyncThunk<
 >('channels/updateNotifications', async (data, { getState, dispatch }) => {
     const appState = getState()
 
-    // Data is a object which key is channelId and value as messageCount
+    // Remote messageCount with channelId as key
     const channelIds = Object.keys(data)
 
     const currentChannel = appState.channels.currentChannel
     const messageCount = appState.notifications.messageCount
 
-    // TODO: Clear notifications when change to that channel
     // Check with last messageCount to update notifications
     channelIds.forEach((channelId) => {
-        // Skip notification count for currentChannel
+        // Update notifications for non-currentChannel channel based on local messageCount and remote messageCount
         if (channelId !== currentChannel.id) {
+            let notifications
             if (messageCount[channelId]) {
-                const notifications = data[channelId] - messageCount[channelId]
-
-                dispatch(setChannelNotifications({ channelId, notifications }))
+                notifications = data[channelId] - messageCount[channelId] // Use remote messageCount - local messageCount
             } else {
-                const notifications = data[channelId]
-                dispatch(setChannelNotifications({ channelId, notifications }))
+                notifications = data[channelId] // If local messageCount is empty -> notifications = remote messageCount
             }
+
+            // Set channel notifications count
+            dispatch(setChannelNotifications({ channelId, notifications }))
         } else {
+            // Update local messageCount of currentChannel to remote messageCount
             dispatch(
                 setOneChannelMessageCount({
                     channelId: channelId,
@@ -154,6 +160,28 @@ export const updateNotifications = createAsyncThunk<
             )
         }
     })
+})
+
+export const updateChannelName = createAsyncThunk<
+    void,
+    UpdateChannelInfoPayload,
+    ThunkState
+>('channels/updateChannelName', async (data) => {
+    const selectedChannelRef = ref(database, `channels/${data.channelId}`)
+    update(selectedChannelRef, { name: data.content })
+
+    return data
+})
+
+export const updateChannelDesc = createAsyncThunk<
+    void,
+    UpdateChannelInfoPayload,
+    ThunkState
+>('channels/updateChannelDesc', async (data) => {
+    const selectedChannelRef = ref(database, `channels/${data.channelId}`)
+    update(selectedChannelRef, { desc: data.content })
+
+    return data
 })
 
 export const setCurrentChannel = createAsyncThunk<
@@ -234,7 +262,7 @@ const channelSlice = createSlice({
                 state.starred = Object.values(action.payload)
             }
         },
-        addStarredChannel: (state, action: { payload: ChannelInfo }) => {
+        addStarredChannel: (state, action: WithPayload<ChannelInfo>) => {
             if (action.payload) {
                 state.channels = state.channels.filter(
                     (channel) => channel.id !== action.payload.id,
@@ -244,7 +272,7 @@ const channelSlice = createSlice({
                 state.starred.push(action.payload)
             }
         },
-        unStarChannel: (state, action: { payload: ChannelInfo }) => {
+        unStarChannel: (state, action: WithPayload<ChannelInfo>) => {
             if (action.payload) {
                 state.starred = state.starred.filter(
                     (channel) => channel.id !== action.payload.id,
@@ -256,6 +284,36 @@ const channelSlice = createSlice({
         },
         clearStarredChannel: (state) => {
             state.starred = []
+        },
+
+        updateChannelInfo: (state, action: WithPayload<ChannelInfo>) => {
+            if (action.payload) {
+                const updatedChannel = action.payload
+                let isInChannelList = true
+                // Find updatedChannel by id in channels list
+                let selectedChannelIndex
+                selectedChannelIndex = state.channels.findIndex(
+                    (channel) => channel.id === updatedChannel.id,
+                )
+
+                // If not found, continue to find in starred list
+                if (selectedChannelIndex < 0) {
+                    selectedChannelIndex = state.starred.findIndex(
+                        (channel) => channel.id === updatedChannel.id,
+                    )
+                    isInChannelList = false
+                }
+
+                if (selectedChannelIndex < 0) {
+                    state.channelError = 'Updated Channel Not Found'
+                } else {
+                    if (isInChannelList) {
+                        state.channels[selectedChannelIndex] = updatedChannel
+                    } else {
+                        state.starred[selectedChannelIndex] = updatedChannel
+                    }
+                }
+            }
         },
     },
     extraReducers: (builder) => {
@@ -274,6 +332,7 @@ export const {
     addStarredChannel,
     clearStarredChannel,
     unStarChannel,
+    updateChannelInfo,
 } = channelSlice.actions
 
 // Select all channels

@@ -22,6 +22,7 @@ import {
     selectCurrentChannel,
     selectIsDirectChannel,
     unStarChannel,
+    updateChannelInfo,
     updateNotifications,
 } from './components/slices/channel.slice'
 import {
@@ -113,6 +114,13 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
             dispatch(addChannel(data.val()))
         })
 
+        const unsubscribeChannelInfoChanged = onChildChanged(
+            CHANNELS_REF,
+            (data) => {
+                dispatch(updateChannelInfo(data.val()))
+            },
+        )
+
         const unsubscribeChannelUsers = onChildAdded(USERS_REF, (data) => {
             dispatch(addChannelUser(data.val()))
         })
@@ -143,6 +151,7 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
 
         return () => {
             unsubscribeChannels()
+            unsubscribeChannelInfoChanged()
             unsubscribeChannelUsers()
             unsubscribeStarredChannel()
             unsubscribeUnStarChannel()
