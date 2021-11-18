@@ -1,3 +1,4 @@
+import { UserInfo } from 'pages/auth/components/auth.slice'
 import { DropdownOptions } from 'types/semantic-ui-type'
 
 export const MAX_FILE_SIZE_BYTES = 5 * 1000 * 1000
@@ -62,5 +63,30 @@ export const userOptions: DropdownOptions[] = [
         key: 'signout',
         text: 'Sign out',
         value: 'signout',
+    },
+]
+
+export const messageUserOptions = (user: UserInfo): DropdownOptions[] => [
+    {
+        key: 'profile',
+        text: 'View profile',
+        value: 'profile',
+    },
+    {
+        key: 'message',
+        text: `Message ${user.username}`,
+        value: 'settings',
+    },
+    {
+        key: 'copyName',
+        text: 'Copy name',
+        value: 'copyName',
+        disabled: true,
+    },
+    {
+        key: 'copyLink',
+        text: 'Copy link',
+        value: 'copyLink',
+        disabled: true,
     },
 ]

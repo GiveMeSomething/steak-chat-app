@@ -8,7 +8,7 @@ import {
     setCurrentChannel,
 } from '../../slices/channel.slice'
 import { selectChannelNotifications } from '../../slices/notification.slice'
-import ChannelOptionsDropdown from './ChannelOptions'
+import ChannelOptionsDropdown from './ChannelOptionsMenu'
 
 interface ChannelDropdownLayoutProps {
     onAddClick?: MouseEventHandler<HTMLDivElement>
@@ -139,9 +139,7 @@ const ChannelDropdownLayout: FunctionComponent<ChannelDropdownLayoutProps> = ({
                                             </div>
                                             <div
                                                 className="absolute h-screen w-screen top-0 left-0 z-10"
-                                                onClick={(e) =>
-                                                    closeChannelOptions(e)
-                                                }
+                                                onClick={closeChannelOptions}
                                             ></div>
                                         </>
                                     ) : (

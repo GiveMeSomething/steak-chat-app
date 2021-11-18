@@ -27,7 +27,7 @@ const ChannelOptions: FunctionComponent<ChannelOptionsProps> = ({
 }) => {
     const dispatch = useAppDispatch()
 
-    const dropdownOptions = channelOptions(starred)
+    const menuOptions = channelOptions(starred)
 
     const handleOnStarChannel = async (
         event: React.MouseEvent<HTMLDivElement>,
@@ -59,24 +59,24 @@ const ChannelOptions: FunctionComponent<ChannelOptionsProps> = ({
             trigger={<Icon name="ellipsis horizontal" />}
             open={isOpen}
         >
-            {/* Currently hard-coding here */}
-            <Dropdown.Menu className="right text-black text-xl font-light">
-                <Dropdown.Item {...dropdownOptions[0]} />
-                <Dropdown.Item {...dropdownOptions[1]} />
+            {/* TODO: Currently hard-coding here */}
+            <Dropdown.Menu className="top right text-black text-xl font-light">
+                <Dropdown.Item {...menuOptions[0]} />
+                <Dropdown.Item {...menuOptions[1]} />
                 <Dropdown.Divider />
-                <Dropdown.Item {...dropdownOptions[2]} />
-                <Dropdown.Item {...dropdownOptions[3]} />
+                <Dropdown.Item {...menuOptions[2]} />
+                <Dropdown.Item {...menuOptions[3]} />
                 <Dropdown.Divider />
                 <Dropdown.Item
-                    {...dropdownOptions[4]}
+                    {...menuOptions[4]}
                     onClick={(e) => handleOnStarChannel(e)}
                 />
                 <Dropdown.Divider />
                 <Dropdown.Item
-                    {...dropdownOptions[5]}
+                    {...menuOptions[5]}
                     onClick={(e) => handleOnChannelDetail(e)}
                 />
-                <Dropdown.Item {...dropdownOptions[6]} />
+                <Dropdown.Item {...menuOptions[6]} />
             </Dropdown.Menu>
         </Dropdown>
     )
