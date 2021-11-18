@@ -11,7 +11,7 @@ import {
     setOneChannelMessageCount,
 } from './notification.slice'
 import { remove } from 'firebase/database'
-import { CHANNELS_REF, MESSAGE_COUNT_REF } from 'utils/databaseRef'
+import { MESSAGE_COUNT_REF } from 'utils/databaseRef'
 
 export interface ChannelInfo {
     id: string
@@ -163,18 +163,18 @@ export const updateNotifications = createAsyncThunk<
 })
 
 export const updateChannelName = createAsyncThunk<
-    void,
+    UpdateChannelInfoPayload,
     UpdateChannelInfoPayload,
     ThunkState
 >('channels/updateChannelName', async (data) => {
     const selectedChannelRef = ref(database, `channels/${data.channelId}`)
-    update(selectedChannelRef, { name: data.content })
+    await update(selectedChannelRef, { name: data.content })
 
     return data
 })
 
 export const updateChannelDesc = createAsyncThunk<
-    void,
+    UpdateChannelInfoPayload,
     UpdateChannelInfoPayload,
     ThunkState
 >('channels/updateChannelDesc', async (data) => {

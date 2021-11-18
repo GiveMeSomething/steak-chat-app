@@ -2,6 +2,9 @@ import { UserInfo } from 'pages/auth/components/auth.slice'
 import { ChannelInfo } from 'pages/server/components/slices/channel.slice'
 import { CHANNEL_NAME_SEPARATOR } from './appConst'
 
+export const formatChannelName = (channelName: string) =>
+    channelName.trim().replaceAll(' ', '-').toLowerCase()
+
 export const getDirectChannelId = (currentUserId: string, userId: string) => {
     if (currentUserId) {
         // Create direct channel id based on userId and currentUser

@@ -7,6 +7,8 @@ import {
     Icon,
     Segment,
 } from 'semantic-ui-react'
+import UpdateChannelDescModal from '../modal/UpdateChannelDescModal'
+import UpdateChannelNameModal from '../modal/UpdateChannelNameModal'
 import { ChannelInfo } from '../slices/channel.slice'
 import { selectChannelUsers } from '../slices/channelUsers.slice'
 
@@ -18,6 +20,10 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
     data,
 }) => {
     const [activeIndex, setActiveIndex] = useState<number>(0)
+    const [isUpdateNameModalOpen, setIsUpdateNameModalOpen] =
+        useState<boolean>(false)
+    const [isUpdateDescModalOpen, setIsUpdateDescModalOpen] =
+        useState<boolean>(false)
 
     const currentUser = useAppSelector(selectCurrentUser)
     const channelUsers = useAppSelector(selectChannelUsers)
@@ -33,6 +39,14 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
         // Make sure only one open at a time
         const newIndex = activeIndex === index ? -1 : (index as number)
         setActiveIndex(newIndex)
+    }
+
+    const handleOnChannelNameClick = () => {
+        setIsUpdateNameModalOpen(true)
+    }
+
+    const handleOnChannelDescClick = () => {
+        setIsUpdateDescModalOpen(true)
     }
 
     return (
@@ -55,12 +69,18 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
                 </Accordion.Title>
                 <Accordion.Content active={activeIndex === 0}>
                     <div className="px-4">
-                        <Segment className="meta-panel__item">
+                        <Segment
+                            className="meta-panel__item"
+                            onClick={handleOnChannelNameClick}
+                        >
                             <h4 className="font-semibold mb-1">Channel name</h4>
                             <h4>{data.name}</h4>
                         </Segment>
                         <Segment.Group>
-                            <Segment className="meta-panel__item">
+                            <Segment
+                                className="meta-panel__item"
+                                onClick={handleOnChannelDescClick}
+                            >
                                 <div>
                                     <h4 className="font-semibold mb-1">
                                         Description
@@ -178,6 +198,16 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
                     </div>
                 </Accordion.Content>
             </Accordion>
+            <UpdateChannelNameModal
+                isOpen={isUpdateNameModalOpen}
+                setOpen={setIsUpdateNameModalOpen}
+                channelInfo={data}
+            />
+            <UpdateChannelDescModal
+                isOpen={isUpdateDescModalOpen}
+                setOpen={setIsUpdateDescModalOpen}
+                channelInfo={data}
+            />
         </div>
     )
 }

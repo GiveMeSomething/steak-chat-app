@@ -4,6 +4,10 @@ import { DropdownOptions } from 'types/semantic-ui-type'
 export const MAX_FILE_SIZE_BYTES = 5 * 1000 * 1000
 export const CHANNEL_NAME_SEPARATOR = '@'
 
+// This does not contain '-'
+export const BANNED_SPECIAL_CHARACTERS_REGEX =
+    /^[!@#$%^&*()_+=[\]{};':"\\|,.<>/?]*$/
+
 export const channelOptions = (starred: boolean): DropdownOptions[] => [
     {
         key: 'notifications/settings',
