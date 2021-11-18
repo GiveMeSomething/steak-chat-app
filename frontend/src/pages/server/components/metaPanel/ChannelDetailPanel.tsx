@@ -28,8 +28,6 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
     const currentUser = useAppSelector(selectCurrentUser)
     const channelUsers = useAppSelector(selectChannelUsers)
 
-    console.log(channelUsers)
-
     const handleClick = (
         e: React.MouseEvent<HTMLDivElement, MouseEvent>,
         titleProps: AccordionTitleProps,
@@ -87,7 +85,7 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
                                     </h4>
                                     {data.desc !== '' ? (
                                         <h4 className="font-semibold">
-                                            data.desc
+                                            {data.desc}
                                         </h4>
                                     ) : (
                                         <h4 className="font-light text-slack-text-blur">

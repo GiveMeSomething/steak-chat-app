@@ -163,25 +163,21 @@ export const updateNotifications = createAsyncThunk<
 })
 
 export const updateChannelName = createAsyncThunk<
-    UpdateChannelInfoPayload,
+    void,
     UpdateChannelInfoPayload,
     ThunkState
 >('channels/updateChannelName', async (data) => {
     const selectedChannelRef = ref(database, `channels/${data.channelId}`)
     await update(selectedChannelRef, { name: data.content })
-
-    return data
 })
 
 export const updateChannelDesc = createAsyncThunk<
-    UpdateChannelInfoPayload,
+    void,
     UpdateChannelInfoPayload,
     ThunkState
 >('channels/updateChannelDesc', async (data) => {
     const selectedChannelRef = ref(database, `channels/${data.channelId}`)
-    update(selectedChannelRef, { desc: data.content })
-
-    return data
+    await update(selectedChannelRef, { desc: data.content })
 })
 
 export const setCurrentChannel = createAsyncThunk<
@@ -290,6 +286,7 @@ const channelSlice = createSlice({
             if (action.payload) {
                 const updatedChannel = action.payload
                 let isInChannelList = true
+
                 // Find updatedChannel by id in channels list
                 let selectedChannelIndex
                 selectedChannelIndex = state.channels.findIndex(

@@ -1,13 +1,15 @@
-import ErrorMessage from 'components/commons/ErrorMessage'
 import React, { FunctionComponent, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useAppDispatch } from 'redux/hooks'
 
-import { Modal, Button, Icon } from 'semantic-ui-react'
-import { BANNED_SPECIAL_CHARACTERS_REGEX } from 'utils/appConst'
-import { formatChannelName } from 'utils/channelUtil'
 import { ChannelInfo, updateChannelName } from '../slices/channel.slice'
 import { setCurrentMetaPanelData } from '../slices/metaPanel.slice'
+
+import { BANNED_SPECIAL_CHARACTERS_REGEX } from 'utils/appConst'
+import { formatChannelName } from 'utils/channelUtil'
+import { Modal, Button, Icon } from 'semantic-ui-react'
+
+import ErrorMessage from 'components/commons/ErrorMessage'
 import FormInput from './FormInput'
 
 interface UpdateChannelNameModalProps {
@@ -54,21 +56,29 @@ const UpdateChannelNameModal: FunctionComponent<UpdateChannelNameModalProps> =
             const { id } = channelInfo
             const channelName = formatChannelName(data.channelName)
 
-            try {
-                await dispatch(
-                    updateChannelName({ channelId: id, content: channelName }),
-                )
+            // Check if user input the same thing (after format)
+            if (!(channelName === channelInfo.name)) {
+                try {
+                    // Update channel name to Firebase
+                    await dispatch(
+                        updateChannelName({
+                            channelId: id,
+                            content: channelName,
+                        }),
+                    )
 
-                // Update meta panel after update
-                dispatch(setCurrentMetaPanelData(channelInfo))
-            } catch (e: any) {
-                if (e.message) {
-                    setUpdateError(e.message)
-                } else {
-                    setUpdateError('Network Error. Please try again later')
+                    // Update meta panel after update
+                    dispatch(setCurrentMetaPanelData(channelInfo))
+                } catch (e: any) {
+                    if (e.message) {
+                        setUpdateError(e.message)
+                    } else {
+                        setUpdateError('Network Error. Please try again later')
+                    }
                 }
             }
 
+            // Closing modal operations
             reset()
             setIsLoading(false)
             setOpen(false)
@@ -155,7 +165,7 @@ const UpdateChannelNameModal: FunctionComponent<UpdateChannelNameModalProps> =
                         disabled={isLoading}
                     >
                         <Icon name="checkmark" />
-                        Create
+                        Save Changes
                     </Button>
                 </Modal.Actions>
             </Modal>
