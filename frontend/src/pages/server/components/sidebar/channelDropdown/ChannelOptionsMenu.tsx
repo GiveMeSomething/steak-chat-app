@@ -16,14 +16,14 @@ interface ChannelOptionsProps {
     starred: boolean
     selectedChannel: ChannelInfo | undefined
     isOpen: boolean
-    closeDropdown: Function
+    closeMenu: Function
 }
 
 const ChannelOptions: FunctionComponent<ChannelOptionsProps> = ({
     starred,
     isOpen,
     selectedChannel,
-    closeDropdown,
+    closeMenu,
 }) => {
     const dispatch = useAppDispatch()
 
@@ -39,7 +39,7 @@ const ChannelOptions: FunctionComponent<ChannelOptionsProps> = ({
                 await dispatch(starSelectedChannel(selectedChannel))
             }
         }
-        closeDropdown(event)
+        closeMenu(event)
     }
 
     const handleOnChannelDetail = (event: React.MouseEvent<HTMLDivElement>) => {
@@ -49,7 +49,7 @@ const ChannelOptions: FunctionComponent<ChannelOptionsProps> = ({
 
         dispatch(setMetaPanelOpen(true))
 
-        closeDropdown(event)
+        closeMenu(event)
     }
 
     return (

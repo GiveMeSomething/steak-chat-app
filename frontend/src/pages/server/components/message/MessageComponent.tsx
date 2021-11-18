@@ -110,6 +110,8 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
                         <UserOptionsMenu
                             isOpen={isUserOptionsOpen}
                             selectedUser={selectedUser}
+                            openMetaPanel={openUserMetaPanel}
+                            closeMenu={closeMessageUserOptions}
                         />
                         <div
                             className="absolute h-screen w-screen top-0 left-0 z-10"
@@ -134,6 +136,9 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
                             <UserOptionsMenu
                                 isOpen={isUserOptionsOpen}
                                 selectedUser={selectedUser}
+                                openMetaPanel={openUserMetaPanel}
+                                closeMenu={closeMessageUserOptions}
+                                showAtUsername={true}
                             />
                             <div
                                 className="absolute h-screen w-screen top-0 left-0 z-10"

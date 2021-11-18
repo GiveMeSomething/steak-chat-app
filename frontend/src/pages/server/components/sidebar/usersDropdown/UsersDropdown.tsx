@@ -2,9 +2,11 @@ import { selectCurrentUser, UserInfo } from 'pages/auth/components/auth.slice'
 import React, { FunctionComponent } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { Accordion, Icon } from 'semantic-ui-react'
-import { CHANNEL_NAME_SEPARATOR } from 'utils/appConst'
 import {
-    ChannelInfo,
+    generateDirectChannelInfo,
+    getDirectChannelId,
+} from 'utils/channelUtil'
+import {
     selectCurrentChannel,
     setCurrentChannel,
     setIsDirectChannel,
@@ -27,40 +29,17 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
     const channelUsers = useAppSelector(selectChannelUsers)
     const currentChannel = useAppSelector(selectCurrentChannel)
 
-    const getDirectChannelId = (userId: string) => {
+    const directChannelId = (userId: string) => {
         if (currentUser) {
-            // Create direct channel id based on userId and currentUser
-            if (userId < currentUser.uid) {
-                return `${userId}${CHANNEL_NAME_SEPARATOR}${currentUser.uid}`
-            } else {
-                return `${currentUser.uid}${CHANNEL_NAME_SEPARATOR}${userId}`
-            }
+            return getDirectChannelId(currentUser.uid, userId)
         }
 
-        // To avoid returning undefined
-        // If there is no currentUser, the server should redirect to Login page
         return ''
-    }
-
-    const generateDirectChannelInfo = (channelId: string, toUser: UserInfo) => {
-        if (currentUser) {
-            const directChannelInfo: ChannelInfo = {
-                id: channelId,
-                name: toUser.username,
-                createdBy: {
-                    uid: currentUser?.uid,
-                    username: currentUser?.username,
-                    photoUrl: currentUser.photoUrl,
-                },
-            }
-
-            return directChannelInfo
-        }
     }
 
     // Check selected direct channel to highlight it in UI
     const isCurrentUserActive = (userId: string): boolean => {
-        if (currentChannel.id === getDirectChannelId(userId)) {
+        if (currentChannel.id === directChannelId(userId)) {
             return true
         }
 
@@ -74,19 +53,22 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
 
     // Change currentChannel and switch to directChannel mode
     const handleOnChannelUserClick = (user: UserInfo) => {
-        const directChannelId = getDirectChannelId(user.uid)
+        if (currentUser) {
+            const channelId = directChannelId(user.uid)
 
-        // Create channel info to set currentChannel
-        const directChannelInfo = generateDirectChannelInfo(
-            directChannelId,
-            user,
-        )
+            // Create channel info to set currentChannel
+            const directChannelInfo = generateDirectChannelInfo(
+                currentUser,
+                channelId,
+                user.username,
+            )
 
-        // This should be always true
-        // If there is no currentUser (result in no channelInfo), the server should redirect to Login
-        if (directChannelInfo) {
-            dispatch(setIsDirectChannel(true))
-            dispatch(setCurrentChannel(directChannelInfo))
+            // This should be always true
+            // If there is no currentUser (result in no channelInfo), the server should redirect to Login
+            if (directChannelInfo) {
+                dispatch(setIsDirectChannel(true))
+                dispatch(setCurrentChannel(directChannelInfo))
+            }
         }
     }
 

@@ -132,7 +132,7 @@ const ChannelDropdownLayout: FunctionComponent<ChannelDropdownLayoutProps> = ({
                                                     starred={starred}
                                                     selectedChannel={channel}
                                                     isOpen={true}
-                                                    closeDropdown={
+                                                    closeMenu={
                                                         closeChannelOptions
                                                     }
                                                 />
