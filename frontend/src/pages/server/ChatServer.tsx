@@ -135,8 +135,6 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
         const unsubscribeStarredChannel = onChildAdded(
             STARRED_REF(currentUser?.uid),
             (data) => {
-                console.log(data.val())
-
                 dispatch(addStarredChannel(data.val()))
             },
         )
