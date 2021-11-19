@@ -100,7 +100,7 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
                                         Created by
                                     </h4>
                                     <div className="flex items-center">
-                                        <div className="rounded-md max-h-6 w-6 mr-2 relative">
+                                        <div className="rounded-md max-h-6 w-6 mr-2">
                                             <img
                                                 src={data.createdBy?.photoUrl}
                                                 className="rounded-md"
@@ -147,7 +147,7 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
                                 className="flex items-center p-2 meta-panel__item rounded-md"
                                 key={user.uid}
                             >
-                                <div className="rounded-md max-h-8 w-8 mr-2 relative">
+                                <div className="rounded-md max-h-8 w-8 mr-2">
                                     <img
                                         src={user.photoUrl}
                                         className="rounded-md"

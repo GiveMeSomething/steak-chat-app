@@ -108,19 +108,33 @@ export const starSelectedChannel = createAsyncThunk<
     void,
     ChannelInfo,
     ThunkState
->('channels/star', async (channelInfo) => {
-    // Save starred to database
-    const starredChannelRef = ref(database, `starredChannels/${channelInfo.id}`)
-    await set(starredChannelRef, channelInfo)
+>('channels/star', async (channelInfo, { getState }) => {
+    const appState = getState()
+    const currentUser = appState.user.user
+
+    // Save starred channel to starredChannels with userId as key
+    const starredChannelRef = ref(
+        database,
+        `starredChannels/${currentUser?.uid}`,
+    )
+    await set(starredChannelRef, {
+        [channelInfo.id]: true,
+    })
 })
 
 export const unStarSelectedChannel = createAsyncThunk<
     void,
     ChannelInfo,
     ThunkState
->('channels/unstar', async (channelInfo) => {
+>('channels/unstar', async (channelInfo, { getState }) => {
+    const appState = getState()
+    const currentUser = appState.user.user
+
     // Remove starred channel
-    const starredChannelRef = ref(database, `starredChannels/${channelInfo.id}`)
+    const starredChannelRef = ref(
+        database,
+        `starredChannels/${channelInfo.id}/${currentUser?.uid}`,
+    )
     await remove(starredChannelRef)
 })
 
@@ -255,27 +269,52 @@ const channelSlice = createSlice({
             // Get property value as a channelInfo object
             // Firebase return object with channelId as property name
             if (action.payload) {
-                state.starred = Object.values(action.payload)
+                const starredChannels = Object.keys(action.payload)
+
+                // Traverse to remove channel from channels and add to starred
+                let starredCount = 0
+                let channelCount = 0
+                while (starredCount < starredChannels.length) {
+                    if (
+                        state.channels[channelCount].id ===
+                        starredChannels[starredCount]
+                    ) {
+                        state.starred.push(
+                            state.channels.splice(channelCount, 1)[0],
+                        )
+
+                        starredCount++
+                    }
+                    channelCount++
+                }
             }
         },
-        addStarredChannel: (state, action: WithPayload<ChannelInfo>) => {
+        addStarredChannel: (state, action) => {
             if (action.payload) {
-                state.channels = state.channels.filter(
-                    (channel) => channel.id !== action.payload.id,
+                const starredChannelId = Object.keys(action.payload)[0]
+
+                const starredChannelIndex = state.channels.findIndex(
+                    (channel) => channel.id !== starredChannelId,
                 )
 
                 // Add channel to starred dropdown
-                state.starred.push(action.payload)
+                state.starred.push(
+                    state.channels.splice(starredChannelIndex, 1)[0],
+                )
             }
         },
-        unStarChannel: (state, action: WithPayload<ChannelInfo>) => {
+        unStarChannel: (state, action) => {
             if (action.payload) {
-                state.starred = state.starred.filter(
-                    (channel) => channel.id !== action.payload.id,
+                const starredChannelId = Object.keys(action.payload)[0]
+
+                const starredChannelIndex = state.starred.findIndex(
+                    (channel) => channel.id !== starredChannelId,
                 )
 
                 // Add channel to channel dropdown
-                state.channels.push(action.payload)
+                state.channels.push(
+                    state.starred.splice(starredChannelIndex, 1)[0],
+                )
             }
         },
         clearStarredChannel: (state) => {

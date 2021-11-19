@@ -1,3 +1,4 @@
+import ScreenOverlay from 'components/commons/ScreenOverlay'
 import { UserInfo } from 'pages/auth/components/auth.slice'
 import React, { FunctionComponent, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
@@ -113,10 +114,9 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
                             openMetaPanel={openUserMetaPanel}
                             closeMenu={closeMessageUserOptions}
                         />
-                        <div
-                            className="absolute h-screen w-screen top-0 left-0 z-10"
-                            onClick={closeMessageUserOptions}
-                        ></div>
+                        <ScreenOverlay
+                            handleOnClick={closeMessageUserOptions}
+                        />
                     </>
                 ) : null}
             </span>
@@ -140,10 +140,9 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
                                 closeMenu={closeMessageUserOptions}
                                 showAtUsername={true}
                             />
-                            <div
-                                className="absolute h-screen w-screen top-0 left-0 z-10"
-                                onClick={closeMessageUserOptions}
-                            ></div>
+                            <ScreenOverlay
+                                handleOnClick={closeMessageUserOptions}
+                            />
                         </>
                     ) : null}
                     <h5 className="text-slack-text-blur px-2">{messageTime}</h5>

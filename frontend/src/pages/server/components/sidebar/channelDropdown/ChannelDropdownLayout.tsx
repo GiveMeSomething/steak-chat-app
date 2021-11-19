@@ -1,3 +1,4 @@
+import ScreenOverlay from 'components/commons/ScreenOverlay'
 import React, { FunctionComponent, MouseEventHandler, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { Accordion, Icon, Label, Popup } from 'semantic-ui-react'
@@ -137,10 +138,11 @@ const ChannelDropdownLayout: FunctionComponent<ChannelDropdownLayoutProps> = ({
                                                     }
                                                 />
                                             </div>
-                                            <div
-                                                className="absolute h-screen w-screen top-0 left-0 z-10"
-                                                onClick={closeChannelOptions}
-                                            ></div>
+                                            <ScreenOverlay
+                                                handleOnClick={
+                                                    closeChannelOptions
+                                                }
+                                            />
                                         </>
                                     ) : (
                                         <Icon name="ellipsis horizontal" />

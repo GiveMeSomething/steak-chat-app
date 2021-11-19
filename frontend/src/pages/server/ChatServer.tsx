@@ -132,13 +132,21 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
             },
         )
 
-        const unsubscribeStarredChannel = onChildAdded(STARRED_REF, (data) => {
-            dispatch(addStarredChannel(data.val()))
-        })
+        const unsubscribeStarredChannel = onChildAdded(
+            STARRED_REF(currentUser?.uid),
+            (data) => {
+                console.log(data.val())
 
-        const unsubscribeUnStarChannel = onChildRemoved(STARRED_REF, (data) => {
-            dispatch(unStarChannel(data.val()))
-        })
+                dispatch(addStarredChannel(data.val()))
+            },
+        )
+
+        const unsubscribeUnStarChannel = onChildRemoved(
+            STARRED_REF(currentUser?.uid),
+            (data) => {
+                dispatch(unStarChannel(data.val()))
+            },
+        )
 
         const unsubscribeMessageCount = onValue(MESSAGE_COUNT_REF, (data) => {
             const result = data.val()

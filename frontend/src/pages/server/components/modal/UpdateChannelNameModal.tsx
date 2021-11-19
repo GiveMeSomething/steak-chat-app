@@ -1,12 +1,19 @@
-import React, { FunctionComponent, useState } from 'react'
+import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useAppDispatch } from 'redux/hooks'
+import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
-import { ChannelInfo, updateChannelName } from '../slices/channel.slice'
+import {
+    ChannelInfo,
+    selectChannels,
+    selectCurrentChannel,
+    selectStarredChannels,
+    setCurrentChannel,
+    updateChannelName,
+} from '../slices/channel.slice'
 import { setCurrentMetaPanelData } from '../slices/metaPanel.slice'
 
 import { BANNED_SPECIAL_CHARACTERS_REGEX } from 'utils/appConst'
-import { formatChannelName } from 'utils/channelUtil'
+import { findChannelById, formatChannelName } from 'utils/channelUtil'
 import { Modal, Button, Icon } from 'semantic-ui-react'
 
 import ErrorMessage from 'components/commons/ErrorMessage'
@@ -29,6 +36,10 @@ const UpdateChannelNameModal: FunctionComponent<UpdateChannelNameModalProps> =
 
         const dispatch = useAppDispatch()
 
+        const channels = useAppSelector(selectChannels)
+        const starred = useAppSelector(selectStarredChannels)
+        const currentChannel = useAppSelector(selectCurrentChannel)
+
         const noSpecialCharMessage =
             'Channel names can’t contain spaces, periods, or most punctuation.'
 
@@ -36,14 +47,33 @@ const UpdateChannelNameModal: FunctionComponent<UpdateChannelNameModalProps> =
             register,
             formState: { errors },
             setFocus,
+            setValue,
             reset,
             handleSubmit,
         } = useForm<FormValues>()
 
-        const onModalOpen = () => {
-            setFocus('channelName')
-            setOpen(true)
-        }
+        useEffect(() => {
+            if (isOpen) {
+                setValue('channelName', channelInfo.name)
+                setFocus('channelName')
+            }
+        }, [isOpen])
+
+        useEffect(() => {
+            const updatedChannel = findChannelById(
+                channelInfo.id,
+                channels,
+                starred,
+            )
+
+            if (updatedChannel) {
+                dispatch(setCurrentMetaPanelData(updatedChannel))
+
+                if (currentChannel.id === channelInfo.id) {
+                    dispatch(setCurrentChannel(updatedChannel))
+                }
+            }
+        }, [channels, starred])
 
         const onModalClose = () => {
             reset()
@@ -52,8 +82,6 @@ const UpdateChannelNameModal: FunctionComponent<UpdateChannelNameModalProps> =
 
         const onSubmit = async (data: FormValues) => {
             setIsLoading(true)
-
-            const { id } = channelInfo
             const channelName = formatChannelName(data.channelName)
 
             // Check if user input the same thing (after format)
@@ -62,13 +90,10 @@ const UpdateChannelNameModal: FunctionComponent<UpdateChannelNameModalProps> =
                     // Update channel name to Firebase
                     await dispatch(
                         updateChannelName({
-                            channelId: id,
+                            channelId: channelInfo.id,
                             content: channelName,
                         }),
                     )
-
-                    // Update meta panel after update
-                    dispatch(setCurrentMetaPanelData(channelInfo))
                 } catch (e: any) {
                     if (e.message) {
                         setUpdateError(e.message)
@@ -87,7 +112,6 @@ const UpdateChannelNameModal: FunctionComponent<UpdateChannelNameModalProps> =
         return (
             <Modal
                 as="form"
-                onOpen={onModalOpen}
                 onClose={onModalClose}
                 size="tiny"
                 dimmer="blurring"

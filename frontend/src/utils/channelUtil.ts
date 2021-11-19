@@ -39,3 +39,17 @@ export const generateDirectChannelInfo = (
         return directChannelInfo
     }
 }
+
+export const findChannelById = (
+    channelId: string,
+    channels: ChannelInfo[],
+    starred: ChannelInfo[],
+) => {
+    let result = channels.find((channel) => channel.id === channelId)
+
+    if (!result) {
+        result = starred.find((channel) => channel.id === channelId)
+    }
+
+    return result
+}

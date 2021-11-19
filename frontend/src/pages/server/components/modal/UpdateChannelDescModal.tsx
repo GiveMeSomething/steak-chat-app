@@ -1,14 +1,22 @@
-import React, { FunctionComponent, useState } from 'react'
+import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { useAppDispatch } from 'redux/hooks'
+import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
-import { ChannelInfo, updateChannelDesc } from '../slices/channel.slice'
+import {
+    ChannelInfo,
+    selectChannels,
+    selectCurrentChannel,
+    selectStarredChannels,
+    setCurrentChannel,
+    updateChannelDesc,
+} from '../slices/channel.slice'
 import { setCurrentMetaPanelData } from '../slices/metaPanel.slice'
 
 import { Modal, Button, Icon } from 'semantic-ui-react'
 
 import ErrorMessage from 'components/commons/ErrorMessage'
 import FormInput from './FormInput'
+import { findChannelById } from 'utils/channelUtil'
 
 interface UpdateChannelDescModalProps {
     isOpen: boolean
@@ -27,18 +35,44 @@ const UpdateChannelDescModal: FunctionComponent<UpdateChannelDescModalProps> =
 
         const dispatch = useAppDispatch()
 
+        const channels = useAppSelector(selectChannels)
+        const starred = useAppSelector(selectStarredChannels)
+        const currentChannel = useAppSelector(selectCurrentChannel)
+
         const {
             register,
             formState: { errors },
             setFocus,
+            setValue,
             reset,
             handleSubmit,
         } = useForm<FormValues>()
 
-        const onModalOpen = () => {
-            setFocus('channelDesc')
-            setOpen(true)
-        }
+        useEffect(() => {
+            if (isOpen) {
+                setValue(
+                    'channelDesc',
+                    channelInfo.desc ? channelInfo.desc : '',
+                )
+                setFocus('channelDesc')
+            }
+        }, [isOpen])
+
+        useEffect(() => {
+            const updatedChannel = findChannelById(
+                channelInfo.id,
+                channels,
+                starred,
+            )
+
+            if (updatedChannel) {
+                dispatch(setCurrentMetaPanelData(updatedChannel))
+
+                if (currentChannel.id === channelInfo.id) {
+                    dispatch(setCurrentChannel(updatedChannel))
+                }
+            }
+        }, [channels, starred])
 
         const onModalClose = () => {
             reset()
@@ -58,9 +92,6 @@ const UpdateChannelDescModal: FunctionComponent<UpdateChannelDescModalProps> =
                         content: data.channelDesc,
                     }),
                 )
-
-                // Update meta panel after update
-                dispatch(setCurrentMetaPanelData(channelInfo))
             } catch (e: any) {
                 if (e.message) {
                     setUpdateError(e.message)
@@ -78,7 +109,6 @@ const UpdateChannelDescModal: FunctionComponent<UpdateChannelDescModalProps> =
         return (
             <Modal
                 as="form"
-                onOpen={onModalOpen}
                 onClose={onModalClose}
                 size="tiny"
                 dimmer="blurring"
