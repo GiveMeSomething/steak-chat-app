@@ -50,7 +50,26 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
         serverTime,
     )}`
 
-    const openUserMetaPanel = () => {
+    /**
+     * @param positionAt - string - Determine menu position
+     * @param shouldMenuUpward - boolean - Determine menu direction
+     * @return  The corresponding style
+     */
+    const dropdownStyle =
+        (positionAt: Undefinable<RightClickableComponent>) =>
+        (shouldMenuUpward: boolean) => {
+            if (positionAt === 'username') {
+                return 'z-20 -top-6 -left-6'
+            } else {
+                if (shouldMenuUpward) {
+                    return 'z-20 top-6 -left-6'
+                } else {
+                    return 'z-20 top-6 -left-6'
+                }
+            }
+        }
+
+    const handleOpenUserMetaPanel = () => {
         const selectedUser = channelUsers.find(
             (user) => user.uid === createdBy.uid,
         )
@@ -77,7 +96,7 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
         setIsUserOptionsOpen(true)
     }
 
-    const closeMessageUserOptions = (
+    const handleCloseMessageUserOptions = (
         event: React.MouseEvent<HTMLDivElement>,
     ) => {
         event.preventDefault()
@@ -90,7 +109,7 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
         setIsUserOptionsOpen(false)
     }
 
-    const showMenuAtComponent = (
+    const shouldShowMenuAtComponent = (
         componentType: RightClickableComponent,
     ): boolean => isUserOptionsOpen && selectedComponent === componentType
 
@@ -101,21 +120,22 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
                     src={createdBy.photoUrl}
                     alt="avt"
                     className="rounded-md h-12 w-12 cursor-pointer"
-                    onClick={openUserMetaPanel}
+                    onClick={handleOpenUserMetaPanel}
                     onContextMenu={(e) =>
                         handleComponentRightClick(e, 'avatar')
                     }
                 />
-                {selectedUser && showMenuAtComponent('avatar') ? (
+                {selectedUser && shouldShowMenuAtComponent('avatar') ? (
                     <>
                         <UserOptionsMenu
                             isOpen={isUserOptionsOpen}
                             selectedUser={selectedUser}
-                            openMetaPanel={openUserMetaPanel}
-                            closeMenu={closeMessageUserOptions}
+                            openMetaPanel={handleOpenUserMetaPanel}
+                            closeMenu={handleCloseMessageUserOptions}
+                            dropdownStyle={dropdownStyle(selectedComponent)}
                         />
                         <ScreenOverlay
-                            handleOnClick={closeMessageUserOptions}
+                            handleOnClick={handleCloseMessageUserOptions}
                         />
                     </>
                 ) : null}
@@ -124,24 +144,24 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
                 <div className="flex items-baseline pb-1">
                     <h3
                         className="font-bold hover:underline cursor-pointer"
-                        onClick={openUserMetaPanel}
+                        onClick={handleOpenUserMetaPanel}
                         onContextMenu={(e) =>
                             handleComponentRightClick(e, 'username')
                         }
                     >
                         {createdBy.username}
                     </h3>
-                    {selectedUser && showMenuAtComponent('username') ? (
+                    {selectedUser && shouldShowMenuAtComponent('username') ? (
                         <>
                             <UserOptionsMenu
                                 isOpen={isUserOptionsOpen}
                                 selectedUser={selectedUser}
-                                openMetaPanel={openUserMetaPanel}
-                                closeMenu={closeMessageUserOptions}
-                                showAtUsername={true}
+                                openMetaPanel={handleOpenUserMetaPanel}
+                                closeMenu={handleCloseMessageUserOptions}
+                                dropdownStyle={dropdownStyle(selectedComponent)}
                             />
                             <ScreenOverlay
-                                handleOnClick={closeMessageUserOptions}
+                                handleOnClick={handleCloseMessageUserOptions}
                             />
                         </>
                     ) : null}

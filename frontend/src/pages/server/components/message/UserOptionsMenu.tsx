@@ -12,17 +12,17 @@ import { setCurrentChannel, setIsDirectChannel } from '../slices/channel.slice'
 interface UserOptionsMenuProps {
     isOpen: boolean
     selectedUser: UserInfo
-    showAtUsername?: boolean
     openMetaPanel: Function
     closeMenu: Function
+    dropdownStyle: Function
 }
 
 const UserOptionsMenu: FunctionComponent<UserOptionsMenuProps> = ({
     isOpen,
     selectedUser,
-    showAtUsername,
     openMetaPanel,
     closeMenu,
+    dropdownStyle,
 }) => {
     const [shouldMenuUpward, setShouldMenuUpward] = useState<boolean>(false)
     const optionMenuRef = useRef<HTMLDivElement>(null)
@@ -82,25 +82,13 @@ const UserOptionsMenu: FunctionComponent<UserOptionsMenuProps> = ({
         closeMenu(event)
     }
 
-    const dropdownStyle = () => {
-        if (showAtUsername) {
-            return 'z-20 -top-6 -left-6'
-        } else {
-            if (shouldMenuUpward) {
-                return 'z-20 top-6 -left-6'
-            } else {
-                return 'z-20 top-6 -left-6'
-            }
-        }
-    }
-
     return (
         <Dropdown
             icon={null}
             id="message-user-settings"
             open={isOpen}
             upward={shouldMenuUpward}
-            className={dropdownStyle()}
+            className={dropdownStyle(shouldMenuUpward)}
         >
             <Ref innerRef={optionMenuRef}>
                 <Dropdown.Menu>
