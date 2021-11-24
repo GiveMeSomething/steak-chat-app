@@ -57,7 +57,7 @@ const MessagesPanel: FunctionComponent<MessagePanelProps> = () => {
                     </div>
                 </div>
             )}
-            <div className="flex flex-1 flex-col items-start justify-end overflow-auto mb-20 px-4">
+            <div className="flex flex-1 flex-col items-start justify-end overflow-auto overflow-x-hidden mb-20 px-4">
                 <div
                     className="flex flex-col mt-auto"
                     id="message-panel__content"

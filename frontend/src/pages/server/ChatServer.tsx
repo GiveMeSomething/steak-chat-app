@@ -22,6 +22,7 @@ import {
     selectCurrentChannel,
     selectIsDirectChannel,
     unStarChannel,
+    updateChannelInfo,
     updateNotifications,
 } from './components/slices/channel.slice'
 import {
@@ -113,6 +114,13 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
             dispatch(addChannel(data.val()))
         })
 
+        const unsubscribeChannelInfoChanged = onChildChanged(
+            CHANNELS_REF,
+            (data) => {
+                dispatch(updateChannelInfo(data.val()))
+            },
+        )
+
         const unsubscribeChannelUsers = onChildAdded(USERS_REF, (data) => {
             dispatch(addChannelUser(data.val()))
         })
@@ -124,13 +132,19 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
             },
         )
 
-        const unsubscribeStarredChannel = onChildAdded(STARRED_REF, (data) => {
-            dispatch(addStarredChannel(data.val()))
-        })
+        const unsubscribeStarredChannel = onChildAdded(
+            STARRED_REF(currentUser?.uid),
+            (data) => {
+                dispatch(addStarredChannel(data.val()))
+            },
+        )
 
-        const unsubscribeUnStarChannel = onChildRemoved(STARRED_REF, (data) => {
-            dispatch(unStarChannel(data.val()))
-        })
+        const unsubscribeUnStarChannel = onChildRemoved(
+            STARRED_REF(currentUser?.uid),
+            (data) => {
+                dispatch(unStarChannel(data.val()))
+            },
+        )
 
         const unsubscribeMessageCount = onValue(MESSAGE_COUNT_REF, (data) => {
             const result = data.val()
@@ -143,6 +157,7 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
 
         return () => {
             unsubscribeChannels()
+            unsubscribeChannelInfoChanged()
             unsubscribeChannelUsers()
             unsubscribeStarredChannel()
             unsubscribeUnStarChannel()

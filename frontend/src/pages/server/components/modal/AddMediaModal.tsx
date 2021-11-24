@@ -15,6 +15,7 @@ import { extractFileExt } from 'utils/fileUtil'
 
 import FormInput from './FormInput'
 import ProgressBar from './ProgressBar'
+import ErrorMessage from 'components/commons/ErrorMessage'
 
 interface AddMediaModalProps {
     isOpen: boolean
@@ -203,9 +204,7 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
                                     onChange={uploadFile}
                                 />
                                 {uploadError && (
-                                    <p className="text-red-600 font-semibold pt-2">
-                                        {uploadError}
-                                    </p>
+                                    <ErrorMessage content={uploadError} />
                                 )}
                             </div>
                         )

@@ -1,3 +1,4 @@
+import ScreenOverlay from 'components/commons/ScreenOverlay'
 import React, { FunctionComponent, MouseEventHandler, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { Accordion, Icon, Label, Popup } from 'semantic-ui-react'
@@ -8,7 +9,7 @@ import {
     setCurrentChannel,
 } from '../../slices/channel.slice'
 import { selectChannelNotifications } from '../../slices/notification.slice'
-import ChannelOptionsDropdown from './ChannelOptionsDropdown'
+import ChannelOptionsDropdown from './ChannelOptionsMenu'
 
 interface ChannelDropdownLayoutProps {
     onAddClick?: MouseEventHandler<HTMLDivElement>
@@ -132,17 +133,16 @@ const ChannelDropdownLayout: FunctionComponent<ChannelDropdownLayoutProps> = ({
                                                     starred={starred}
                                                     selectedChannel={channel}
                                                     isOpen={true}
-                                                    closeDropdown={
+                                                    closeMenu={
                                                         closeChannelOptions
                                                     }
                                                 />
                                             </div>
-                                            <div
-                                                className="absolute h-screen w-screen top-0 left-0 z-10"
-                                                onClick={(e) =>
-                                                    closeChannelOptions(e)
+                                            <ScreenOverlay
+                                                handleOnClick={
+                                                    closeChannelOptions
                                                 }
-                                            ></div>
+                                            />
                                         </>
                                     ) : (
                                         <Icon name="ellipsis horizontal" />

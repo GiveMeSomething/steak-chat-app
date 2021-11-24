@@ -19,7 +19,7 @@ const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
                 <input
                     id={inputId}
                     ref={ref}
-                    className="w-full px-4 py-2 rounded-md my-2 border-gray-400 border-2"
+                    className="w-full px-4 py-2 rounded-md my-2 border-gray-400 border-2 text-lg"
                     placeholder={inputPlaceholder}
                     {...props}
                 />

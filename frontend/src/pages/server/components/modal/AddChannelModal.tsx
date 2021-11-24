@@ -4,6 +4,8 @@ import { Button, Dropdown, Icon, Modal } from 'semantic-ui-react'
 import { useForm } from 'react-hook-form'
 import { useAppDispatch } from 'redux/hooks'
 import { addNewChannel } from '../slices/channel.slice'
+import { formatChannelName } from 'utils/channelUtil'
+import ErrorMessage from 'components/commons/ErrorMessage'
 
 interface AddChannelModalProps {
     isOpen: boolean
@@ -35,10 +37,7 @@ const AddChannelModal: FunctionComponent<AddChannelModalProps> = ({
 
         // Format channel name
         // e.g. Hello World -> hello-world
-        const channelName = data.channelName
-            .trim()
-            .replaceAll(' ', '-')
-            .toLowerCase()
+        const channelName = formatChannelName(data.channelName)
 
         // Add new channel to firebase's database
         await dispatch(addNewChannel({ ...data, channelName: channelName }))
@@ -53,71 +52,68 @@ const AddChannelModal: FunctionComponent<AddChannelModalProps> = ({
     }
 
     return (
-        <>
-            <Modal
-                as="form"
-                onSubmit={handleSubmit(onSubmit)}
-                onClose={() => setOpen(false)}
-                onOpen={() => setOpen(true)}
-                size="tiny"
-                dimmer="blurring"
-                open={isOpen}
-            >
-                <Modal.Header>
-                    <h1>Create a channel</h1>
-                </Modal.Header>
-                <Modal.Content>
-                    <Modal.Description>
-                        <h3>
-                            Channels are where your team communicates. They’re
-                            best when organized around a topic — #marketing, for
-                            example.
-                        </h3>
-                        <Dropdown.Divider />
-                        <div className="py-4">
-                            <FormInput
-                                {...register('channelName', {
-                                    required: 'This field is required',
-                                    minLength: {
-                                        value: 6,
-                                        message:
-                                            'Channel name must be longer than 6 characters',
-                                    },
-                                })}
-                                label="Channel Name"
-                                type="text"
-                                autoComplete="off"
+        <Modal
+            as="form"
+            onSubmit={handleSubmit(onSubmit)}
+            onClose={() => setOpen(false)}
+            onOpen={() => setOpen(true)}
+            size="tiny"
+            dimmer="blurring"
+            open={isOpen}
+        >
+            <Modal.Header>
+                <h1>Create a channel</h1>
+            </Modal.Header>
+            <Modal.Content>
+                <Modal.Description>
+                    <h3>
+                        Channels are where your team communicates. They’re best
+                        when organized around a topic — #marketing, for example.
+                    </h3>
+                    <Dropdown.Divider />
+                    <div className="py-4">
+                        <FormInput
+                            {...register('channelName', {
+                                required: 'This field is required',
+                                minLength: {
+                                    value: 6,
+                                    message:
+                                        'Channel name must be longer than 6 characters',
+                                },
+                            })}
+                            label="Channel Name"
+                            type="text"
+                            autoComplete="off"
+                        />
+                        {errors.channelName && (
+                            <ErrorMessage
+                                content={errors.channelName.message}
                             />
-                            {errors.channelName && (
-                                <p className="text-red-600 font-semibold pb-2">
-                                    {errors.channelName.message}
-                                </p>
-                            )}
-                            <FormInput
-                                {...register('channelDesc')}
-                                label="Description (optional)"
-                                type="text"
-                                autoComplete="off"
-                            />
-                        </div>
-                    </Modal.Description>
-                </Modal.Content>
-                <Modal.Actions>
-                    <Button color="red" onClick={() => setOpen(false)}>
-                        <Icon name="remove" /> Cancel
-                    </Button>
-                    <Button
-                        type="submit"
-                        color="green"
-                        disabled={isLoading}
-                        loading={isLoading}
-                        className="submit"
-                    >
-                        <Icon name="checkmark" /> Create
-                    </Button>
-                </Modal.Actions>
-            </Modal>
-        </>
+                        )}
+                        <FormInput
+                            {...register('channelDesc')}
+                            label="Description (optional)"
+                            type="text"
+                            autoComplete="off"
+                        />
+                    </div>
+                </Modal.Description>
+            </Modal.Content>
+            <Modal.Actions>
+                <Button color="red" onClick={() => setOpen(false)}>
+                    <Icon name="remove" /> Cancel
+                </Button>
+                <Button
+                    type="submit"
+                    color="green"
+                    disabled={isLoading}
+                    loading={isLoading}
+                    className="submit"
+                >
+                    <Icon name="checkmark" /> Create
+                </Button>
+            </Modal.Actions>
+        </Modal>
     )
 }
 

@@ -5,6 +5,7 @@ import channelSlice from 'pages/server/components/slices/channel.slice'
 import messageSlice from 'pages/server/components/slices/channelMessage.slice'
 import channelUsersSlice from 'pages/server/components/slices/channelUsers.slice'
 import notificationSlice from 'pages/server/components/slices/notification.slice'
+import metaPanelSlice from 'pages/server/components/slices/metaPanel.slice'
 
 export const store = configureStore({
     reducer: {
@@ -13,6 +14,7 @@ export const store = configureStore({
         messages: messageSlice,
         channelUsers: channelUsersSlice,
         notifications: notificationSlice,
+        metaPanelState: metaPanelSlice,
     },
 })
 

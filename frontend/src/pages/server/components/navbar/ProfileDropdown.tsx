@@ -15,7 +15,7 @@ const ProfileDropdown: FunctionComponent<ProfileDropdownProps> = ({
     userStatus,
     handleSignout,
 }) => {
-    const userSettings = userOptions
+    const menuOptions = userOptions
 
     const onSignoutClick = () => {
         handleSignout()
@@ -30,7 +30,7 @@ const ProfileDropdown: FunctionComponent<ProfileDropdownProps> = ({
                     </span>
                 }
                 icon={null}
-                id="userSetting"
+                id="user-settings"
             >
                 <Dropdown.Menu className="left text-black">
                     <div className="flex items-center justify-start m-4 pr-32">
@@ -47,11 +47,11 @@ const ProfileDropdown: FunctionComponent<ProfileDropdownProps> = ({
                         <h4>{userStatus}</h4>
                     </div>
                     <Dropdown.Divider />
-                    <Dropdown.Item {...userSettings[0]} />
-                    <Dropdown.Item {...userSettings[1]} />
+                    <Dropdown.Item {...menuOptions[0]} />
+                    <Dropdown.Item {...menuOptions[1]} />
                     <Dropdown.Divider />
                     <Dropdown.Item
-                        {...userSettings[2]}
+                        {...menuOptions[2]}
                         onClick={onSignoutClick}
                     />
                 </Dropdown.Menu>

@@ -13,6 +13,7 @@ import {
 } from './auth.slice'
 
 import FormInput from './FormInput'
+import ErrorMessage from 'components/commons/ErrorMessage'
 
 interface AuthFormProps {
     label: string
@@ -112,9 +113,7 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
                             type="text"
                         />
                         {errors.email && (
-                            <p className="text-red-600 font-light text-sm">
-                                {errors.email.message}
-                            </p>
+                            <ErrorMessage content={errors.email.message} />
                         )}
                     </div>
                     <div className="flex flex-col items-start justify-start p-2 w-full">
@@ -131,9 +130,7 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
                             type="password"
                         />
                         {errors.password && (
-                            <p className="text-red-600 font-light text-sm">
-                                {errors.password.message}
-                            </p>
+                            <ErrorMessage content={errors.password.message} />
                         )}
                     </div>
                     <div className="flex flex-col items-center justify-center w-full mt-8">
@@ -145,9 +142,7 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
                             {props.label}
                         </button>
                         {requestError && (
-                            <p className="text-red-600 font-light text-sm p-2">
-                                {requestError}
-                            </p>
+                            <ErrorMessage content={requestError} />
                         )}
                     </div>
                 </div>
