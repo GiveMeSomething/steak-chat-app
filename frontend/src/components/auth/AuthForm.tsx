@@ -10,7 +10,7 @@ import {
     signInAndSaveUser,
     removeUserError,
     signUpAndSaveUser,
-} from './auth.slice'
+} from './redux/auth.slice'
 
 import FormInput from './FormInput'
 import ErrorMessage from 'components/commons/ErrorMessage'

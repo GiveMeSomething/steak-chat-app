@@ -40,7 +40,7 @@ import {
     selectChannelMessageCount,
     setChannelMessageCount,
 } from './components/slices/notification.slice'
-import { selectCurrentUser } from 'pages/auth/components/auth.slice'
+import { selectCurrentUser } from 'components/auth/redux/auth.slice'
 
 import ServerLayout from './components/ServerLayout'
 import withAuthRedirect from 'components/middleware/withAuthRedirect'

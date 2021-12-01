@@ -5,7 +5,7 @@ import { Redirect } from 'react-router'
 import { useAppDispatch } from 'redux/hooks'
 import { getAuth } from '@firebase/auth'
 import { firebaseApp } from 'firebase/firebase'
-import { fetchUser } from 'pages/auth/components/auth.slice'
+import { fetchUser } from 'components/auth/redux/auth.slice'
 
 // This will redirect to login page if there are no signed in user
 // Wrap this outside of need-to-authenticate components

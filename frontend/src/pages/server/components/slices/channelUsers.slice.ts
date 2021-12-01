@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import { RootState } from 'redux/store'
 
 import { Undefinable } from 'types/commonType'
-import { UserInfo } from 'pages/auth/components/auth.slice'
+import { UserInfo } from 'components/auth/redux/auth.slice'
 
 interface channelUsersSliceInitialState {
     users: UserInfo[]

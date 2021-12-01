@@ -1,4 +1,4 @@
-import { UserInfo } from 'pages/auth/components/auth.slice'
+import { UserInfo } from 'components/auth/redux/auth.slice'
 import { ChannelInfo } from 'pages/server/components/slices/channel.slice'
 import { CHANNEL_NAME_SEPARATOR } from './appConst'
 

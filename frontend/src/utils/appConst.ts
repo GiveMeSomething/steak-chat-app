@@ -1,4 +1,4 @@
-import { UserInfo } from 'pages/auth/components/auth.slice'
+import { UserInfo } from 'components/auth/redux/auth.slice'
 import { DropdownOptions } from 'types/semantic-ui-type'
 
 export const MAX_FILE_SIZE_BYTES = 5 * 1000 * 1000

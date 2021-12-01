@@ -1,5 +1,5 @@
 import ScreenOverlay from 'components/commons/ScreenOverlay'
-import { UserInfo } from 'pages/auth/components/auth.slice'
+import { UserInfo } from 'components/auth/redux/auth.slice'
 import React, { FunctionComponent, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { Undefinable } from 'types/commonType'
