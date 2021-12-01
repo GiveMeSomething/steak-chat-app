@@ -1,14 +1,13 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
-import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { useForm } from 'react-hook-form'
+import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
-import {
-    clearSearchMessage,
-    Message,
-    selectMessages,
-    setSearchMessages,
-} from 'components/server/redux/channelMessage.slice'
 import { selectCurrentChannel } from '../redux/channel.slice'
+import {
+    selectMessages,
+    clearSearchMessage,
+    setSearchMessages,
+} from '../redux/channelMessage.slice'
 
 import { Modal, Icon, Button, SemanticICONS } from 'semantic-ui-react'
 
@@ -66,23 +65,23 @@ const SearchModal: FunctionComponent<SearchModalProps> = ({
     }
 
     const onSubmit = (data: FormValues) => {
-        if (messages) {
+        // Display as normal when submit empty value
+        if (!data.keyword || data.keyword.trim().length <= 0) {
+            dispatch(clearSearchMessage())
+        } else if (messages) {
             setIsLoading(true)
 
             const searchMessages = [...messages]
-            const messageRegex = new RegExp(data.keyword, 'gi')
+            const messageRegex = new RegExp(`${data.keyword.trim()}`, 'i')
 
             // Currently only search for messages in currentChannel
-            const result = searchMessages.filter(
-                (message: Message) =>
-                    message.content && message.content.match(messageRegex),
+            const result = searchMessages.filter((message) =>
+                messageRegex.test(message.content),
             )
 
             dispatch(setSearchMessages(result))
 
-            setTimeout(() => {
-                setIsLoading(false)
-            }, 500)
+            setIsLoading(false)
         }
     }
 
