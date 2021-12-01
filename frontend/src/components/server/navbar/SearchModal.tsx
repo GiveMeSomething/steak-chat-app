@@ -9,7 +9,9 @@ import {
     setSearchMessages,
 } from '../redux/messages/messages.slice'
 
-import { Modal, Icon, Button, SemanticICONS } from 'semantic-ui-react'
+import { Undefinable } from 'types/commonType'
+import { Modal, Icon } from 'semantic-ui-react'
+import SearchOptionButton from './SearchOptionButton'
 
 interface SearchModalProps {
     isOpen: boolean
@@ -25,14 +27,13 @@ const SearchModal: FunctionComponent<SearchModalProps> = ({
     setOpen,
 }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [searchError, setSearchError] = useState<string>('')
+    const [searchError, setSearchError] = useState<Undefinable<string>>('')
 
     const { handleSubmit, register, setFocus, reset } = useForm<FormValues>()
 
+    const dispatch = useAppDispatch()
     const currentChannel = useAppSelector(selectCurrentChannel)
     const messages = useAppSelector(selectMessages)
-
-    const dispatch = useAppDispatch()
 
     useEffect(() => {
         if (isOpen) {
@@ -46,7 +47,7 @@ const SearchModal: FunctionComponent<SearchModalProps> = ({
                 'There is nothing in this channel. Try adding a new message 😉',
             )
         } else {
-            setSearchError('')
+            setSearchError(undefined)
         }
     }, [messages])
 
@@ -85,87 +86,72 @@ const SearchModal: FunctionComponent<SearchModalProps> = ({
         }
     }
 
-    const CustomSearchButton = ({
-        buttonLabel,
-        iconName,
-    }: {
-        buttonLabel: string
-        iconName: SemanticICONS
-    }) => (
-        <Button icon className="font-light">
-            <Icon className="mx-2" name={iconName} />
-            <span className="px-2">{buttonLabel}</span>
-        </Button>
-    )
-
     return (
-        <>
-            <Modal
-                closeIcon
-                id="custom__modal"
-                as="form"
-                className="rounded-lg"
-                dimmer={false}
-                centered={false}
-                open={isOpen}
-                closeOnDimmerClick={!isLoading}
-                closeOnEscape={!isLoading}
-                onSubmit={handleSubmit(onSubmit)}
-                onClose={onClose}
-            >
-                <Modal.Header>
-                    <div className="flex items-center h-full leading-8">
-                        <Icon
-                            name={isLoading ? 'circle notch' : 'search'}
-                            size="small"
-                            color="grey"
-                            loading={isLoading}
-                        />
-                        <input
-                            {...register('keyword')}
-                            placeholder="Search for messages and users"
-                            className="w-full h-full px-4"
-                            autoComplete="off"
-                        />
-                    </div>
-                </Modal.Header>
-                <Modal.Content>
-                    <Modal.Description>
-                        {
-                            // Display error if have any
-                            searchError && searchError !== '' ? (
-                                <h3 className="py-2">{searchError}</h3>
-                            ) : (
-                                <>
-                                    <h3 className="py-2">{`Searching in #${currentChannel.name}`}</h3>
-                                    <p className="font-light text-slack-text-blur py-2">
-                                        I am looking for ...
-                                    </p>
-                                    <div className="py-2">
-                                        <CustomSearchButton
-                                            buttonLabel="Messages"
-                                            iconName="comments outline"
-                                        />
-                                        <CustomSearchButton
-                                            buttonLabel="Files"
-                                            iconName="file alternate outline"
-                                        />
-                                        <CustomSearchButton
-                                            buttonLabel="Messages"
-                                            iconName="list alternate outline"
-                                        />
-                                        <CustomSearchButton
-                                            buttonLabel="Messages"
-                                            iconName="user outline"
-                                        />
-                                    </div>
-                                </>
-                            )
-                        }
-                    </Modal.Description>
-                </Modal.Content>
-            </Modal>
-        </>
+        <Modal
+            closeIcon
+            id="custom__modal"
+            as="form"
+            className="rounded-lg"
+            dimmer={false}
+            centered={false}
+            open={isOpen}
+            closeOnDimmerClick={!isLoading}
+            closeOnEscape={!isLoading}
+            onSubmit={handleSubmit(onSubmit)}
+            onClose={onClose}
+        >
+            <Modal.Header>
+                <div className="flex items-center h-full leading-8">
+                    <Icon
+                        name={isLoading ? 'circle notch' : 'search'}
+                        size="small"
+                        color="grey"
+                        loading={isLoading}
+                    />
+                    <input
+                        {...register('keyword')}
+                        placeholder="Search for messages and users"
+                        className="w-full h-full px-4"
+                        autoComplete="off"
+                    />
+                </div>
+            </Modal.Header>
+            <Modal.Content>
+                <Modal.Description>
+                    {
+                        // Display error if have any
+                        searchError ? (
+                            <h3 className="py-2">{searchError}</h3>
+                        ) : (
+                            <>
+                                <h3 className="py-2">{`Searching in #${currentChannel.name}`}</h3>
+                                <p className="font-light text-slack-text-blur py-2">
+                                    I am looking for ...
+                                </p>
+                                <div className="py-2">
+                                    <SearchOptionButton
+                                        buttonLabel="Messages"
+                                        iconName="comments outline"
+                                    />
+                                    <SearchOptionButton
+                                        buttonLabel="Files"
+                                        iconName="file alternate outline"
+                                    />
+                                    <SearchOptionButton
+                                        buttonLabel="Messages"
+                                        iconName="list alternate outline"
+                                    />
+                                    <SearchOptionButton
+                                        buttonLabel="Messages"
+                                        iconName="user outline"
+                                    />
+                                </div>
+                            </>
+                        )
+                    }
+                </Modal.Description>
+            </Modal.Content>
+        </Modal>
     )
 }
 
