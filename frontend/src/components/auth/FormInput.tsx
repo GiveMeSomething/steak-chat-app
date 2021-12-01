@@ -8,8 +8,8 @@ interface FormInputProps {
 // Using forwardRef() to pass react-hook-form's ref into component ref
 const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
     (props, ref) => {
-        const inputId = 'user' + props.label
-        const inputPlaceholder = 'Enter ' + props.label.toLowerCase()
+        const inputId = `user ${props.label}`
+        const inputPlaceholder = `Enter ${props.label.toLowerCase()}`
         return (
             <>
                 <label htmlFor={inputId} className="capitalize">

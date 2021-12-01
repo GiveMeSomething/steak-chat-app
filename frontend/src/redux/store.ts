@@ -1,17 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit'
 
 import authSlice from 'components/auth/redux/auth.slice'
-import channelSlice from 'pages/server/components/slices/channel.slice'
-import messageSlice from 'pages/server/components/slices/channelMessage.slice'
-import channelUsersSlice from 'pages/server/components/slices/channelUsers.slice'
-import notificationSlice from 'pages/server/components/slices/notification.slice'
-import metaPanelSlice from 'pages/server/components/slices/metaPanel.slice'
+import channelSlice from 'components/server/redux/channel.slice'
+import channelMessageSlice from 'components/server/redux/channelMessage.slice'
+import channelUsersSlice from 'components/server/redux/channelUsers.slice'
+import metaPanelSlice from 'components/server/redux/metaPanel.slice'
+import notificationSlice from 'components/server/redux/notification.slice'
 
 export const store = configureStore({
     reducer: {
         user: authSlice,
         channels: channelSlice,
-        messages: messageSlice,
+        messages: channelMessageSlice,
         channelUsers: channelUsersSlice,
         notifications: notificationSlice,
         metaPanelState: metaPanelSlice,

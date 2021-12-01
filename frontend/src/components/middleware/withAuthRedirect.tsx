@@ -1,11 +1,10 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import { Redirect } from 'react-router'
-// import { useAppSelector } from 'redux/hooks'
-// import { selectCurrentUser } from 'pages/auth/components/user.slice'
 import { useAppDispatch } from 'redux/hooks'
 import { getAuth } from '@firebase/auth'
 import { firebaseApp } from 'firebase/firebase'
 import { fetchUser } from 'components/auth/redux/auth.thunk'
+import LoadingOverlay from 'components/commons/LoadingOverlay'
 
 // This will redirect to login page if there are no signed in user
 // Wrap this outside of need-to-authenticate components
@@ -53,13 +52,7 @@ function withAuthRedirect<PropsType>(
             )
         } else {
             if (isLoading) {
-                return (
-                    <div className="h-screen w-screen max-h-screen flex items-center justify-center">
-                        <div className="ui active inverted dimmer">
-                            <div className="ui text loader">Loading</div>
-                        </div>
-                    </div>
-                )
+                return <LoadingOverlay />
             } else {
                 return <WrappedComponent {...props} />
             }

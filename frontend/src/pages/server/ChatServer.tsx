@@ -24,25 +24,10 @@ import {
     unStarChannel,
     updateChannelInfo,
     updateNotifications,
-} from './components/slices/channel.slice'
-import {
-    addMessage,
-    clearMessages,
-    clearSearchMessage,
-    setMessages,
-} from './components/slices/channelMessage.slice'
-import {
-    addChannelUser,
-    clearChannelUsers,
-    updateChannelUser,
-} from './components/slices/channelUsers.slice'
-import {
-    selectChannelMessageCount,
-    setChannelMessageCount,
-} from './components/slices/notification.slice'
+} from '../../components/server/redux/channel.slice'
 import { selectCurrentUser } from 'components/auth/redux/auth.slice'
 
-import ServerLayout from './components/ServerLayout'
+import ServerLayout from '../../components/server/ServerLayout'
 import withAuthRedirect from 'components/middleware/withAuthRedirect'
 import {
     CHANNELS_REF,
@@ -50,6 +35,22 @@ import {
     STARRED_REF,
     USERS_REF,
 } from 'utils/databaseRef'
+import LoadingOverlay from 'components/commons/LoadingOverlay'
+import {
+    setMessages,
+    clearMessages,
+    clearSearchMessage,
+    addMessage,
+} from 'components/server/redux/channelMessage.slice'
+import {
+    clearChannelUsers,
+    addChannelUser,
+    updateChannelUser,
+} from 'components/server/redux/channelUsers.slice'
+import {
+    selectChannelMessageCount,
+    setChannelMessageCount,
+} from 'components/server/redux/notification.slice'
 
 interface ChatServerProps {}
 
@@ -98,16 +99,10 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     }
 
     useEffect(() => {
-        // Clear channels
         dispatch(clearChannels())
-
-        // Clear currentUser starred channel
         dispatch(clearStarredChannel())
-
-        // Clear users list
         dispatch(clearChannelUsers())
 
-        // Get message count from user info fetch
         dispatch(setChannelMessageCount(currentUser?.messageCount))
 
         const unsubscribeChannels = onChildAdded(CHANNELS_REF, (data) => {
@@ -189,13 +184,7 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     }, [currentChannel.id])
 
     if (isMessageLoading) {
-        return (
-            <div className="h-screen w-screen max-h-screen flex items-center justify-center">
-                <div className="ui active inverted dimmer">
-                    <div className="ui text loader">Loading</div>
-                </div>
-            </div>
-        )
+        return <LoadingOverlay />
     } else {
         return <ServerLayout />
     }
