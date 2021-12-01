@@ -29,6 +29,7 @@ interface MessagesState {
     messageError: string | 'EMPTY'
     isMessageLoading: boolean
     isDirectMessage: boolean
+    isSearching: boolean
 }
 
 const initialState: MessagesState = {
@@ -37,6 +38,7 @@ const initialState: MessagesState = {
     messageError: '',
     isMessageLoading: false,
     isDirectMessage: false,
+    isSearching: false,
 }
 
 const saveMessageToDatabase = async (
@@ -132,7 +134,11 @@ const messageSlice = createSlice({
 
                 if (messages.length > 0) {
                     state.searchMessages = messages
+                } else {
+                    state.searchMessages = []
                 }
+
+                state.isSearching = true
             }
         },
         addMessage: (state, action) => {
@@ -143,6 +149,8 @@ const messageSlice = createSlice({
         },
         clearSearchMessage: (state) => {
             state.searchMessages = []
+
+            state.isSearching = false
         },
         setMessageLoading: (state, action) => {
             state.isMessageLoading = action.payload
@@ -168,5 +176,8 @@ export const selectMessagesError = (state: RootState) =>
 
 export const selectIsMessageLoading = (state: RootState) =>
     state.messages.isMessageLoading
+
+export const selectIsSearching = (state: RootState) =>
+    state.messages.isSearching
 
 export default messageSlice.reducer
