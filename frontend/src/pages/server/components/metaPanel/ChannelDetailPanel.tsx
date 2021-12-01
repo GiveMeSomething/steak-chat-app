@@ -1,4 +1,4 @@
-import { selectCurrentUser } from 'pages/auth/components/auth.slice'
+import { selectCurrentUser } from 'components/auth/redux/auth.slice'
 import React, { FunctionComponent, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
 import {

@@ -1,4 +1,4 @@
-import { selectCurrentUser, UserInfo } from 'pages/auth/components/auth.slice'
+import { selectCurrentUser, UserInfo } from 'components/auth/redux/auth.slice'
 import React, { FunctionComponent } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { Accordion, Icon } from 'semantic-ui-react'

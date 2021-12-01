@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
-import { UserInfo } from 'pages/auth/components/auth.slice'
+import { UserInfo } from 'components/auth/redux/auth.slice'
 import { ChannelInfo } from '../slices/channel.slice'
 
 import { Undefinable } from 'types/commonType'

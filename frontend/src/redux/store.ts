@@ -1,6 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit'
 
-import authSlice from 'pages/auth/components/auth.slice'
+import authSlice from 'components/auth/redux/auth.slice'
 import channelSlice from 'pages/server/components/slices/channel.slice'
 import messageSlice from 'pages/server/components/slices/channelMessage.slice'
 import channelUsersSlice from 'pages/server/components/slices/channelUsers.slice'

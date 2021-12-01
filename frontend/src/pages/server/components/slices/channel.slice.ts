@@ -3,7 +3,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import { database } from 'firebase/firebase'
 import { v4 as uuid } from 'uuid'
 import { ref, set, update } from '@firebase/database'
-import { UserInfo } from 'pages/auth/components/auth.slice'
+import { UserInfo } from 'components/auth/redux/auth.slice'
 import { ThunkState, Undefinable, WithPayload } from 'types/commonType'
 import {
     clearOneChannelNotifications,

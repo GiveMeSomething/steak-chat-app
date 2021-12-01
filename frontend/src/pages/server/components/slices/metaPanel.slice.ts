@@ -1,5 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { UserInfo } from 'pages/auth/components/auth.slice'
+import { UserInfo } from 'components/auth/redux/auth.slice'
 import { RootState } from 'redux/store'
 import { Undefinable, WithPayload } from 'types/commonType'
 import { ChannelInfo } from './channel.slice'
