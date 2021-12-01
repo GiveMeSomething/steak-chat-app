@@ -6,14 +6,10 @@ import { useAppDispatch } from 'redux/hooks'
 import { firebaseApp } from 'firebase/firebase'
 import { getAuth, onAuthStateChanged } from '@firebase/auth'
 
-import {
-    signInAndSaveUser,
-    removeUserError,
-    signUpAndSaveUser,
-} from './redux/auth.slice'
-
 import FormInput from './FormInput'
 import ErrorMessage from 'components/commons/ErrorMessage'
+import { removeUserError } from './redux/auth.slice'
+import { signup, signin } from './redux/auth.thunk'
 
 interface AuthFormProps {
     label: string
@@ -64,9 +60,9 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
         try {
             let user
             if (props.action === 'signup') {
-                user = await dispatch(signUpAndSaveUser(data)).unwrap()
+                user = await dispatch(signup(data)).unwrap()
             } else {
-                user = await dispatch(signInAndSaveUser(data)).unwrap()
+                user = await dispatch(signin(data)).unwrap()
             }
 
             if (user) {
