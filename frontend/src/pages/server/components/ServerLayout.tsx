@@ -1,14 +1,14 @@
 import React, { FunctionComponent, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
-import { signOutAndRemoveUser } from 'components/auth/redux/auth.slice'
+import { selectIsMetaPanelOpen } from './slices/metaPanel.slice'
+import { signout } from 'components/auth/redux/auth.thunk'
 
 import ServerSidebar from './sidebar/ServerSidebar'
 import ServerNavbar from './navbar/ServerNavbar'
 import AddChannelModal from './modal/AddChannelModal'
 import ServerMessages from './message/ServerMessages'
 import MetaPanel from './metaPanel/MetaPanel'
-import { selectIsMetaPanelOpen } from './slices/metaPanel.slice'
 
 const ServerLayout: FunctionComponent = () => {
     const [isChannelModalOpen, setChannelModalOpen] = useState<boolean>(false)
@@ -17,7 +17,7 @@ const ServerLayout: FunctionComponent = () => {
     const isMetaPanelOpen = useAppSelector(selectIsMetaPanelOpen)
 
     const handleSignout = async () => {
-        await dispatch(signOutAndRemoveUser())
+        await dispatch(signout())
     }
 
     return (
