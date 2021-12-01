@@ -6,17 +6,11 @@ import { selectCurrentChannel } from 'components/server/redux/channel.slice'
 import SearchModal from 'components/server/navbar/SearchModal'
 import ProfileDropdown from './ProfileDropdown'
 
-interface ServerNavbarProps {}
-
-const ServerNavbar: FunctionComponent<ServerNavbarProps> = () => {
+const ServerNavbar: FunctionComponent = () => {
     const [isSearchModalOpen, setIsSearchModalOpen] = useState<boolean>(false)
 
     const currentChannel = useAppSelector(selectCurrentChannel)
 
-    // Open a bigger search 😅
-    const handleOnSearchClick = () => {
-        setIsSearchModalOpen(true)
-    }
     return (
         <div className="w-full bg-slack-navbar py-2">
             <div className="flex items-center justify-center relative">
@@ -25,7 +19,7 @@ const ServerNavbar: FunctionComponent<ServerNavbarProps> = () => {
                     className="bg-slack-searchbar rounded-md w-1/2 text-slack-text-focus col-start-2 absolute placeholder-white px-4 cursor-pointer"
                     placeholder={`Search something in #${currentChannel.name}`}
                     readOnly={true}
-                    onClick={handleOnSearchClick}
+                    onClick={() => setIsSearchModalOpen(true)}
                 />
                 <ProfileDropdown />
             </div>
