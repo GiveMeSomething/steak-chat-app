@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
-import { useForm } from 'react-hook-form'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
-import { Modal, Icon, Button, SemanticICONS } from 'semantic-ui-react'
+import { useForm } from 'react-hook-form'
+
 import {
     clearSearchMessage,
     Message,
@@ -9,6 +9,8 @@ import {
     setSearchMessages,
 } from 'components/server/redux/channelMessage.slice'
 import { selectCurrentChannel } from '../redux/channel.slice'
+
+import { Modal, Icon, Button, SemanticICONS } from 'semantic-ui-react'
 
 interface SearchModalProps {
     isOpen: boolean

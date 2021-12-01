@@ -1,7 +1,5 @@
 import React, { FunctionComponent, useState } from 'react'
-import { useAppDispatch, useAppSelector } from 'redux/hooks'
-
-import { signout } from 'components/auth/redux/auth.thunk'
+import { useAppSelector } from 'redux/hooks'
 
 import ServerSidebar from './sidebar/ServerSidebar'
 import ServerNavbar from './navbar/ServerNavbar'
@@ -12,18 +10,13 @@ import { selectIsMetaPanelOpen } from 'components/server/redux/metaPanel.slice'
 
 const ServerLayout: FunctionComponent = () => {
     const [isChannelModalOpen, setChannelModalOpen] = useState<boolean>(false)
-    const dispatch = useAppDispatch()
 
     const isMetaPanelOpen = useAppSelector(selectIsMetaPanelOpen)
-
-    const handleSignout = async () => {
-        await dispatch(signout())
-    }
 
     return (
         <div className="fullscreen text-white overflow-hidden">
             <div className="flex flex-col w-full h-full">
-                <ServerNavbar handleSignout={handleSignout} />
+                <ServerNavbar />
                 <div className="grid grid-cols-12 w-full h-full">
                     <div className="col-span-2 w-full h-full bg-slack-sidebar-normal">
                         <ServerSidebar
