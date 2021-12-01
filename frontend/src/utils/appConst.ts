@@ -51,25 +51,6 @@ export const channelOptions = (starred: boolean): DropdownOptions[] => [
     },
 ]
 
-export const userOptions: DropdownOptions[] = [
-    {
-        key: 'profile',
-        text: 'Profile',
-        value: 'profile',
-        disabled: true,
-    },
-    {
-        key: 'setting',
-        text: 'Preferences',
-        value: 'settings',
-    },
-    {
-        key: 'signout',
-        text: 'Sign out',
-        value: 'signout',
-    },
-]
-
 export const messageUserOptions = (user: UserInfo): DropdownOptions[] => [
     {
         key: 'profile',
