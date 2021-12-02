@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from 'react'
+
 import MessagesHeader from './MessagesHeader'
 import MessagesInput from './userInput/MessagesInput'
 import MessagesPanel from './MessagesPanel'
@@ -12,7 +13,7 @@ const ServerMessages: FunctionComponent<ServerMessagesProps> = () => {
                 <MessagesHeader />
             </div>
             <MessagesPanel />
-            <div className="absolute -bottom-0 w-full bg-white z-10">
+            <div className="fixed bottom-0 w-full bg-white z-10">
                 <MessagesInput />
             </div>
         </div>

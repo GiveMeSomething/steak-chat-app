@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react'
 import { useAppSelector } from 'redux/hooks'
 
-import { selectCurrentChannel } from '../redux/channel.slice'
+import { selectCurrentChannel } from 'components/server/redux/channel.slice'
 
 import { Icon } from 'semantic-ui-react'
 
