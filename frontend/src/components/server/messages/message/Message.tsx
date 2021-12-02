@@ -1,14 +1,17 @@
-import ScreenOverlay from 'components/commons/ScreenOverlay'
-import { UserInfo } from 'components/auth/redux/auth.slice'
 import React, { FunctionComponent, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
-import { Undefinable } from 'types/commonType'
-import { getDateString, getTimeString } from 'utils/timeUtil'
-import { selectChannelUsers } from '../../redux/channelUsers.slice'
+
+import { UserInfo } from 'components/auth/redux/auth.slice'
+import { selectChannelUsers } from 'components/server/redux/channelUsers.slice'
 import {
     setCurrentMetaPanelData,
     setMetaPanelOpen,
-} from '../../redux/metaPanel.slice'
+} from 'components/server/redux/metaPanel.slice'
+
+import { getDateString, getTimeString } from 'utils/timeUtil'
+import { Undefinable } from 'types/commonType'
+
+import ScreenOverlay from 'components/commons/ScreenOverlay'
 import UserOptionsMenu from './UserOptionsMenu'
 
 interface MessageComponentProps {
@@ -57,7 +60,7 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
      */
     const dropdownStyle =
         (positionAt: Undefinable<RightClickableComponent>) =>
-        (shouldMenuUpward: boolean) => {
+        (shouldMenuUpward: boolean): string => {
             if (positionAt === 'username') {
                 return 'z-20 -top-6 -left-6'
             } else {
@@ -69,7 +72,7 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
             }
         }
 
-    const handleOpenUserMetaPanel = () => {
+    const handleOpenUserMetaPanel = (): void => {
         const selectedUser = channelUsers.find(
             (user) => user.uid === createdBy.uid,
         )
@@ -84,7 +87,7 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
     const handleComponentRightClick = (
         event: React.MouseEvent<HTMLDivElement>,
         type: RightClickableComponent,
-    ) => {
+    ): void => {
         // Prevent open context menu
         event.preventDefault()
 
@@ -98,7 +101,7 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
 
     const handleCloseMessageUserOptions = (
         event: React.MouseEvent<HTMLDivElement>,
-    ) => {
+    ): void => {
         event.preventDefault()
 
         // Stop event bubbling as avatar click (which trigger the meta panel)

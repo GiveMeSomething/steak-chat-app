@@ -1,15 +1,18 @@
-import { selectCurrentUser, UserInfo } from 'components/auth/redux/auth.slice'
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
-import { Dropdown, Ref } from 'semantic-ui-react'
+
+import { selectCurrentUser, UserInfo } from 'components/auth/redux/auth.slice'
+import {
+    setIsDirectChannel,
+    setCurrentChannel,
+} from 'components/server/redux/channel.slice'
+
 import {
     generateDirectChannelInfo,
     getDirectChannelId,
 } from 'utils/channelUtil'
-import {
-    setIsDirectChannel,
-    setCurrentChannel,
-} from '../../redux/channel.slice'
+
+import { Dropdown, Ref } from 'semantic-ui-react'
 
 interface UserOptionsMenuProps {
     isOpen: boolean
@@ -30,7 +33,6 @@ const UserOptionsMenu: FunctionComponent<UserOptionsMenuProps> = ({
     const optionMenuRef = useRef<HTMLDivElement>(null)
 
     const dispatch = useAppDispatch()
-
     const currentUser = useAppSelector(selectCurrentUser)
 
     const menuOptions = {
@@ -50,16 +52,11 @@ const UserOptionsMenu: FunctionComponent<UserOptionsMenuProps> = ({
         },
     }
 
-    const directChannelId = (userId: string) => {
-        if (currentUser) {
-            return getDirectChannelId(currentUser.uid, userId)
-        }
-
-        return ''
+    const directChannelId = (userId: string): string => {
+        return currentUser ? getDirectChannelId(currentUser.uid, userId) : ''
     }
 
     // Calculate remaining space to display menu upward or downward
-    // Run when the ref to menu is set
     useEffect(() => {
         if (optionMenuRef.current) {
             if (
@@ -76,12 +73,14 @@ const UserOptionsMenu: FunctionComponent<UserOptionsMenuProps> = ({
 
     const handleOnViewProfileClick = (
         event: React.MouseEvent<HTMLDivElement>,
-    ) => {
+    ): void => {
         openMetaPanel()
         closeMenu(event)
     }
 
-    const handleOnMessageClick = (event: React.MouseEvent<HTMLDivElement>) => {
+    const handleOnMessageClick = (
+        event: React.MouseEvent<HTMLDivElement>,
+    ): void => {
         if (currentUser) {
             const channelId = directChannelId(selectedUser.uid)
             const directChannelInfo = generateDirectChannelInfo(

@@ -48,6 +48,8 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
     const { handleSubmit, register, reset, setFocus, setValue } =
         useForm<FormValues>()
 
+    const dispatch = useAppDispatch()
+
     useEffect(() => {
         if (isOpen) {
             setValue('desc', currentMessage)
@@ -55,17 +57,9 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
         }
     }, [isOpen])
 
-    const dispatch = useAppDispatch()
-
     // Check file size
-    const isImageValid = (imageFile: Undefinable<File>): boolean => {
-        if (!imageFile) {
-            setUploadError('No image selected')
-            return false
-        }
-
+    const isImageValid = (imageFile: File): boolean => {
         // Validate file size (by bytes)
-        // Here it is limit to 5 * 1000 * 1000 ~ 5MB
         if (imageFile.size >= MAX_FILE_SIZE_BYTES) {
             setUploadError('Image size should not exceed 5MB')
             return false
@@ -160,7 +154,6 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
         }
     }
 
-    // Close modal operations
     const handleClose = () => {
         // Set modal state back to intial state
         setUploadState(undefined)
@@ -187,72 +180,70 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
     }
 
     return (
-        <>
-            <Modal
-                as="form"
-                onSubmit={handleSubmit(onSubmit)}
-                onClose={handleClose}
-                size="tiny"
-                dimmer="blurring"
-                open={isOpen}
-            >
-                <Modal.Header>
-                    <h1>Upload image</h1>
-                </Modal.Header>
-                <Modal.Content>
-                    {
-                        // Show preview image if user upload valid image
-                        // Else show upload image option
-                        mediaUrl && userMedia ? (
-                            <img src={mediaUrl} className="max-h-40" />
-                        ) : (
-                            <div className="flex flex-col items-center justify-center bg-slack-sidebar-blur py-10">
-                                <label
-                                    htmlFor="upload-file"
-                                    className="bg-slack-sidebar-hover text-white px-6 py-2 rounded-md cursor-pointer"
-                                >
-                                    Add your image
-                                </label>
-                                <input
-                                    type="file"
-                                    accept="image/png, image/gif, image/jpeg"
-                                    id="upload-file"
-                                    hidden
-                                    onChange={uploadFileToPreview}
-                                />
-                                {uploadError && (
-                                    <ErrorMessage message={uploadError} />
-                                )}
-                            </div>
-                        )
-                    }
-                    <div className="pt-6">
-                        <FormInput
-                            label="Description (optional)"
-                            type="text"
-                            autoComplete="off"
-                            {...register('desc')}
-                        />
-                    </div>
-                    {uploadState && <ProgressBar progress={uploadProgress} />}
-                </Modal.Content>
-                <Modal.Actions>
-                    <Button color="red" onClick={handleClose}>
-                        <Icon name="remove" /> Cancel
-                    </Button>
-                    <Button
-                        type="submit"
-                        color="green"
-                        disabled={isLoading}
-                        loading={isLoading}
-                        className="submit"
-                    >
-                        <Icon name="checkmark" />
-                        Add
-                    </Button>
-                </Modal.Actions>
-            </Modal>
-        </>
+        <Modal
+            as="form"
+            onSubmit={handleSubmit(onSubmit)}
+            onClose={handleClose}
+            size="tiny"
+            dimmer="blurring"
+            open={isOpen}
+        >
+            <Modal.Header>
+                <h1>Upload image</h1>
+            </Modal.Header>
+            <Modal.Content>
+                {
+                    // Show preview image if user upload valid image
+                    // Else show upload image option
+                    mediaUrl && userMedia ? (
+                        <img src={mediaUrl} className="max-h-40" />
+                    ) : (
+                        <div className="flex flex-col items-center justify-center bg-slack-sidebar-blur py-10">
+                            <label
+                                htmlFor="upload-file"
+                                className="bg-slack-sidebar-hover text-white px-6 py-2 rounded-md cursor-pointer"
+                            >
+                                Add your image
+                            </label>
+                            <input
+                                type="file"
+                                accept="image/png, image/gif, image/jpeg"
+                                id="upload-file"
+                                hidden
+                                onChange={uploadFileToPreview}
+                            />
+                            {uploadError && (
+                                <ErrorMessage message={uploadError} />
+                            )}
+                        </div>
+                    )
+                }
+                <div className="pt-6">
+                    <FormInput
+                        label="Description (optional)"
+                        type="text"
+                        autoComplete="off"
+                        {...register('desc')}
+                    />
+                </div>
+                {uploadState && <ProgressBar progress={uploadProgress} />}
+            </Modal.Content>
+            <Modal.Actions>
+                <Button color="red" onClick={handleClose}>
+                    <Icon name="remove" /> Cancel
+                </Button>
+                <Button
+                    type="submit"
+                    color="green"
+                    disabled={isLoading}
+                    loading={isLoading}
+                    className="submit"
+                >
+                    <Icon name="checkmark" />
+                    Add
+                </Button>
+            </Modal.Actions>
+        </Modal>
     )
 }
 
