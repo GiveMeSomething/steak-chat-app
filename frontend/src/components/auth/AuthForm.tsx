@@ -13,6 +13,7 @@ import { signup, signin } from './redux/auth.thunk'
 
 interface AuthFormProps {
     label: string
+    submitLabel: string
     action: 'signin' | 'signup'
 }
 
@@ -92,7 +93,9 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
             className="flex flex-col items-center justify-center w-full min-h-full"
         >
             <div className="flex justify-center items-center">
-                <h1 className="text-4xl capitalize">{props.label}</h1>
+                <h1 className="text-6xl lg:text-9xl capitalize">
+                    {props.label}
+                </h1>
             </div>
             <div className="container text-xl m-2 flex flex-col items-start justify-start">
                 <div className="bg-white w-full h-full">
@@ -135,7 +138,7 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
                             className="px-10 py-2 rounded-full uppercase text-white bg-fresh-2-500 hover:bg-yellow-700 cursor-pointer disabled:opacity-50"
                             disabled={isLoading}
                         >
-                            {props.label}
+                            {props.submitLabel}
                         </button>
                         {requestError && (
                             <ErrorMessage content={requestError} />

@@ -7,7 +7,11 @@ const Signin = () => {
         <div className="h-screen max-h-screen">
             <div className="grid md:w-1/2 sm:w-full h-full mx-auto">
                 <div className="row-span-1">
-                    <AuthForm label="Sign in" action="signin" />
+                    <AuthForm
+                        label="🥩"
+                        submitLabel="Sign in"
+                        action="signin"
+                    />
                 </div>
                 <div className="flex flex-col items-center justify-center border-t-2 row-span-1 py-4 my-4">
                     <h4 className="font-bold">Don&apos;t have an account?</h4>

@@ -1,8 +1,10 @@
 import React, { FunctionComponent } from 'react'
 
 import { UserInfo } from 'components/auth/redux/auth.slice'
-import { Icon } from 'semantic-ui-react'
+
 import { UserStatus } from 'utils/appEnum'
+
+import { Icon } from 'semantic-ui-react'
 
 interface UsersDropdownItemProps {
     user: UserInfo

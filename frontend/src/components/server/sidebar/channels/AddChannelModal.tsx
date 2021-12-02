@@ -1,10 +1,14 @@
-import FormInput from './FormInput'
 import React, { FunctionComponent, useState } from 'react'
-import { Button, Dropdown, Icon, Modal } from 'semantic-ui-react'
-import { useForm } from 'react-hook-form'
 import { useAppDispatch } from 'redux/hooks'
-import { addNewChannel } from '../redux/channel.slice'
+import { useForm } from 'react-hook-form'
+
+import { addNewChannel } from '../../redux/channel.slice'
+
 import { formatChannelName } from 'utils/channelUtil'
+
+import { Button, Dropdown, Icon, Modal } from 'semantic-ui-react'
+
+import FormInput from 'components/server/modal/FormInput'
 import ErrorMessage from 'components/commons/ErrorMessage'
 
 interface AddChannelModalProps {
@@ -42,6 +46,10 @@ const AddChannelModal: FunctionComponent<AddChannelModalProps> = ({
         // Add new channel to firebase's database
         await dispatch(addNewChannel({ ...data, channelName: channelName }))
 
+        handleClose()
+    }
+
+    const handleClose = () => {
         // Reset form state
         clearErrors()
         reset()
@@ -55,8 +63,7 @@ const AddChannelModal: FunctionComponent<AddChannelModalProps> = ({
         <Modal
             as="form"
             onSubmit={handleSubmit(onSubmit)}
-            onClose={() => setOpen(false)}
-            onOpen={() => setOpen(true)}
+            onClose={handleClose}
             size="tiny"
             dimmer="blurring"
             open={isOpen}

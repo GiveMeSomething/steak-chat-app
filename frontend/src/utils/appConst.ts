@@ -8,49 +8,6 @@ export const CHANNEL_NAME_SEPARATOR = '@'
 export const BANNED_SPECIAL_CHARACTERS_REGEX =
     /^[!@#$%^&*()_+=[\]{};':"\\|,.<>/?]*$/
 
-export const channelOptions = (starred: boolean): DropdownOptions[] => [
-    {
-        key: 'notifications/settings',
-        text: 'Change notifications',
-        value: 'notifications/settings',
-        disabled: true,
-    },
-    {
-        key: 'notifications/mute',
-        text: 'Mute channel',
-        value: 'notifications/mute',
-        disabled: true,
-    },
-    {
-        key: 'channel/copyName',
-        text: 'Copy name',
-        value: 'channel/copyName',
-        disabled: true,
-    },
-    {
-        key: 'channel/copyLink',
-        text: 'Copy link',
-        value: 'channel/copyLink',
-        disabled: true,
-    },
-    {
-        key: starred ? 'channel/unstar' : 'channel/star',
-        text: starred ? 'Unstar channel' : 'Star channel',
-        value: starred ? 'channel/unstar' : 'channel/star',
-    },
-    {
-        key: 'channel/details',
-        text: 'Open channel details',
-        value: 'channel/details',
-    },
-    {
-        key: 'channel/leave',
-        text: 'Leave channel',
-        value: 'channel/leave',
-        disabled: true,
-    },
-]
-
 export const messageUserOptions = (user: UserInfo): DropdownOptions[] => [
     {
         key: 'profile',
