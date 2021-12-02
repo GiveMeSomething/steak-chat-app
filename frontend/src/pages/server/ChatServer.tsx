@@ -42,11 +42,6 @@ import {
 } from 'components/server/redux/notifications/notifications.slice'
 import { updateNotifications } from 'components/server/redux/channels/channels.thunk'
 
-<<<<<<< HEAD
-=======
-import ServerLayout from 'components/server/ServerLayout'
-import withAuthRedirect from 'components/middleware/withAuthRedirect'
->>>>>>> 67ee805 (refactor: move asyncThunks to seperate folders)
 import {
     CHANNELS_REF,
     MESSAGE_COUNT_REF,
@@ -58,25 +53,6 @@ import ServerLayout from 'components/server/ServerLayout'
 import withAuthRedirect from 'components/middleware/withAuthRedirect'
 
 import LoadingOverlay from 'components/commons/LoadingOverlay'
-<<<<<<< HEAD
-=======
-import {
-    setMessages,
-    clearMessages,
-    clearSearchMessage,
-    addMessage,
-} from 'components/server/redux/messages/messages.slice'
-import {
-    clearChannelUsers,
-    addChannelUser,
-    updateChannelUser,
-} from 'components/server/redux/users/users.slice'
-import {
-    selectChannelMessageCount,
-    setChannelMessageCount,
-} from 'components/server/redux/notifications/notifications.slice'
-import { updateNotifications } from 'components/server/redux/channels/channels.thunk'
->>>>>>> 67ee805 (refactor: move asyncThunks to seperate folders)
 
 interface ChatServerProps {}
 
@@ -166,8 +142,6 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
                 dispatch(unStarChannel(data.val()))
             },
         )
-
-<<<<<<< HEAD
         // This run once and auto unsubscribe
         // Update notifications when user first load application
         onValue(
@@ -197,13 +171,6 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
                 }
             },
         )
-=======
-        const unsubscribeMessageCount = onValue(MESSAGE_COUNT_REF, (data) => {
-            if (data) {
-                dispatch(updateNotifications(data.val()))
-            }
-        })
->>>>>>> 67ee805 (refactor: move asyncThunks to seperate folders)
 
         setIsMessageLoading(false)
 
