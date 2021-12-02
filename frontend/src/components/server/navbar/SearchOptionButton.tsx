@@ -1,4 +1,5 @@
 import React, { FunctionComponent } from 'react'
+
 import { Button, Icon, SemanticICONS } from 'semantic-ui-react'
 
 interface SearchOptionButtonProps {

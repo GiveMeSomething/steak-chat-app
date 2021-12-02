@@ -6,6 +6,7 @@ import {
     selectCurrentChannel,
     setIsDirectChannel,
 } from 'components/server/redux/channels/channels.slice'
+import { setCurrentChannel } from 'components/server/redux/channels/channels.thunk'
 import { selectChannelUsers } from 'components/server/redux/users/users.slice'
 
 import {
@@ -15,7 +16,6 @@ import {
 
 import ChannelDropdownLayout from '../DropdownLayout'
 import UsersDropdownItem from './UsersDropdownItem'
-import { setCurrentChannel } from 'components/server/redux/channels/channels.thunk'
 
 interface UsersDropdownProps {
     isActive: boolean

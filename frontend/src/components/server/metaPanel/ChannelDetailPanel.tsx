@@ -1,6 +1,10 @@
-import { selectCurrentUser } from 'components/auth/redux/auth.slice'
 import React, { FunctionComponent, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
+
+import { selectCurrentUser } from 'components/auth/redux/auth.slice'
+import { ChannelInfo } from 'components/server/redux/channels/channels.slice'
+import { selectChannelUsers } from 'components/server/redux/users/users.slice'
+
 import {
     Accordion,
     AccordionTitleProps,
@@ -9,8 +13,6 @@ import {
 } from 'semantic-ui-react'
 import UpdateChannelDescModal from 'components/server/modal/UpdateChannelDescModal'
 import UpdateChannelNameModal from 'components/server/modal/UpdateChannelNameModal'
-import { ChannelInfo } from 'components/server/redux/channels/channels.slice'
-import { selectChannelUsers } from 'components/server/redux/users/users.slice'
 
 interface ChannelDetailPanelProps {
     data: ChannelInfo

@@ -5,15 +5,15 @@ import {
     setCurrentMetaPanelData,
     setMetaPanelOpen,
 } from 'components/server/redux/metaPanel.slice'
-
-import { Undefinable } from 'types/commonType'
-
-import { Dropdown, Icon } from 'semantic-ui-react'
 import { ChannelInfo } from 'components/server/redux/channels/channels.slice'
 import {
     unStarSelectedChannel,
     starSelectedChannel,
 } from 'components/server/redux/channels/channels.thunk'
+
+import { Undefinable } from 'types/commonType'
+
+import { Dropdown, Icon } from 'semantic-ui-react'
 
 interface ChannelOptionsProps {
     starred: boolean

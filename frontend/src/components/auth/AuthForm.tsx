@@ -6,10 +6,11 @@ import { useAppDispatch } from 'redux/hooks'
 import { firebaseApp } from 'firebase/firebase'
 import { getAuth, onAuthStateChanged } from '@firebase/auth'
 
-import FormInput from './FormInput'
-import ErrorMessage from 'components/commons/ErrorMessage'
 import { removeUserError } from './redux/auth.slice'
 import { signup, signin } from './redux/auth.thunk'
+
+import ErrorMessage from 'components/commons/ErrorMessage'
+import FormInput from './FormInput'
 
 interface AuthFormProps {
     label: string
