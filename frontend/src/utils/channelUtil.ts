@@ -1,5 +1,5 @@
 import { UserInfo } from 'components/auth/redux/auth.slice'
-import { ChannelInfo } from 'pages/server/components/slices/channel.slice'
+import { ChannelInfo } from 'components/server/redux/channel.slice'
 import { CHANNEL_NAME_SEPARATOR } from './appConst'
 
 export const formatChannelName = (channelName: string) =>

@@ -1,8 +1,6 @@
-import { RootState } from 'redux/store'
 import { createSlice, isRejected, PayloadAction } from '@reduxjs/toolkit'
-import { UserStatus } from 'utils/appEnum'
-import { ChannelIdAsKeyObject } from 'pages/server/components/slices/channel.slice'
-import { Undefinable } from 'types/commonType'
+import { RootState } from 'redux/store'
+
 import {
     signin,
     signup,
@@ -11,6 +9,9 @@ import {
     updateUserStatus,
 } from './auth.thunk'
 
+import { UserStatus } from 'utils/appEnum'
+import { IdAsKeyObject, Undefinable } from 'types/commonType'
+
 // TODO: Maybe functions need to be in async/await
 export interface UserInfo {
     uid: string
@@ -18,7 +19,7 @@ export interface UserInfo {
     photoUrl: string
     email: string
     status?: UserStatus
-    messageCount: ChannelIdAsKeyObject
+    messageCount: IdAsKeyObject
 }
 
 export interface AuthPayload {
@@ -27,7 +28,7 @@ export interface AuthPayload {
 }
 interface AuthSliceState {
     user: Undefinable<UserInfo>
-    userError: any
+    userError: Undefinable<string>
 }
 
 const initialState: AuthSliceState = {
@@ -39,14 +40,14 @@ export const userSlice = createSlice({
     name: 'user',
     initialState,
     reducers: {
-        setCurrentUser: (state, action: PayloadAction<any>) => {
+        setCurrentUser: (state, action: PayloadAction<UserInfo>) => {
             state.user = action.payload
+        },
+        setUserError: (state, action: PayloadAction<string>) => {
+            state.userError = action.payload
         },
         removeCurrentUser: (state) => {
             state.user = undefined
-        },
-        setUserError: (state, action: PayloadAction<any>) => {
-            state.userError = action.payload
         },
         removeUserError: (state) => {
             state.userError = undefined
@@ -77,7 +78,11 @@ export const userSlice = createSlice({
         })
 
         builder.addMatcher(isRejected, (state, action) => {
-            state.userError = action.error.message
+            if (action.error.message) {
+                state.userError = action.error.message
+            } else {
+                state.userError = 'Error occured in auth.slice'
+            }
         })
     },
 })

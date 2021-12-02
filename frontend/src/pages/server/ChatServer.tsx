@@ -23,33 +23,36 @@ import {
     selectIsDirectChannel,
     unStarChannel,
     updateChannelInfo,
-    updateNotifications,
-} from './components/slices/channel.slice'
+} from 'components/server/redux/channels/channels.slice'
+import { selectCurrentUser } from 'components/auth/redux/auth.slice'
 import {
-    addMessage,
+    setMessages,
     clearMessages,
     clearSearchMessage,
-    setMessages,
-} from './components/slices/channelMessage.slice'
+    addMessage,
+} from 'components/server/redux/messages/messages.slice'
 import {
-    addChannelUser,
     clearChannelUsers,
+    addChannelUser,
     updateChannelUser,
-} from './components/slices/channelUsers.slice'
+} from 'components/server/redux/users/users.slice'
 import {
     selectChannelMessageCount,
     setChannelMessageCount,
-} from './components/slices/notification.slice'
-import { selectCurrentUser } from 'components/auth/redux/auth.slice'
+} from 'components/server/redux/notifications/notifications.slice'
+import { updateNotifications } from 'components/server/redux/channels/channels.thunk'
 
-import ServerLayout from './components/ServerLayout'
-import withAuthRedirect from 'components/middleware/withAuthRedirect'
 import {
     CHANNELS_REF,
     MESSAGE_COUNT_REF,
     STARRED_REF,
     USERS_REF,
 } from 'utils/databaseRef'
+
+import ServerLayout from 'components/server/ServerLayout'
+import withAuthRedirect from 'components/middleware/withAuthRedirect'
+
+import LoadingOverlay from 'components/commons/LoadingOverlay'
 
 interface ChatServerProps {}
 
@@ -98,16 +101,10 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     }
 
     useEffect(() => {
-        // Clear channels
         dispatch(clearChannels())
-
-        // Clear currentUser starred channel
         dispatch(clearStarredChannel())
-
-        // Clear users list
         dispatch(clearChannelUsers())
 
-        // Get message count from user info fetch
         dispatch(setChannelMessageCount(currentUser?.messageCount))
 
         const unsubscribeChannels = onChildAdded(CHANNELS_REF, (data) => {
@@ -146,12 +143,35 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
             },
         )
 
-        const unsubscribeMessageCount = onValue(MESSAGE_COUNT_REF, (data) => {
-            const result = data.val()
-            if (result) {
-                dispatch(updateNotifications(data.val()))
-            }
-        })
+        // This run once and auto unsubscribe
+        // Update notifications when user first load application
+        onValue(
+            MESSAGE_COUNT_REF,
+            (data) => {
+                if (data) {
+                    dispatch(updateNotifications(data.val()))
+                }
+            },
+            {
+                onlyOnce: true,
+            },
+        )
+
+        // This will trigger on single child
+        // This is more efficient than onValue as it run per changed (onValue return whole collection)
+        const unsubscribeMessageCount = onChildChanged(
+            MESSAGE_COUNT_REF,
+            (data) => {
+                if (data) {
+                    dispatch(
+                        // Construct similar object to onValue to reuse updateNotifications
+                        updateNotifications({
+                            [data.key as string]: data.val(),
+                        }),
+                    )
+                }
+            },
+        )
 
         setIsMessageLoading(false)
 
@@ -189,13 +209,7 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     }, [currentChannel.id])
 
     if (isMessageLoading) {
-        return (
-            <div className="h-screen w-screen max-h-screen flex items-center justify-center">
-                <div className="ui active inverted dimmer">
-                    <div className="ui text loader">Loading</div>
-                </div>
-            </div>
-        )
+        return <LoadingOverlay />
     } else {
         return <ServerLayout />
     }
