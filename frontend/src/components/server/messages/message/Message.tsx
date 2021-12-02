@@ -12,7 +12,7 @@ import { getDateString, getTimeString } from 'utils/timeUtil'
 import { Undefinable } from 'types/commonType'
 
 import ScreenOverlay from 'components/commons/ScreenOverlay'
-import UserOptionsMenu from './UserOptionsMenu'
+import OptionsMenu from './OptionsMenu'
 
 interface MessageComponentProps {
     content?: string
@@ -37,7 +37,10 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
         useState<Undefinable<RightClickableComponent>>(undefined)
     const [selectedUser, setSelectedUser] =
         useState<Undefinable<UserInfo>>(undefined)
-    const [isUserOptionsOpen, setIsUserOptionsOpen] = useState<boolean>(false)
+    const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
+    const [isMenuUpward, setIsMenuUpward] = useState<boolean>(false)
+
+    const messageRef = useRef<HTMLDivElement>(null)
 
     const dispatch = useAppDispatch()
 
@@ -58,19 +61,38 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
      * @param shouldMenuUpward - boolean - Determine menu direction
      * @return  The corresponding style
      */
-    const dropdownStyle =
-        (positionAt: Undefinable<RightClickableComponent>) =>
-        (shouldMenuUpward: boolean): string => {
-            if (positionAt === 'username') {
-                return 'z-20 -top-6 -left-6'
+    const menuStyle = (
+        positionAt: Undefinable<RightClickableComponent>,
+        shouldMenuUpward: boolean,
+    ): string => {
+        if (positionAt === 'username') {
+            return 'z-20 -top-6 -left-6'
+        } else {
+            if (shouldMenuUpward) {
+                return 'z-20 top-6 -left-6'
             } else {
-                if (shouldMenuUpward) {
-                    return 'z-20 top-6 -left-6'
-                } else {
-                    return 'z-20 top-6 -left-6'
-                }
+                return 'z-20 top-6 -left-6'
             }
         }
+    }
+
+    // Pre-calculate option menu direction based on message position on screen
+    const shouldMenuUpward = (): boolean => {
+        if (messageRef.current) {
+            const windowHeight = window.innerHeight
+            const menuHeight = messageRef.current.scrollHeight
+            const menuYPos = messageRef.current.getBoundingClientRect().bottom
+            if (windowHeight - menuYPos < menuHeight) {
+                return true
+            }
+            return false
+        }
+        return false
+    }
+
+    const shouldMenuShowHere = (
+        componentType: RightClickableComponent,
+    ): boolean => isMenuOpen && selectedComponent === componentType
 
     const handleOpenUserMetaPanel = (): void => {
         const selectedUser = channelUsers.find(
@@ -86,7 +108,7 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
 
     const handleComponentRightClick = (
         event: React.MouseEvent<HTMLDivElement>,
-        type: RightClickableComponent,
+        componentType: RightClickableComponent,
     ): void => {
         // Prevent open context menu
         event.preventDefault()
@@ -95,29 +117,49 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
         event.stopPropagation()
 
         setSelectedUser(channelUsers.find((user) => user.uid === createdBy.uid))
-        setSelectedComponent(type)
-        setIsUserOptionsOpen(true)
+        setSelectedComponent(componentType)
+
+        setIsMenuUpward(shouldMenuUpward)
+
+        setIsMenuOpen(true)
     }
 
-    const handleCloseMessageUserOptions = (
+    const handleCloseMessageMenu = (
         event: React.MouseEvent<HTMLDivElement>,
     ): void => {
         event.preventDefault()
 
-        // Stop event bubbling as avatar click (which trigger the meta panel)
+        // Stop event bubbling as avatar click (which trigger the user's meta panel)
         event.stopPropagation()
 
         setSelectedComponent(undefined)
         setSelectedUser(undefined)
-        setIsUserOptionsOpen(false)
+        setIsMenuOpen(false)
     }
 
-    const shouldShowMenuAtComponent = (
-        componentType: RightClickableComponent,
-    ): boolean => isUserOptionsOpen && selectedComponent === componentType
+    const menuWithOverlay = () => {
+        return (
+            selectedUser && (
+                <>
+                    <OptionsMenu
+                        isOpen={isMenuOpen}
+                        selectedUser={selectedUser}
+                        openMetaPanel={handleOpenUserMetaPanel}
+                        closeMenu={handleCloseMessageMenu}
+                        menuStyle={menuStyle(selectedComponent, isMenuUpward)}
+                        upward={isMenuUpward}
+                    />
+                    <ScreenOverlay handleOnClick={handleCloseMessageMenu} />
+                </>
+            )
+        )
+    }
 
     return (
-        <div className="flex items-start justify-start py-2 text-gray-500">
+        <div
+            className="flex items-start justify-start py-2 text-gray-500"
+            ref={messageRef}
+        >
             <span className="flex items-start">
                 <img
                     src={createdBy.photoUrl}
@@ -128,20 +170,7 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
                         handleComponentRightClick(e, 'avatar')
                     }
                 />
-                {selectedUser && shouldShowMenuAtComponent('avatar') ? (
-                    <>
-                        <UserOptionsMenu
-                            isOpen={isUserOptionsOpen}
-                            selectedUser={selectedUser}
-                            openMetaPanel={handleOpenUserMetaPanel}
-                            closeMenu={handleCloseMessageUserOptions}
-                            dropdownStyle={dropdownStyle(selectedComponent)}
-                        />
-                        <ScreenOverlay
-                            handleOnClick={handleCloseMessageUserOptions}
-                        />
-                    </>
-                ) : null}
+                {shouldMenuShowHere('avatar') && menuWithOverlay()}
             </span>
             <div className="ml-4">
                 <div className="flex items-baseline pb-1">
@@ -154,20 +183,7 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
                     >
                         {createdBy.username}
                     </h3>
-                    {selectedUser && shouldShowMenuAtComponent('username') ? (
-                        <>
-                            <UserOptionsMenu
-                                isOpen={isUserOptionsOpen}
-                                selectedUser={selectedUser}
-                                openMetaPanel={handleOpenUserMetaPanel}
-                                closeMenu={handleCloseMessageUserOptions}
-                                dropdownStyle={dropdownStyle(selectedComponent)}
-                            />
-                            <ScreenOverlay
-                                handleOnClick={handleCloseMessageUserOptions}
-                            />
-                        </>
-                    ) : null}
+                    {shouldMenuShowHere('username') && menuWithOverlay()}
                     <h5 className="text-slack-text-blur px-2">{messageTime}</h5>
                 </div>
                 {content && <h5 className="text-lg">{content}</h5>}

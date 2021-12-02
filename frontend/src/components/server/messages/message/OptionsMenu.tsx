@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useRef, useState } from 'react'
+import React, { FunctionComponent } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
 import { selectCurrentUser, UserInfo } from 'components/auth/redux/auth.slice'
@@ -12,26 +12,25 @@ import {
     getDirectChannelId,
 } from 'utils/channelUtil'
 
-import { Dropdown, Ref } from 'semantic-ui-react'
+import { Dropdown } from 'semantic-ui-react'
 
-interface UserOptionsMenuProps {
+interface OptionsMenuProps {
     isOpen: boolean
     selectedUser: UserInfo
     openMetaPanel: Function
     closeMenu: Function
-    dropdownStyle: Function
+    menuStyle: string
+    upward: boolean
 }
 
-const UserOptionsMenu: FunctionComponent<UserOptionsMenuProps> = ({
+const OptionsMenu: FunctionComponent<OptionsMenuProps> = ({
     isOpen,
     selectedUser,
     openMetaPanel,
     closeMenu,
-    dropdownStyle,
+    menuStyle,
+    upward,
 }) => {
-    const [shouldMenuUpward, setShouldMenuUpward] = useState<boolean>(false)
-    const optionMenuRef = useRef<HTMLDivElement>(null)
-
     const dispatch = useAppDispatch()
     const currentUser = useAppSelector(selectCurrentUser)
 
@@ -55,21 +54,6 @@ const UserOptionsMenu: FunctionComponent<UserOptionsMenuProps> = ({
     const directChannelId = (userId: string): string => {
         return currentUser ? getDirectChannelId(currentUser.uid, userId) : ''
     }
-
-    // Calculate remaining space to display menu upward or downward
-    useEffect(() => {
-        if (optionMenuRef.current) {
-            if (
-                window.innerHeight -
-                    optionMenuRef.current?.getBoundingClientRect().bottom <
-                optionMenuRef.current?.scrollHeight
-            ) {
-                setShouldMenuUpward(true)
-            }
-        } else {
-            setShouldMenuUpward(false)
-        }
-    }, [optionMenuRef])
 
     const handleOnViewProfileClick = (
         event: React.MouseEvent<HTMLDivElement>,
@@ -103,27 +87,25 @@ const UserOptionsMenu: FunctionComponent<UserOptionsMenuProps> = ({
             icon={null}
             id="message-user-settings"
             open={isOpen}
-            upward={shouldMenuUpward}
-            className={dropdownStyle(shouldMenuUpward)}
+            upward={upward}
+            className={menuStyle}
         >
-            <Ref innerRef={optionMenuRef}>
-                <Dropdown.Menu>
-                    <Dropdown.Item
-                        {...menuOptions.profile}
-                        onClick={handleOnViewProfileClick}
-                    />
-                    <Dropdown.Divider />
-                    <Dropdown.Item
-                        {...menuOptions.message}
-                        onClick={handleOnMessageClick}
-                    />
-                    <Dropdown.Divider />
-                    <Dropdown.Item {...menuOptions.copyName} />
-                    <Dropdown.Item {...menuOptions.copyLink} />
-                </Dropdown.Menu>
-            </Ref>
+            <Dropdown.Menu>
+                <Dropdown.Item
+                    {...menuOptions.profile}
+                    onClick={handleOnViewProfileClick}
+                />
+                <Dropdown.Divider />
+                <Dropdown.Item
+                    {...menuOptions.message}
+                    onClick={handleOnMessageClick}
+                />
+                <Dropdown.Divider />
+                <Dropdown.Item {...menuOptions.copyName} />
+                <Dropdown.Item {...menuOptions.copyLink} />
+            </Dropdown.Menu>
         </Dropdown>
     )
 }
 
-export default UserOptionsMenu
+export default OptionsMenu
