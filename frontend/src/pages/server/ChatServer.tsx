@@ -141,11 +141,34 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
             },
         )
 
-        const unsubscribeMessageCount = onValue(MESSAGE_COUNT_REF, (data) => {
-            if (data) {
-                dispatch(updateNotifications(data.val()))
-            }
-        })
+        // This run once and auto unsubscribe
+        onValue(
+            MESSAGE_COUNT_REF,
+            (data) => {
+                if (data) {
+                    dispatch(updateNotifications(data.val()))
+                }
+            },
+            {
+                onlyOnce: true,
+            },
+        )
+
+        // This will trigger on single child
+        // This is more efficient than onValue as it run per changed (onValue return whole collection)
+        const unsubscribeMessageCount = onChildChanged(
+            MESSAGE_COUNT_REF,
+            (data) => {
+                if (data) {
+                    dispatch(
+                        // Construct similar object to onValue to reuse updateNotifications
+                        updateNotifications({
+                            [data.key as string]: data.val(),
+                        }),
+                    )
+                }
+            },
+        )
 
         setIsMessageLoading(false)
 
