@@ -19,7 +19,7 @@ export interface Message {
 }
 
 interface SendMessagePayload {
-    content: string
+    message: string
     mediaPath?: string
 }
 
@@ -75,41 +75,34 @@ export const sendMessage = createAsyncThunk<
     void,
     SendMessagePayload,
     ThunkState
->(
-    'message/sendMessage',
-    async ({ content, mediaPath = '' }, { getState, dispatch }) => {
-        const appState = getState()
-        const currentUser = appState.user.user
-        const currentChannel = appState.channels.currentChannel
-        const isDirectMessage = appState.channels.isDirectChannel
+>('message/sendMessage', async (data, { getState, dispatch }) => {
+    const appState = getState()
+    const currentUser = appState.user.user
+    const currentChannel = appState.channels.currentChannel
+    const isDirectMessage = appState.channels.isDirectChannel
 
-        if (currentUser) {
-            const createdBy = {
-                uid: currentUser.uid,
-                username: currentUser.username,
-                photoUrl: currentUser.photoUrl,
-            }
-
-            // Create new message object to send to database
-            const message: Message = {
-                id: uuid(),
-                timestamp: serverTimestamp(),
-                content: content,
-                media: mediaPath,
-                createdBy,
-            }
-
-            await saveMessageToDatabase(
-                message,
-                currentChannel,
-                isDirectMessage,
-            )
-
-            // Cancel loading state
-            dispatch(setMessageLoading(false))
+    if (currentUser) {
+        const createdBy = {
+            uid: currentUser.uid,
+            username: currentUser.username,
+            photoUrl: currentUser.photoUrl,
         }
-    },
-)
+
+        // Create new message object to send to database
+        const message: Message = {
+            id: uuid(),
+            timestamp: serverTimestamp(),
+            content: data.message,
+            media: data.mediaPath || '',
+            createdBy,
+        }
+
+        await saveMessageToDatabase(message, currentChannel, isDirectMessage)
+
+        // Cancel loading state
+        dispatch(setMessageLoading(false))
+    }
+})
 
 const messageSlice = createSlice({
     name: 'message',

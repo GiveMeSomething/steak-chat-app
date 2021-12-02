@@ -2,12 +2,14 @@ import { selectCurrentUser, UserInfo } from 'components/auth/redux/auth.slice'
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { Dropdown, Ref } from 'semantic-ui-react'
-import { messageUserOptions } from 'constants/appConst'
 import {
     generateDirectChannelInfo,
     getDirectChannelId,
 } from 'utils/channelUtil'
-import { setIsDirectChannel, setCurrentChannel } from '../redux/channel.slice'
+import {
+    setIsDirectChannel,
+    setCurrentChannel,
+} from '../../redux/channel.slice'
 
 interface UserOptionsMenuProps {
     isOpen: boolean
@@ -31,7 +33,22 @@ const UserOptionsMenu: FunctionComponent<UserOptionsMenuProps> = ({
 
     const currentUser = useAppSelector(selectCurrentUser)
 
-    const menuOptions = messageUserOptions(selectedUser)
+    const menuOptions = {
+        profile: {
+            text: 'View profile',
+        },
+        message: {
+            text: `Message ${selectedUser.username}`,
+        },
+        copyName: {
+            text: 'Copy name',
+            disabled: true,
+        },
+        copyLink: {
+            text: 'Copy link',
+            disabled: true,
+        },
+    }
 
     const directChannelId = (userId: string) => {
         if (currentUser) {
@@ -92,19 +109,18 @@ const UserOptionsMenu: FunctionComponent<UserOptionsMenuProps> = ({
         >
             <Ref innerRef={optionMenuRef}>
                 <Dropdown.Menu>
-                    {/* TODO: Currently hard-coding here */}
                     <Dropdown.Item
-                        {...menuOptions[0]}
+                        {...menuOptions.profile}
                         onClick={handleOnViewProfileClick}
                     />
                     <Dropdown.Divider />
                     <Dropdown.Item
-                        {...menuOptions[1]}
+                        {...menuOptions.message}
                         onClick={handleOnMessageClick}
                     />
                     <Dropdown.Divider />
-                    <Dropdown.Item {...menuOptions[2]} />
-                    <Dropdown.Item {...menuOptions[3]} />
+                    <Dropdown.Item {...menuOptions.copyName} />
+                    <Dropdown.Item {...menuOptions.copyLink} />
                 </Dropdown.Menu>
             </Ref>
         </Dropdown>

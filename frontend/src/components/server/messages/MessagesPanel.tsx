@@ -6,7 +6,7 @@ import {
     selectIsSearching,
 } from '../redux/channelMessage.slice'
 
-import MessageComponent from './MessageComponent'
+import MessageComponent from './message/Message'
 
 interface MessagePanelProps {}
 

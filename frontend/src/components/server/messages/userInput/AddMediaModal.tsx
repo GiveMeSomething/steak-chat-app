@@ -1,52 +1,82 @@
-import React, { ChangeEvent, FunctionComponent, useState } from 'react'
+import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useAppDispatch } from 'redux/hooks'
 import { useForm } from 'react-hook-form'
+import { v4 as uuid } from 'uuid'
 
 import { getDownloadURL, ref, uploadBytesResumable } from '@firebase/storage'
 import { storage } from 'firebase/firebase'
 
-import { Modal, Button, Icon } from 'semantic-ui-react'
-import { v4 as uuid } from 'uuid'
-
-import { sendMessage } from '../redux/channelMessage.slice'
+import { sendMessage } from '../../redux/channelMessage.slice'
 
 import { MAX_FILE_SIZE_BYTES } from 'constants/appConst'
 import { extractFileExt } from 'utils/fileUtil'
+import { Undefinable } from 'types/commonType'
 
-import FormInput from './FormInput'
-import ProgressBar from './ProgressBar'
+import { Modal, Button, Icon } from 'semantic-ui-react'
+
+import FormInput from 'components/server/modal/FormInput'
 import ErrorMessage from 'components/commons/ErrorMessage'
+import ProgressBar from './ProgressBar'
 
 interface AddMediaModalProps {
+    currentMessage: string
     isOpen: boolean
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 interface FormValues {
-    desc?: string
+    desc: string | ''
 }
 
 const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
+    currentMessage,
     isOpen,
     setOpen,
 }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const [userMedia, setUserMedia] = useState<File>()
-    const [mediaUrl, setMediaUrl] = useState<string>('')
+    const [mediaUrl, setMediaUrl] = useState<Undefinable<string>>(undefined)
 
-    const [uploadState, setUploadState] = useState<string>('')
-    const [uploadError, setUploadError] = useState<string>('')
+    const [uploadState, setUploadState] =
+        useState<Undefinable<string>>(undefined)
+    const [uploadError, setUploadError] =
+        useState<Undefinable<string>>(undefined)
 
     const [uploadProgress, setUploadProgress] = useState<number>(0)
 
-    const { handleSubmit, register, reset } = useForm<FormValues>()
+    const { handleSubmit, register, reset, setFocus, setValue } =
+        useForm<FormValues>()
+
+    useEffect(() => {
+        if (isOpen) {
+            setValue('desc', currentMessage)
+            setFocus('desc')
+        }
+    }, [isOpen])
 
     const dispatch = useAppDispatch()
 
+    // Check file size
+    const isImageValid = (imageFile: Undefinable<File>): boolean => {
+        if (!imageFile) {
+            setUploadError('No image selected')
+            return false
+        }
+
+        // Validate file size (by bytes)
+        // Here it is limit to 5 * 1000 * 1000 ~ 5MB
+        if (imageFile.size >= MAX_FILE_SIZE_BYTES) {
+            setUploadError('Image size should not exceed 5MB')
+            return false
+        }
+
+        return true
+    }
+
     // Refs: https://firebase.google.com/docs/storage/web/upload-files#manage_uploads
     // Upload user image to Firebase storage and save message to Redux store
-    const uploadFileToStorage = async (file: File, content: string) => {
+    const uploadFileToStorage = async (file: File, message: string) => {
         const filePath = `chat/public/${uuid()}.${extractFileExt(file.name)}`
         const storageRef = ref(storage, filePath)
 
@@ -88,12 +118,12 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
                             await dispatch(
                                 sendMessage({
                                     mediaPath: downloadUrl,
-                                    content,
+                                    message,
                                 }),
                             )
 
                             // Close the modal after finish uploading
-                            onClose()
+                            handleClose()
                         },
                     )
                 },
@@ -101,52 +131,14 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
         } catch (err: any) {
             // Catch any errors left
             setUploadError(err.message)
-            onClose()
+            handleClose()
         }
-    }
-
-    // Close modal operations
-    const onClose = () => {
-        // Set modal state back to intial state
-        setUploadState('')
-        setUploadProgress(0)
-        setUploadError('')
-        setIsLoading(false)
-        setMediaUrl('')
-
-        // Reset form values
-        reset()
-
-        // Close modal
-        setOpen(false)
-    }
-
-    // Upload the userMedia (and the desc) to database, then display as a message
-    const onSubmit = async ({ desc = '' }: FormValues) => {
-        if (userMedia) {
-            await uploadFileToStorage(userMedia, desc)
-        }
-    }
-
-    // Check file size
-    const isImageValid = (imageFile: File | undefined): boolean => {
-        if (!imageFile) {
-            setUploadError('No image selected')
-            return false
-        }
-
-        // Validate file size (by bytes)
-        // Here it is limit to 5 * 1000 * 1000 ~ 5MB
-        if (imageFile.size >= MAX_FILE_SIZE_BYTES) {
-            setUploadError('Image size should not exceed 5MB')
-            return false
-        }
-
-        return true
     }
 
     // This will show a preview before pushing the userMedia to Firebase Database
-    const uploadFile = (event: ChangeEvent<HTMLInputElement>) => {
+    const uploadFileToPreview = (
+        event: React.ChangeEvent<HTMLInputElement>,
+    ) => {
         const reader = new FileReader()
         const files = event.target.files
 
@@ -168,13 +160,38 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
         }
     }
 
+    // Close modal operations
+    const handleClose = () => {
+        // Set modal state back to intial state
+        setUploadState(undefined)
+        setUploadProgress(0)
+        setUploadError(undefined)
+
+        setIsLoading(false)
+        setMediaUrl(undefined)
+
+        // Reset form values
+        reset()
+
+        // Close modal
+        setOpen(false)
+    }
+
+    // Upload the userMedia (and the desc) to database, then display as a message
+    const onSubmit = async ({ desc }: FormValues) => {
+        if (userMedia) {
+            await uploadFileToStorage(userMedia, desc)
+        } else {
+            setUploadError('No image selected')
+        }
+    }
+
     return (
         <>
             <Modal
                 as="form"
                 onSubmit={handleSubmit(onSubmit)}
-                onClose={onClose}
-                onOpen={() => setOpen(true)}
+                onClose={handleClose}
                 size="tiny"
                 dimmer="blurring"
                 open={isOpen}
@@ -201,10 +218,10 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
                                     accept="image/png, image/gif, image/jpeg"
                                     id="upload-file"
                                     hidden
-                                    onChange={uploadFile}
+                                    onChange={uploadFileToPreview}
                                 />
                                 {uploadError && (
-                                    <ErrorMessage content={uploadError} />
+                                    <ErrorMessage message={uploadError} />
                                 )}
                             </div>
                         )
@@ -217,13 +234,10 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
                             {...register('desc')}
                         />
                     </div>
-                    <ProgressBar
-                        uploadState={uploadState}
-                        progress={uploadProgress}
-                    />
+                    {uploadState && <ProgressBar progress={uploadProgress} />}
                 </Modal.Content>
                 <Modal.Actions>
-                    <Button color="red" onClick={onClose}>
+                    <Button color="red" onClick={handleClose}>
                         <Icon name="remove" /> Cancel
                     </Button>
                     <Button
@@ -233,7 +247,8 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
                         loading={isLoading}
                         className="submit"
                     >
-                        <Icon name="checkmark" /> Add
+                        <Icon name="checkmark" />
+                        Add
                     </Button>
                 </Modal.Actions>
             </Modal>

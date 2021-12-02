@@ -140,11 +140,11 @@ const UpdateChannelDescModal: FunctionComponent<UpdateChannelDescModalProps> =
                             )}
                             {errors.channelDesc && (
                                 <ErrorMessage
-                                    content={errors.channelDesc.message}
+                                    message={errors.channelDesc.message}
                                 />
                             )}
                             {updateError && (
-                                <ErrorMessage content={updateError} />
+                                <ErrorMessage message={updateError} />
                             )}
                         </div>
                     </Modal.Description>

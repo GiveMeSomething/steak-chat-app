@@ -4,11 +4,11 @@ import React, { FunctionComponent, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { Undefinable } from 'types/commonType'
 import { getDateString, getTimeString } from 'utils/timeUtil'
-import { selectChannelUsers } from '../redux/channelUsers.slice'
+import { selectChannelUsers } from '../../redux/channelUsers.slice'
 import {
     setCurrentMetaPanelData,
     setMetaPanelOpen,
-} from '../redux/metaPanel.slice'
+} from '../../redux/metaPanel.slice'
 import UserOptionsMenu from './UserOptionsMenu'
 
 interface MessageComponentProps {

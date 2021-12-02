@@ -4,7 +4,9 @@ import ChannelsDropdown from './channels/ChannelsDropdown'
 import StarredDropdown from './channels/StarredDropdown'
 import UsersDropdown from './users/UsersDropdown'
 
-const ServerSidebar: FunctionComponent = () => {
+interface ServerSidebarProps {}
+
+const ServerSidebar: FunctionComponent<ServerSidebarProps> = () => {
     // Always open channels menu on mount
     const [isStarredActive, setStarredActive] = useState<boolean>(true)
     const [isChannelActive, setChannelActive] = useState<boolean>(true)

@@ -5,10 +5,12 @@ import { selectIsMetaPanelOpen } from 'components/server/redux/metaPanel.slice'
 
 import ServerNavbar from './navbar/ServerNavbar'
 import ServerSidebar from './sidebar/ServerSidebar'
-import ServerMessages from './messagePanel/ServerMessages'
+import ServerMessages from './messages/ServerMessages'
 import MetaPanel from './metaPanel/MetaPanel'
 
-const ServerLayout: FunctionComponent = () => {
+interface ServerLayoutProps {}
+
+const ServerLayout: FunctionComponent<ServerLayoutProps> = () => {
     const isMetaPanelOpen = useAppSelector(selectIsMetaPanelOpen)
 
     return (

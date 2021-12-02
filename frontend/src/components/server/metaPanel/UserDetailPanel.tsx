@@ -2,7 +2,7 @@ import { selectCurrentUser, UserInfo } from 'components/auth/redux/auth.slice'
 import React, { FunctionComponent } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { Button, Icon } from 'semantic-ui-react'
-import { UserStatus } from 'constants/appEnum'
+import { UserStatus } from 'types/appEnum'
 import {
     generateDirectChannelInfo,
     getDirectChannelId,
