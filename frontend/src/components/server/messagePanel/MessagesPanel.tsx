@@ -1,4 +1,3 @@
-import LoadingOverlay from 'components/commons/LoadingOverlay'
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
 
@@ -6,7 +5,7 @@ import {
     selectIsSearching,
     selectMessages,
     selectSearchMessages,
-} from '../redux/channelMessage.slice'
+} from '../redux/messages/messages.slice'
 
 import MessageComponent from './MessageComponent'
 
@@ -64,7 +63,13 @@ const MessagesPanel: FunctionComponent<MessagePanelProps> = () => {
 
     return (
         <>
-            {isLoading && <LoadingOverlay />}
+            {isLoading && (
+                <div className="h-full w-full flex items-center justify-center">
+                    <div className="ui active inverted dimmer">
+                        <div className="ui text loader">Loading</div>
+                    </div>
+                </div>
+            )}
             <div className="flex flex-1 flex-col items-start justify-end overflow-auto overflow-x-hidden mb-20 px-4">
                 <div
                     className="flex flex-col mt-auto"

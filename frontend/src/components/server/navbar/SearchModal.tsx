@@ -1,14 +1,13 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
-import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { useForm } from 'react-hook-form'
+import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
+import { selectCurrentChannel } from '../redux/channels/channels.slice'
 import {
-    clearSearchMessage,
-    Message,
     selectMessages,
+    clearSearchMessage,
     setSearchMessages,
-} from 'components/server/redux/channelMessage.slice'
-import { selectCurrentChannel } from '../redux/channel.slice'
+} from '../redux/messages/messages.slice'
 
 import { Modal, Icon, Button, SemanticICONS } from 'semantic-ui-react'
 
@@ -76,7 +75,7 @@ const SearchModal: FunctionComponent<SearchModalProps> = ({
             const messageRegex = new RegExp(`${data.keyword.trim()}`, 'i')
 
             // Currently only search for messages in currentChannel
-            const result = searchMessages.filter((message: Message) =>
+            const result = searchMessages.filter((message) =>
                 messageRegex.test(message.content),
             )
 
