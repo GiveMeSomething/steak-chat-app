@@ -1,4 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
+
+import { AuthPayload, UserInfo } from './auth.slice'
+
 import { database, firebaseApp } from 'firebase/firebase'
 import { ref, update, set, get } from 'firebase/database'
 import {
@@ -11,10 +14,9 @@ import {
     browserSessionPersistence,
 } from '@firebase/auth'
 
-import md5 from 'md5'
 import { Undefinable, ThunkState } from 'types/commonType'
-import { AuthPayload, UserInfo } from './auth.slice'
 import { UserStatus } from 'types/appEnum'
+import md5 from 'md5'
 
 const auth = getAuth(firebaseApp)
 

@@ -1,9 +1,12 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import { Redirect } from 'react-router'
 import { useAppDispatch } from 'redux/hooks'
+
 import { getAuth } from '@firebase/auth'
 import { firebaseApp } from 'firebase/firebase'
+
 import { fetchUser } from 'components/auth/redux/auth.thunk'
+
 import LoadingOverlay from 'components/commons/LoadingOverlay'
 
 // This will redirect to login page if there are no signed in user
@@ -19,8 +22,8 @@ function withAuthRedirect<PropsType>(
 
         const auth = getAuth(firebaseApp)
 
+        // The page will wait for fetchUser to finish before display anything
         const fetchUserInfo = async () => {
-            // The page will wait for fetchUser to finish before display anything
             setIsLoading(true)
 
             await dispatch(fetchUser())

@@ -1,8 +1,8 @@
-import React, { HTMLInputTypeAttribute } from 'react'
+import React from 'react'
 
 interface FormInputProps {
     label: string
-    type: HTMLInputTypeAttribute
+    type: React.HTMLInputTypeAttribute
     autoComplete: 'off' | 'on'
 }
 

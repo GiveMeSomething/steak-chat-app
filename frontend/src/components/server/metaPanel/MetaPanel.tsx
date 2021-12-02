@@ -2,19 +2,18 @@ import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
 import { UserInfo } from 'components/auth/redux/auth.slice'
-
-import { Undefinable } from 'types/commonType'
-
-import { Button } from 'semantic-ui-react'
-
-import ChannelDetailPanel from './ChannelDetailPanel'
-import UserDetailPanel from './UserDetailPanel'
+import { ChannelInfo } from 'components/server/redux/channels/channels.slice'
 import {
     selectMetaPanelCurrentData,
     setMetaPanelOpen,
     clearCurrentMetaPanelData,
 } from 'components/server/redux/metaPanel.slice'
-import { ChannelInfo } from 'components/server/redux/channels/channels.slice'
+
+import { Undefinable } from 'types/commonType'
+
+import { Button } from 'semantic-ui-react'
+import ChannelDetailPanel from './ChannelDetailPanel'
+import UserDetailPanel from './UserDetailPanel'
 
 interface MetaPanelProps {}
 

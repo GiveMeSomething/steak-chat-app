@@ -2,16 +2,6 @@ import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
-import {
-    setCurrentChannel,
-    updateChannelDesc,
-} from 'components/server/redux/channels/channels.thunk'
-
-import { Modal, Button, Icon } from 'semantic-ui-react'
-
-import ErrorMessage from 'components/commons/ErrorMessage'
-import FormInput from './FormInput'
-import { findChannelById } from 'utils/channelUtil'
 import { setCurrentMetaPanelData } from 'components/server/redux/metaPanel.slice'
 import {
     ChannelInfo,
@@ -19,6 +9,16 @@ import {
     selectStarredChannels,
     selectCurrentChannel,
 } from 'components/server/redux/channels/channels.slice'
+import {
+    setCurrentChannel,
+    updateChannelDesc,
+} from 'components/server/redux/channels/channels.thunk'
+
+import { findChannelById } from 'utils/channelUtil'
+
+import { Modal, Button, Icon } from 'semantic-ui-react'
+import ErrorMessage from 'components/commons/ErrorMessage'
+import FormInput from './FormInput'
 
 interface UpdateChannelDescModalProps {
     isOpen: boolean

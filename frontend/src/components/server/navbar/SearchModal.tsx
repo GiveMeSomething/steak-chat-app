@@ -7,11 +7,12 @@ import {
     clearSearchMessage,
     setSearchMessages,
 } from 'components/server/redux/messages/messages.slice'
+import { selectCurrentChannel } from 'components/server/redux/channels/channels.slice'
 
 import { Undefinable } from 'types/commonType'
+
 import { Modal, Icon } from 'semantic-ui-react'
 import SearchOptionButton from './SearchOptionButton'
-import { selectCurrentChannel } from 'components/server/redux/channels/channels.slice'
 
 interface SearchModalProps {
     isOpen: boolean

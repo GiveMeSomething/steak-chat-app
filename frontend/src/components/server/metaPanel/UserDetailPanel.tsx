@@ -1,14 +1,17 @@
 import { selectCurrentUser, UserInfo } from 'components/auth/redux/auth.slice'
 import React, { FunctionComponent } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
-import { Button, Icon } from 'semantic-ui-react'
+
+import { setIsDirectChannel } from 'components/server/redux/channels/channels.slice'
+import { setCurrentChannel } from 'components/server/redux/channels/channels.thunk'
+
 import { UserStatus } from 'types/appEnum'
 import {
     generateDirectChannelInfo,
     getDirectChannelId,
 } from 'utils/channelUtil'
-import { setIsDirectChannel } from 'components/server/redux/channels/channels.slice'
-import { setCurrentChannel } from 'components/server/redux/channels/channels.thunk'
+
+import { Button, Icon } from 'semantic-ui-react'
 
 interface UserDetailPanelProps {
     data: UserInfo
