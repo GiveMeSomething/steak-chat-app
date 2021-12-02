@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
 
-import { selectChannels } from 'components/server/redux/channel.slice'
+import { selectChannels } from 'components/server/redux/channels/channels.slice'
 
 import AddChannelModal from './AddChannelModal'
 import ChannelDropdownLayout from '../DropdownLayout'

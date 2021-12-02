@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react'
 import { useAppSelector } from 'redux/hooks'
 
-import { selectStarredChannels } from 'components/server/redux/channel.slice'
+import { selectStarredChannels } from 'components/server/redux/channels/channels.slice'
 
 import ChannelDropdownLayout from '../DropdownLayout'
 

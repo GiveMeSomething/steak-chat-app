@@ -9,12 +9,12 @@ import { Button } from 'semantic-ui-react'
 
 import ChannelDetailPanel from './ChannelDetailPanel'
 import UserDetailPanel from './UserDetailPanel'
-import { ChannelInfo } from '../redux/channel.slice'
 import {
     selectMetaPanelCurrentData,
     setMetaPanelOpen,
     clearCurrentMetaPanelData,
-} from '../redux/metaPanel.slice'
+} from 'components/server/redux/metaPanel.slice'
+import { ChannelInfo } from 'components/server/redux/channels/channels.slice'
 
 interface MetaPanelProps {}
 

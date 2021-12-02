@@ -5,9 +5,8 @@ import { selectCurrentUser, UserInfo } from 'components/auth/redux/auth.slice'
 import {
     selectCurrentChannel,
     setIsDirectChannel,
-    setCurrentChannel,
-} from 'components/server/redux/channel.slice'
-import { selectChannelUsers } from 'components/server/redux/channelUsers.slice'
+} from 'components/server/redux/channels/channels.slice'
+import { selectChannelUsers } from 'components/server/redux/users/users.slice'
 
 import {
     generateDirectChannelInfo,
@@ -16,6 +15,7 @@ import {
 
 import ChannelDropdownLayout from '../DropdownLayout'
 import UsersDropdownItem from './UsersDropdownItem'
+import { setCurrentChannel } from 'components/server/redux/channels/channels.thunk'
 
 interface UsersDropdownProps {
     isActive: boolean

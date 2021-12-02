@@ -2,16 +2,24 @@ import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
+<<<<<<< HEAD
 import { selectCurrentChannel } from '../redux/channels/channels.slice'
+=======
+>>>>>>> 67ee805 (refactor: move asyncThunks to seperate folders)
 import {
     selectMessages,
     clearSearchMessage,
     setSearchMessages,
+<<<<<<< HEAD
 } from '../redux/messages/messages.slice'
+=======
+} from 'components/server/redux/messages/messages.slice'
+>>>>>>> 67ee805 (refactor: move asyncThunks to seperate folders)
 
 import { Undefinable } from 'types/commonType'
 import { Modal, Icon } from 'semantic-ui-react'
 import SearchOptionButton from './SearchOptionButton'
+import { selectCurrentChannel } from 'components/server/redux/channels/channels.slice'
 
 interface SearchModalProps {
     isOpen: boolean
