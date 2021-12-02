@@ -1,12 +1,13 @@
 import React, { FunctionComponent } from 'react'
+
 import { Undefinable } from 'types/commonType'
 
 interface ErrorMessageProps {
-    content: Undefinable<string>
+    message: Undefinable<string>
 }
 
-const ErrorMessage: FunctionComponent<ErrorMessageProps> = ({ content }) => {
-    return <p className="text-red-600 font-semibold py-2">{content}</p>
+const ErrorMessage: FunctionComponent<ErrorMessageProps> = ({ message }) => {
+    return <p className="text-red-600 font-semibold py-2">{message}</p>
 }
 
 export default ErrorMessage

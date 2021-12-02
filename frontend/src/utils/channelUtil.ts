@@ -1,6 +1,6 @@
-import { UserInfo } from 'pages/auth/components/auth.slice'
-import { ChannelInfo } from 'pages/server/components/slices/channel.slice'
-import { CHANNEL_NAME_SEPARATOR } from './appConst'
+import { UserInfo } from 'components/auth/redux/auth.slice'
+import { ChannelInfo } from 'components/server/redux/channels/channels.slice'
+import { CHANNEL_NAME_SEPARATOR } from '../constants/appConst'
 
 export const formatChannelName = (channelName: string) =>
     channelName.trim().replaceAll(' ', '-').toLowerCase()

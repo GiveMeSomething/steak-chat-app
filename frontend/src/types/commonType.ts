@@ -7,3 +7,7 @@ export type ThunkState = { state: RootState }
 export type WithPayload<T> = {
     payload: T
 }
+
+export interface IdAsKeyObject {
+    [channelId: string]: number
+}
