@@ -7,7 +7,8 @@ import {
     generateDirectChannelInfo,
     getDirectChannelId,
 } from 'utils/channelUtil'
-import { setIsDirectChannel, setCurrentChannel } from '../redux/channel.slice'
+import { setIsDirectChannel } from 'components/server/redux/channels/channels.slice'
+import { setCurrentChannel } from 'components/server/redux/channels/channels.thunk'
 
 interface UserDetailPanelProps {
     data: UserInfo

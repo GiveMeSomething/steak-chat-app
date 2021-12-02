@@ -2,11 +2,6 @@ import React, { FunctionComponent } from 'react'
 import { useAppDispatch } from 'redux/hooks'
 
 import {
-    ChannelInfo,
-    unStarSelectedChannel,
-    starSelectedChannel,
-} from '../../redux/channel.slice'
-import {
     setCurrentMetaPanelData,
     setMetaPanelOpen,
 } from 'components/server/redux/metaPanel.slice'
@@ -14,6 +9,11 @@ import {
 import { Undefinable } from 'types/commonType'
 
 import { Dropdown, Icon } from 'semantic-ui-react'
+import { ChannelInfo } from 'components/server/redux/channels/channels.slice'
+import {
+    unStarSelectedChannel,
+    starSelectedChannel,
+} from 'components/server/redux/channels/channels.thunk'
 
 interface ChannelOptionsProps {
     starred: boolean

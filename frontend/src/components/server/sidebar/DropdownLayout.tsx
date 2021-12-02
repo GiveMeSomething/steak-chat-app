@@ -1,18 +1,18 @@
 import React, { FunctionComponent, MouseEventHandler, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
-import { selectChannelNotifications } from 'components/server/redux/notification.slice'
-import {
-    ChannelInfo,
-    selectCurrentChannel,
-    setIsDirectChannel,
-    setCurrentChannel,
-} from '../redux/channel.slice'
+import { selectChannelNotifications } from 'components/server/redux/notifications/notifications.slice'
+import { setCurrentChannel } from 'components/server/redux/channels/channels.thunk'
 
 import { Accordion, Icon, Label, Popup } from 'semantic-ui-react'
 
 import ScreenOverlay from 'components/commons/ScreenOverlay'
 import ChannelOptionsDropdown from './channels/ChannelOptionsMenu'
+import {
+    ChannelInfo,
+    selectCurrentChannel,
+    setIsDirectChannel,
+} from 'components/server/redux/channels/channels.slice'
 
 interface ChannelDropdownLayoutProps {
     isActive: boolean

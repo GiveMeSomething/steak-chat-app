@@ -6,8 +6,6 @@ import { v4 as uuid } from 'uuid'
 import { getDownloadURL, ref, uploadBytesResumable } from '@firebase/storage'
 import { storage } from 'firebase/firebase'
 
-import { sendMessage } from '../../redux/channelMessage.slice'
-
 import { MAX_FILE_SIZE_BYTES } from 'constants/appConst'
 import { extractFileExt } from 'utils/fileUtil'
 import { Undefinable } from 'types/commonType'
@@ -17,6 +15,7 @@ import { Modal, Button, Icon } from 'semantic-ui-react'
 import FormInput from 'components/server/modal/FormInput'
 import ErrorMessage from 'components/commons/ErrorMessage'
 import ProgressBar from './ProgressBar'
+import { sendMessage } from 'components/server/redux/messages/messages.thunk'
 
 interface AddMediaModalProps {
     currentMessage: string

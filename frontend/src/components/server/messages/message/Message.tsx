@@ -2,7 +2,7 @@ import React, { FunctionComponent, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
 import { UserInfo } from 'components/auth/redux/auth.slice'
-import { selectChannelUsers } from 'components/server/redux/channelUsers.slice'
+import { selectChannelUsers } from 'components/server/redux/users/users.slice'
 import {
     setCurrentMetaPanelData,
     setMetaPanelOpen,

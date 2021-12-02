@@ -2,7 +2,7 @@ import React, { FunctionComponent, useState } from 'react'
 import { useAppDispatch } from 'redux/hooks'
 import { useForm } from 'react-hook-form'
 
-import { addNewChannel } from '../../redux/channel.slice'
+import { addNewChannel } from 'components/server/redux/channels/channels.thunk'
 
 import { formatChannelName } from 'utils/channelUtil'
 

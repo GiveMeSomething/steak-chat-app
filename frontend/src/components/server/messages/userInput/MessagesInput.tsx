@@ -2,15 +2,13 @@ import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { useForm } from 'react-hook-form'
 
-import { selectCurrentChannel } from '../../redux/channel.slice'
-import {
-    setMessageLoading,
-    sendMessage,
-} from '../../redux/channelMessage.slice'
+import { setMessageLoading } from 'components/server/redux/messages/messages.slice'
 
 import { Button, Input, Popup } from 'semantic-ui-react'
 
 import AddMediaModal from './AddMediaModal'
+import { selectCurrentChannel } from 'components/server/redux/channels/channels.slice'
+import { sendMessage } from 'components/server/redux/messages/messages.thunk'
 
 interface MessagesInputProps {}
 

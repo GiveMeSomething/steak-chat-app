@@ -2,10 +2,7 @@ import React, { FunctionComponent } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
 import { selectCurrentUser, UserInfo } from 'components/auth/redux/auth.slice'
-import {
-    setIsDirectChannel,
-    setCurrentChannel,
-} from 'components/server/redux/channel.slice'
+import { setIsDirectChannel } from 'components/server/redux/channels/channels.slice'
 
 import {
     generateDirectChannelInfo,
@@ -13,6 +10,7 @@ import {
 } from 'utils/channelUtil'
 
 import { Dropdown } from 'semantic-ui-react'
+import { setCurrentChannel } from 'components/server/redux/channels/channels.thunk'
 
 interface OptionsMenuProps {
     isOpen: boolean

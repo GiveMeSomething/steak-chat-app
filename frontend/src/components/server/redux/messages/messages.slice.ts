@@ -1,10 +1,6 @@
-import { get, increment, ref, serverTimestamp, set } from '@firebase/database'
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
-import { database } from 'firebase/firebase'
+import { createSlice } from '@reduxjs/toolkit'
 import { RootState } from 'redux/store'
-import { ThunkState, Undefinable } from 'types/commonType'
-import { v4 as uuid } from 'uuid'
-import { ChannelInfo } from './channel.slice'
+import { Undefinable } from 'types/commonType'
 
 export interface Message {
     id: string
@@ -18,7 +14,7 @@ export interface Message {
     }
 }
 
-interface SendMessagePayload {
+export interface SendMessagePayload {
     message: string
     mediaPath?: string
 }
@@ -40,69 +36,6 @@ const initialState: MessagesState = {
     isDirectMessage: false,
     isSearching: false,
 }
-
-const saveMessageToDatabase = async (
-    message: Message,
-    currentChannel: ChannelInfo,
-    isDirectChannel: boolean,
-) => {
-    let messageRef
-    const messageCountRef = ref(database, `messageCount/${currentChannel.id}`)
-
-    // Set messages destination based on public channel or private channel (direct messages)
-    if (isDirectChannel) {
-        messageRef = ref(
-            database,
-            `direct-message/${currentChannel.id}/messages/${message.id}`,
-        )
-    } else {
-        messageRef = ref(
-            database,
-            `channels/${currentChannel.id}/messages/${message.id}`,
-        )
-    }
-
-    // Add 1 to messageCountRef, based on the server current value
-    await set(messageCountRef, increment(1))
-
-    // Set object to database, this will trigger child_added to re-render page
-    await set(messageRef, message)
-
-    return get(messageRef)
-}
-
-export const sendMessage = createAsyncThunk<
-    void,
-    SendMessagePayload,
-    ThunkState
->('message/sendMessage', async (data, { getState, dispatch }) => {
-    const appState = getState()
-    const currentUser = appState.user.user
-    const currentChannel = appState.channels.currentChannel
-    const isDirectMessage = appState.channels.isDirectChannel
-
-    if (currentUser) {
-        const createdBy = {
-            uid: currentUser.uid,
-            username: currentUser.username,
-            photoUrl: currentUser.photoUrl,
-        }
-
-        // Create new message object to send to database
-        const message: Message = {
-            id: uuid(),
-            timestamp: serverTimestamp(),
-            content: data.message,
-            media: data.mediaPath || '',
-            createdBy,
-        }
-
-        await saveMessageToDatabase(message, currentChannel, isDirectMessage)
-
-        // Cancel loading state
-        dispatch(setMessageLoading(false))
-    }
-})
 
 const messageSlice = createSlice({
     name: 'message',

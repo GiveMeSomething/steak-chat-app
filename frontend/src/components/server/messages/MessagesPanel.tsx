@@ -5,7 +5,7 @@ import {
     selectMessages,
     selectSearchMessages,
     selectIsSearching,
-} from 'components/server/redux/channelMessage.slice'
+} from 'components/server/redux/messages/messages.slice'
 
 import MessageComponent from './message/Message'
 

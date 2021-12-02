@@ -2,16 +2,16 @@ import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
-import { selectCurrentChannel } from '../redux/channel.slice'
 import {
     selectMessages,
     clearSearchMessage,
     setSearchMessages,
-} from '../redux/channelMessage.slice'
+} from 'components/server/redux/messages/messages.slice'
 
 import { Undefinable } from 'types/commonType'
 import { Modal, Icon } from 'semantic-ui-react'
 import SearchOptionButton from './SearchOptionButton'
+import { selectCurrentChannel } from 'components/server/redux/channels/channels.slice'
 
 interface SearchModalProps {
     isOpen: boolean

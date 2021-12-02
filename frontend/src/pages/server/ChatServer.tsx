@@ -23,11 +23,10 @@ import {
     selectIsDirectChannel,
     unStarChannel,
     updateChannelInfo,
-    updateNotifications,
-} from '../../components/server/redux/channel.slice'
+} from 'components/server/redux/channels/channels.slice'
 import { selectCurrentUser } from 'components/auth/redux/auth.slice'
 
-import ServerLayout from '../../components/server/ServerLayout'
+import ServerLayout from 'components/server/ServerLayout'
 import withAuthRedirect from 'components/middleware/withAuthRedirect'
 import {
     CHANNELS_REF,
@@ -41,16 +40,17 @@ import {
     clearMessages,
     clearSearchMessage,
     addMessage,
-} from 'components/server/redux/channelMessage.slice'
+} from 'components/server/redux/messages/messages.slice'
 import {
     clearChannelUsers,
     addChannelUser,
     updateChannelUser,
-} from 'components/server/redux/channelUsers.slice'
+} from 'components/server/redux/users/users.slice'
 import {
     selectChannelMessageCount,
     setChannelMessageCount,
-} from 'components/server/redux/notification.slice'
+} from 'components/server/redux/notifications/notifications.slice'
+import { updateNotifications } from 'components/server/redux/channels/channels.thunk'
 
 interface ChatServerProps {}
 
@@ -142,8 +142,7 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
         )
 
         const unsubscribeMessageCount = onValue(MESSAGE_COUNT_REF, (data) => {
-            const result = data.val()
-            if (result) {
+            if (data) {
                 dispatch(updateNotifications(data.val()))
             }
         })
