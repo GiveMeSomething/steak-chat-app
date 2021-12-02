@@ -4,12 +4,13 @@ import { getDatabase } from 'firebase/database'
 import { getStorage } from 'firebase/storage'
 
 const firebaseConfig = {
-    apiKey: 'AIzaSyAE2c2oGEs6lCS8iK7zWtBDpeo9l6f04_8',
-    authDomain: 'steak-chat-app-79f80.firebaseapp.com',
-    projectId: 'steak-chat-app-79f80',
-    storageBucket: 'steak-chat-app-79f80.appspot.com',
-    messagingSenderId: '579962188919',
-    appId: '1:579962188919:web:53176ceceb85fc0e040272',
+    apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
+    authDomain: process.env.REACT_APP_FIREBAE_AUTH_DOMAIN,
+    databaseUrl: process.env.REACT_APP_FIREBAE_DATABASE_URL,
+    projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
+    storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
+    messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+    appId: process.env.REACT_APP_FIREBASE_APP_ID,
 }
 
 export const firebaseApp = initializeApp(firebaseConfig)
