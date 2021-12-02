@@ -1,10 +1,11 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
+
 import {
     selectMessages,
     selectSearchMessages,
     selectIsSearching,
-} from '../redux/channelMessage.slice'
+} from 'components/server/redux/channelMessage.slice'
 
 import MessageComponent from './message/Message'
 
@@ -25,17 +26,16 @@ const MessagesPanel: FunctionComponent<MessagePanelProps> = () => {
         }
     }, [])
 
-    // Scroll to bottom after the iamge is loaded
+    // Scroll to bottom after the image is loaded
     useEffect(() => {
         scrollToBottomDiv.current?.scrollIntoView({ behavior: 'auto' })
         if (messages.length > 0) {
             setIsLoading(false)
         }
-    }, [messages])
+    }, [messages, searchMessages])
 
-    // Display messages based on searchMessages and messages existance
+    // Display messages based on searchMessages and messages
     const messagePanelContent = () => {
-        // Display search messages if in searching mode and if have any
         if (isSearching) {
             if (searchMessages.length > 0) {
                 return searchMessages.map((searchMessage) => (
@@ -45,18 +45,19 @@ const MessagesPanel: FunctionComponent<MessagePanelProps> = () => {
                     />
                 ))
             } else {
-                return <div>No message found (will make this pretty later)</div>
+                // TODO: Make better UI for dis
+                return <div>No message found</div>
             }
         }
 
-        // Display messages if not in searching mode
-        if (!isSearching && messages && messages.length > 0) {
+        if (!isSearching && messages.length > 0) {
             return messages.map((message) => (
                 <MessageComponent {...message} key={message.id} />
             ))
         }
 
         // Display welcome message if there are no messages
+        // TODO: Make better UI for dis
         return <div>Display welcome message if there is no message</div>
     }
 
