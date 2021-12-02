@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react'
 
 import { UserInfo } from 'components/auth/redux/auth.slice'
 
-import { UserStatus } from 'utils/appEnum'
+import { UserStatus } from 'constants/appEnum'
 
 import { Icon } from 'semantic-ui-react'
 
