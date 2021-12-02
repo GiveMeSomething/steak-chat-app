@@ -1,7 +1,6 @@
 import React, { FunctionComponent } from 'react'
 import { useAppDispatch } from 'redux/hooks'
-import { Dropdown, Icon } from 'semantic-ui-react'
-import { channelOptions } from 'utils/appConst'
+
 import {
     ChannelInfo,
     unStarSelectedChannel,
@@ -12,9 +11,13 @@ import {
     setMetaPanelOpen,
 } from 'components/server/redux/metaPanel.slice'
 
+import { Undefinable } from 'types/commonType'
+
+import { Dropdown, Icon } from 'semantic-ui-react'
+
 interface ChannelOptionsProps {
     starred: boolean
-    selectedChannel: ChannelInfo | undefined
+    selectedChannel: Undefinable<ChannelInfo>
     isOpen: boolean
     closeMenu: Function
 }
@@ -27,7 +30,34 @@ const ChannelOptions: FunctionComponent<ChannelOptionsProps> = ({
 }) => {
     const dispatch = useAppDispatch()
 
-    const menuOptions = channelOptions(starred)
+    const menuOptions = {
+        notificationSetting: {
+            text: 'Change notifications',
+            disabled: true,
+        },
+        notificationMute: {
+            text: 'Mute channel',
+            disabled: true,
+        },
+        copyName: {
+            text: 'Copy name',
+            disabled: true,
+        },
+        copyLink: {
+            text: 'Copy link',
+            disabled: true,
+        },
+        toggleStar: {
+            text: starred ? 'Unstar channel' : 'Star channel',
+        },
+        channelDetail: {
+            text: 'Open channel details',
+        },
+        leaveChannel: {
+            text: 'Leave channel',
+            disabled: true,
+        },
+    }
 
     const handleOnStarChannel = async (
         event: React.MouseEvent<HTMLDivElement>,
@@ -39,6 +69,7 @@ const ChannelOptions: FunctionComponent<ChannelOptionsProps> = ({
                 await dispatch(starSelectedChannel(selectedChannel))
             }
         }
+
         closeMenu(event)
     }
 
@@ -52,6 +83,7 @@ const ChannelOptions: FunctionComponent<ChannelOptionsProps> = ({
         closeMenu(event)
     }
 
+    // Dropdown render a ellipsis in-place of normal ellipsis (so when dropdown shown, the channelItem still have a ellipsis)
     return (
         <Dropdown
             icon={null}
@@ -61,22 +93,22 @@ const ChannelOptions: FunctionComponent<ChannelOptionsProps> = ({
         >
             {/* TODO: Currently hard-coding here */}
             <Dropdown.Menu className="top right text-black text-xl font-light">
-                <Dropdown.Item {...menuOptions[0]} />
-                <Dropdown.Item {...menuOptions[1]} />
+                <Dropdown.Item {...menuOptions.notificationSetting} />
+                <Dropdown.Item {...menuOptions.notificationMute} />
                 <Dropdown.Divider />
-                <Dropdown.Item {...menuOptions[2]} />
-                <Dropdown.Item {...menuOptions[3]} />
+                <Dropdown.Item {...menuOptions.copyName} />
+                <Dropdown.Item {...menuOptions.copyLink} />
                 <Dropdown.Divider />
                 <Dropdown.Item
-                    {...menuOptions[4]}
-                    onClick={(e) => handleOnStarChannel(e)}
+                    {...menuOptions.toggleStar}
+                    onClick={handleOnStarChannel}
                 />
                 <Dropdown.Divider />
                 <Dropdown.Item
-                    {...menuOptions[5]}
-                    onClick={(e) => handleOnChannelDetail(e)}
+                    {...menuOptions.channelDetail}
+                    onClick={handleOnChannelDetail}
                 />
-                <Dropdown.Item {...menuOptions[6]} />
+                <Dropdown.Item {...menuOptions.leaveChannel} />
             </Dropdown.Menu>
         </Dropdown>
     )

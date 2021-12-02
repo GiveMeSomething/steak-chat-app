@@ -8,7 +8,11 @@ const Signup = () => {
         <div className="h-screen max-h-screen">
             <div className="grid md:w-1/2 sm:w-full h-full mx-auto">
                 <div className="row-span-1">
-                    <AuthForm label="Sign up" action="signup" />
+                    <AuthForm
+                        label="🥩"
+                        submitLabel="Sign up"
+                        action="signup"
+                    />
                 </div>
                 <div className="flex flex-col items-center justify-center border-t-2 row-span-1 py-4 my-4">
                     <h4 className="font-bold">Have an account?</h4>

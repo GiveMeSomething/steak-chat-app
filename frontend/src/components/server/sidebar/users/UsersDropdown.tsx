@@ -1,3 +1,6 @@
+import React, { FunctionComponent } from 'react'
+import { useAppDispatch, useAppSelector } from 'redux/hooks'
+
 import { selectCurrentUser, UserInfo } from 'components/auth/redux/auth.slice'
 import {
     selectCurrentChannel,
@@ -5,13 +8,13 @@ import {
     setCurrentChannel,
 } from 'components/server/redux/channel.slice'
 import { selectChannelUsers } from 'components/server/redux/channelUsers.slice'
-import React, { FunctionComponent } from 'react'
-import { useAppDispatch, useAppSelector } from 'redux/hooks'
-import { Accordion, Icon } from 'semantic-ui-react'
+
 import {
     generateDirectChannelInfo,
     getDirectChannelId,
 } from 'utils/channelUtil'
+
+import ChannelDropdownLayout from '../DropdownLayout'
 import UsersDropdownItem from './UsersDropdownItem'
 
 interface UsersDropdownProps {
@@ -46,11 +49,6 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
         return false
     }
 
-    // Open or close channel menu
-    const handleOnChannelUserMenuClick = () => {
-        setActive(!isActive)
-    }
-
     // Change currentChannel and switch to directChannel mode
     const handleOnChannelUserClick = (user: UserInfo) => {
         if (currentUser) {
@@ -73,40 +71,34 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
     }
 
     return (
-        <Accordion>
-            <Accordion.Title
-                active={isActive}
-                onClick={handleOnChannelUserMenuClick}
-            >
-                <div className="flex h-full items-center justify-between px-4 hover:bg-slack-sidebar-hover text-white">
-                    <div className="flex items-baseline">
-                        <Icon name="dropdown" />
-                        <h4>Users</h4>
-                    </div>
-                </div>
-            </Accordion.Title>
-            <Accordion.Content active={isActive}>
-                {Object.values(channelUsers).map((user) => {
-                    return (
-                        <div
-                            className={`flex items-center justify-between h-full w-full pl-4 cursor-pointer font-semibold
+        <ChannelDropdownLayout
+            isActive={isActive}
+            setActive={setActive}
+            haveAddNewOption={false}
+            haveContextMenu={false}
+            label="Channels"
+            starred={false}
+        >
+            {Object.values(channelUsers).map((user) => {
+                return (
+                    <div
+                        className={`flex items-center justify-between h-full w-full pl-4 cursor-pointer font-semibold
                                 ${
                                     isCurrentUserActive(user.uid)
                                         ? 'sidebar-dropdown-item__active'
                                         : 'sidebar-dropdown-item__inactive'
                                 }`}
-                            key={user.uid}
-                            onClick={() => handleOnChannelUserClick(user)}
-                        >
-                            <UsersDropdownItem
-                                user={user}
-                                currentUser={currentUser}
-                            />
-                        </div>
-                    )
-                })}
-            </Accordion.Content>
-        </Accordion>
+                        key={user.uid}
+                        onClick={() => handleOnChannelUserClick(user)}
+                    >
+                        <UsersDropdownItem
+                            user={user}
+                            currentUser={currentUser}
+                        />
+                    </div>
+                )
+            })}
+        </ChannelDropdownLayout>
     )
 }
 

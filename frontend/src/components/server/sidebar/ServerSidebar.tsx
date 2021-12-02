@@ -1,49 +1,33 @@
-import React, { FunctionComponent, MouseEvent, useState } from 'react'
-import { useAppSelector } from 'redux/hooks'
-import { selectCurrentChannel } from '../redux/channel.slice'
-import ChannelsDropdown from './channelDropdown/ChannelsDropdown'
-import StarredChannelsDropdown from './channelDropdown/StarredChannelsDropdown'
-import UsersDropdown from './usersDropdown/UsersDropdown'
+import React, { FunctionComponent, useState } from 'react'
 
-interface SidebarProps {
-    setChannelModalOpen: Function
-}
+import ChannelsDropdown from './channels/ChannelsDropdown'
+import StarredDropdown from './channels/StarredDropdown'
+import UsersDropdown from './users/UsersDropdown'
 
-const ServerSidebar: FunctionComponent<SidebarProps> = (props) => {
+const ServerSidebar: FunctionComponent = () => {
     // Always open channels menu on mount
-    const [isStarredChannelActive, setStarredChannelActive] =
-        useState<boolean>(true)
-    const [isChannelsActive, setChannelsActive] = useState<boolean>(true)
+    const [isStarredActive, setStarredActive] = useState<boolean>(true)
+    const [isChannelActive, setChannelActive] = useState<boolean>(true)
     const [isUsersActive, setUsersActive] = useState<boolean>(true)
-    const currentChannel = useAppSelector(selectCurrentChannel)
-
-    const handleOnAddChannelClick = (e: MouseEvent<HTMLDivElement>) => {
-        // Stop the add button trigger close channels menu
-        e.stopPropagation()
-
-        // Open add new channel modal
-        props.setChannelModalOpen(true)
-    }
 
     return (
         <>
             <div className="flex items-center justify-between px-3 py-2 border-t-2 border-b-2 border-gray-700">
                 <div className="flex items-baseline h-full">
-                    <h2 className="font-bold px-3">{`# ${currentChannel.name}`}</h2>
+                    <h2 className="font-bold px-3">Server Name</h2>
                 </div>
             </div>
             <div className="py-4">
                 <div className="py-2">
-                    <StarredChannelsDropdown
-                        isActive={isStarredChannelActive}
-                        setActive={setStarredChannelActive}
+                    <StarredDropdown
+                        isActive={isStarredActive}
+                        setActive={setStarredActive}
                     />
                 </div>
                 <div className="py-2">
                     <ChannelsDropdown
-                        onAddClick={handleOnAddChannelClick}
-                        isActive={isChannelsActive}
-                        setActive={setChannelsActive}
+                        isActive={isChannelActive}
+                        setActive={setChannelActive}
                     />
                 </div>
                 <div className="py-2">
