@@ -14,7 +14,7 @@ import {
 import md5 from 'md5'
 import { Undefinable, ThunkState } from 'types/commonType'
 import { AuthPayload, UserInfo } from './auth.slice'
-import { UserStatus } from 'constants/appEnum'
+import { UserStatus } from 'types/appEnum'
 
 const auth = getAuth(firebaseApp)
 

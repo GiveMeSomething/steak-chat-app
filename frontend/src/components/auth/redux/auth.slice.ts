@@ -9,7 +9,7 @@ import {
     updateUserStatus,
 } from './auth.thunk'
 
-import { UserStatus } from 'constants/appEnum'
+import { UserStatus } from 'types/appEnum'
 import { IdAsKeyObject, Undefinable } from 'types/commonType'
 
 // TODO: Maybe functions need to be in async/await

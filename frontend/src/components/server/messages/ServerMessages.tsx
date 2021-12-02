@@ -1,12 +1,11 @@
-import React, { FunctionComponent, useState } from 'react'
+import React, { FunctionComponent } from 'react'
 import MessagesHeader from './MessagesHeader'
-import MessagesInput from './MessagesInput'
+import MessagesInput from './userInput/MessagesInput'
 import MessagesPanel from './MessagesPanel'
 
 interface ServerMessagesProps {}
 
 const ServerMessages: FunctionComponent<ServerMessagesProps> = () => {
-    const [isAddMediaModalOpen, setAddMediaModalOpen] = useState<boolean>(false)
     return (
         <div className="flex flex-col h-full relative">
             <div>
@@ -14,10 +13,7 @@ const ServerMessages: FunctionComponent<ServerMessagesProps> = () => {
             </div>
             <MessagesPanel />
             <div className="absolute -bottom-0 w-full bg-white z-10">
-                <MessagesInput
-                    isAddMediaModalOpen={isAddMediaModalOpen}
-                    setAddMediaModalOpen={setAddMediaModalOpen}
-                />
+                <MessagesInput />
             </div>
         </div>
     )

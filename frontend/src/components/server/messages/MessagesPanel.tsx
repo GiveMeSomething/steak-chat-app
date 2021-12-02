@@ -7,7 +7,7 @@ import {
     selectSearchMessages,
 } from '../redux/messages/messages.slice'
 
-import MessageComponent from './MessageComponent'
+import MessageComponent from './message/Message'
 
 interface MessagePanelProps {}
 

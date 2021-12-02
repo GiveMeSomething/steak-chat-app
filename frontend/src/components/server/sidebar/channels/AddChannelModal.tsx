@@ -94,7 +94,7 @@ const AddChannelModal: FunctionComponent<AddChannelModalProps> = ({
                         />
                         {errors.channelName && (
                             <ErrorMessage
-                                content={errors.channelName.message}
+                                message={errors.channelName.message}
                             />
                         )}
                         <FormInput

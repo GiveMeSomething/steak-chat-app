@@ -112,7 +112,7 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
                             type="text"
                         />
                         {errors.email && (
-                            <ErrorMessage content={errors.email.message} />
+                            <ErrorMessage message={errors.email.message} />
                         )}
                     </div>
                     <div className="flex flex-col items-start justify-start p-2 w-full">
@@ -129,7 +129,7 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
                             type="password"
                         />
                         {errors.password && (
-                            <ErrorMessage content={errors.password.message} />
+                            <ErrorMessage message={errors.password.message} />
                         )}
                     </div>
                     <div className="flex flex-col items-center justify-center w-full mt-8">
@@ -141,7 +141,7 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
                             {props.submitLabel}
                         </button>
                         {requestError && (
-                            <ErrorMessage content={requestError} />
+                            <ErrorMessage message={requestError} />
                         )}
                     </div>
                 </div>

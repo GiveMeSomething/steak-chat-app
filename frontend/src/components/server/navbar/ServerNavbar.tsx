@@ -6,7 +6,9 @@ import { selectCurrentChannel } from 'components/server/redux/channel.slice'
 import SearchModal from 'components/server/navbar/SearchModal'
 import ProfileDropdown from './ProfileDropdown'
 
-const ServerNavbar: FunctionComponent = () => {
+interface ServerNavbarProps {}
+
+const ServerNavbar: FunctionComponent<ServerNavbarProps> = () => {
     const [isSearchModalOpen, setIsSearchModalOpen] = useState<boolean>(false)
 
     const currentChannel = useAppSelector(selectCurrentChannel)
