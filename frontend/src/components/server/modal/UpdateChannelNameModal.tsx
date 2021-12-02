@@ -11,7 +11,7 @@ import {
     updateChannelName,
 } from '../redux/channel.slice'
 
-import { BANNED_SPECIAL_CHARACTERS_REGEX } from 'utils/appConst'
+import { BANNED_SPECIAL_CHARACTERS_REGEX } from 'constants/appConst'
 import { findChannelById, formatChannelName } from 'utils/channelUtil'
 import { Modal, Button, Icon } from 'semantic-ui-react'
 

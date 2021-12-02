@@ -2,7 +2,7 @@ import { selectCurrentUser, UserInfo } from 'components/auth/redux/auth.slice'
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { Dropdown, Ref } from 'semantic-ui-react'
-import { messageUserOptions } from 'utils/appConst'
+import { messageUserOptions } from 'constants/appConst'
 import {
     generateDirectChannelInfo,
     getDirectChannelId,

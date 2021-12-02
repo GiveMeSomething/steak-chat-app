@@ -10,7 +10,7 @@ import { v4 as uuid } from 'uuid'
 
 import { sendMessage } from '../redux/channelMessage.slice'
 
-import { MAX_FILE_SIZE_BYTES } from 'utils/appConst'
+import { MAX_FILE_SIZE_BYTES } from 'constants/appConst'
 import { extractFileExt } from 'utils/fileUtil'
 
 import FormInput from './FormInput'
