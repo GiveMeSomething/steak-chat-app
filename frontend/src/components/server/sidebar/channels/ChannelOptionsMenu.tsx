@@ -4,7 +4,7 @@ import { useAppDispatch } from 'redux/hooks'
 import {
     setCurrentMetaPanelData,
     setMetaPanelOpen,
-} from 'components/server/redux/metaPanel.slice'
+} from 'components/server/metaPanel/redux/metaPanel.slice'
 import { ChannelInfo } from 'components/server/redux/channels/channels.slice'
 import {
     unStarSelectedChannel,

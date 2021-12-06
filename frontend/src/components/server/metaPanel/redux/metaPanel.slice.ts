@@ -1,8 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit'
-import { UserInfo } from 'components/auth/redux/auth.slice'
+
 import { RootState } from 'redux/store'
+
+import { UserInfo } from 'components/auth/redux/auth.slice'
+import { ChannelInfo } from 'components/server/redux/channels/channels.slice'
+
 import { Undefinable, WithPayload } from 'types/commonType'
-import { ChannelInfo } from './channels/channels.slice'
 
 interface MetaPanelInitialState {
     isOpen: boolean

@@ -6,7 +6,7 @@ import { selectChannelUsers } from 'components/server/redux/users/users.slice'
 import {
     setCurrentMetaPanelData,
     setMetaPanelOpen,
-} from 'components/server/redux/metaPanel.slice'
+} from 'components/server/metaPanel/redux/metaPanel.slice'
 
 import { getDateString, getTimeString } from 'utils/timeUtil'
 import { Undefinable } from 'types/commonType'
