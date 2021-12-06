@@ -14,7 +14,7 @@ import { v4 as uuid } from 'uuid'
 
 import { Modal, Button, Icon } from 'semantic-ui-react'
 
-import FormInput from 'components/server/modal/FormInput'
+import FormInput from 'components/commons/FormInput'
 import ErrorMessage from 'components/commons/ErrorMessage'
 import ProgressBar from './ProgressBar'
 

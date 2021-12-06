@@ -4,7 +4,7 @@ import authSlice from 'components/auth/redux/auth.slice'
 import channelSlice from 'components/server/redux/channels/channels.slice'
 import channelMessageSlice from 'components/server/redux/messages/messages.slice'
 import channelUsersSlice from 'components/server/redux/users/users.slice'
-import metaPanelSlice from 'components/server/redux/metaPanel.slice'
+import metaPanelSlice from 'components/server/metaPanel/redux/metaPanel.slice'
 import notificationSlice from 'components/server/redux/notifications/notifications.slice'
 
 export const store = configureStore({

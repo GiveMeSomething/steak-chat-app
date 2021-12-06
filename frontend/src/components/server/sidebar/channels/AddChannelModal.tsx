@@ -8,7 +8,7 @@ import { formatChannelName } from 'utils/channelUtil'
 
 import { Button, Dropdown, Icon, Modal } from 'semantic-ui-react'
 
-import FormInput from 'components/server/modal/FormInput'
+import FormInput from 'components/commons/FormInput'
 import ErrorMessage from 'components/commons/ErrorMessage'
 
 interface AddChannelModalProps {

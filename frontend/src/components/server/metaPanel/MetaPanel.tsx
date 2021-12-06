@@ -7,13 +7,14 @@ import {
     selectMetaPanelCurrentData,
     setMetaPanelOpen,
     clearCurrentMetaPanelData,
-} from 'components/server/redux/metaPanel.slice'
+} from 'components/server/metaPanel/redux/metaPanel.slice'
 
 import { Undefinable } from 'types/commonType'
 
 import { Button } from 'semantic-ui-react'
-import ChannelDetailPanel from './ChannelDetailPanel'
-import UserDetailPanel from './UserDetailPanel'
+
+import ChannelDetailPanel from './panel/ChannelDetailPanel'
+import UserDetailPanel from './panel/UserDetailPanel'
 
 interface MetaPanelProps {}
 
@@ -29,6 +30,16 @@ const MetaPanel: FunctionComponent<MetaPanelProps> = () => {
     const dispatch = useAppDispatch()
 
     const currentMetaPanelData = useAppSelector(selectMetaPanelCurrentData)
+
+    // TODO: Move this into util file if used again
+    // User-defined typeguard to check TS type at runtime
+    // Reference: https://www.typescriptlang.org/docs/handbook/advanced-types.html
+    // Reference: https://rangle.io/blog/how-to-use-typescript-type-guards/
+    const isChannelInfo = (object: any): object is ChannelInfo =>
+        (object as ChannelInfo).id !== undefined
+
+    const isUserInfo = (object: any): object is UserInfo =>
+        (object as UserInfo).uid !== undefined
 
     useEffect(() => {
         if (currentMetaPanelData) {
@@ -46,16 +57,6 @@ const MetaPanel: FunctionComponent<MetaPanelProps> = () => {
 
         dispatch(clearCurrentMetaPanelData())
     }
-
-    // TODO: Move this into util file if used again
-    // User-defined typeguard to check TS type at runtime
-    // Reference: https://www.typescriptlang.org/docs/handbook/advanced-types.html
-    // Reference: https://rangle.io/blog/how-to-use-typescript-type-guards/
-    const isChannelInfo = (object: any): object is ChannelInfo =>
-        (object as ChannelInfo).id !== undefined
-
-    const isUserInfo = (object: any): object is UserInfo =>
-        (object as UserInfo).uid !== undefined
 
     if (currentMetaPanelData) {
         // Decide meta panel content based on currentData type (ChannelInfo | UserInfo)

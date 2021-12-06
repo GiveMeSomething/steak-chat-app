@@ -1,7 +1,7 @@
 import React, { FunctionComponent } from 'react'
 import { useAppSelector } from 'redux/hooks'
 
-import { selectIsMetaPanelOpen } from 'components/server/redux/metaPanel.slice'
+import { selectIsMetaPanelOpen } from 'components/server/metaPanel/redux/metaPanel.slice'
 
 import ServerNavbar from './navbar/ServerNavbar'
 import ServerSidebar from './sidebar/ServerSidebar'

@@ -11,8 +11,9 @@ import {
     Icon,
     Segment,
 } from 'semantic-ui-react'
-import UpdateChannelDescModal from 'components/server/modal/UpdateChannelDescModal'
-import UpdateChannelNameModal from 'components/server/modal/UpdateChannelNameModal'
+
+import UpdateChannelDescModal from 'components/server/metaPanel/modal/UpdateChannelDescModal'
+import UpdateChannelNameModal from 'components/server/metaPanel/modal/UpdateChannelNameModal'
 
 interface ChannelDetailPanelProps {
     data: ChannelInfo
@@ -31,9 +32,11 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
     const channelUsers = useAppSelector(selectChannelUsers)
 
     const handleClick = (
-        e: React.MouseEvent<HTMLDivElement, MouseEvent>,
+        event: React.MouseEvent<HTMLDivElement, MouseEvent>,
         titleProps: AccordionTitleProps,
     ) => {
+        event.stopPropagation()
+
         const { index } = titleProps
 
         // Make sure only one open at a time
@@ -41,11 +44,11 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
         setActiveIndex(newIndex)
     }
 
-    const handleOnChannelNameClick = () => {
+    const handleChannelNameClick = () => {
         setIsUpdateNameModalOpen(true)
     }
 
-    const handleOnChannelDescClick = () => {
+    const handleChannelDescClick = () => {
         setIsUpdateDescModalOpen(true)
     }
 
@@ -71,7 +74,7 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
                     <div className="px-4">
                         <Segment
                             className="meta-panel__item"
-                            onClick={handleOnChannelNameClick}
+                            onClick={handleChannelNameClick}
                         >
                             <h4 className="font-semibold mb-1">Channel name</h4>
                             <h4>{data.name}</h4>
@@ -79,7 +82,7 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
                         <Segment.Group>
                             <Segment
                                 className="meta-panel__item"
-                                onClick={handleOnChannelDescClick}
+                                onClick={handleChannelDescClick}
                             >
                                 <div>
                                     <h4 className="font-semibold mb-1">
