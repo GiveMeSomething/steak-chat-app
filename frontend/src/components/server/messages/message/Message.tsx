@@ -9,10 +9,12 @@ import {
 } from 'components/server/metaPanel/redux/metaPanel.slice'
 
 import { getDateString, getTimeString } from 'utils/timeUtil'
+import { CARD_HEIGHT, MENU_HEIGHT } from 'constants/appConst'
 import { Undefinable } from 'types/commonType'
 
 import ScreenOverlay from 'components/commons/ScreenOverlay'
-import OptionsMenu from './OptionsMenu'
+import UserMenu from './UserMenu'
+import UserCard from './UserCard'
 
 interface MessageComponentProps {
     content?: string
@@ -25,7 +27,7 @@ interface MessageComponentProps {
     }
 }
 
-type RightClickableComponent = 'avatar' | 'username'
+type ClickableComponent = 'avatar' | 'username'
 
 const MessageComponent: FunctionComponent<MessageComponentProps> = ({
     content,
@@ -34,11 +36,13 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
     media,
 }) => {
     const [selectedComponent, setSelectedComponent] =
-        useState<Undefinable<RightClickableComponent>>(undefined)
+        useState<Undefinable<ClickableComponent>>(undefined)
     const [selectedUser, setSelectedUser] =
         useState<Undefinable<UserInfo>>(undefined)
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
-    const [isMenuUpward, setIsMenuUpward] = useState<boolean>(false)
+    const [isCardOpen, setIsCardOpen] = useState<boolean>(false)
+
+    const [isComponentUpward, setIsComponentUpward] = useState<boolean>(false)
 
     const messageRef = useRef<HTMLDivElement>(null)
 
@@ -61,14 +65,11 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
      * @param shouldMenuUpward - boolean - Determine menu direction
      * @return  The corresponding style
      */
-    const menuStyle = (
-        positionAt: Undefinable<RightClickableComponent>,
-        shouldMenuUpward: boolean,
-    ): string => {
+    const menuStyle = (positionAt: Undefinable<ClickableComponent>): string => {
         if (positionAt === 'username') {
             return 'z-20 -top-6 -left-6'
         } else {
-            if (shouldMenuUpward) {
+            if (isComponentUpward) {
                 return 'z-20 top-6 -left-6'
             } else {
                 return 'z-20 top-6 -left-6'
@@ -76,11 +77,22 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
         }
     }
 
+    const cardStyle = (positionAt: Undefinable<ClickableComponent>): string => {
+        if (positionAt === 'username') {
+            return 'z-20 -top-6 -left-6'
+        } else {
+            if (isComponentUpward) {
+                return 'z-20 top-10 -left-6'
+            } else {
+                return 'z-20 -top-6 -left-6'
+            }
+        }
+    }
+
     // Pre-calculate option menu direction based on message position on screen
-    const shouldMenuUpward = (): boolean => {
+    const shouldMenuUpward = (menuHeight: number): boolean => {
         if (messageRef.current) {
             const windowHeight = window.innerHeight
-            const menuHeight = messageRef.current.scrollHeight
             const menuYPos = messageRef.current.getBoundingClientRect().bottom
             if (windowHeight - menuYPos < menuHeight) {
                 return true
@@ -90,43 +102,60 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
         return false
     }
 
-    const shouldMenuShowHere = (
-        componentType: RightClickableComponent,
-    ): boolean => isMenuOpen && selectedComponent === componentType
+    const shouldMenuShowHere = (componentType: ClickableComponent): boolean =>
+        isMenuOpen && selectedComponent === componentType
 
-    const handleOpenUserMetaPanel = (): void => {
+    const shouldCardShowHere = (componentType: ClickableComponent): boolean =>
+        isCardOpen && selectedComponent === componentType
+
+    const findSelectedUser = (): void => {
+        if (!createdBy || !createdBy.uid) {
+            return
+        }
+
         const selectedUser = channelUsers.find(
             (user) => user.uid === createdBy.uid,
         )
 
-        if (selectedUser) {
-            dispatch(setCurrentMetaPanelData(selectedUser))
-        }
+        setSelectedUser(selectedUser)
+    }
 
+    const handleOpenUserMetaPanel = (): void => {
+        findSelectedUser()
+
+        selectedUser && dispatch(setCurrentMetaPanelData(selectedUser))
         dispatch(setMetaPanelOpen(true))
     }
 
-    const handleComponentRightClick = (
-        event: React.MouseEvent<HTMLDivElement>,
-        componentType: RightClickableComponent,
+    /**
+     * Handle opening card/menu when user right-click or click
+     * @param {React.MouseEvent<T>} event - Normal event object
+     * @param {ClickableComponent} componentType - Where the menu/card shown
+     * @param {React.Dispatch<React.SetStateAction<boolean>>} setOpen - setState to set open menu/card
+     */
+    const handleComponentClick = (
+        event: React.MouseEvent,
+        componentType: ClickableComponent,
     ): void => {
-        // Prevent open context menu
-        event.preventDefault()
-
-        // Prevent event bubbling to onClick
-        event.stopPropagation()
-
-        setSelectedUser(channelUsers.find((user) => user.uid === createdBy.uid))
+        findSelectedUser()
         setSelectedComponent(componentType)
 
-        setIsMenuUpward(shouldMenuUpward)
-
-        setIsMenuOpen(true)
+        // Reference: https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
+        switch (event.button) {
+            // Main button pressed, usually the left button
+            case 0:
+                setIsComponentUpward(shouldMenuUpward(CARD_HEIGHT))
+                setIsCardOpen(true)
+                break
+            // Secondary button pressed, usually the right button
+            case 2:
+                setIsComponentUpward(shouldMenuUpward(MENU_HEIGHT))
+                setIsMenuOpen(true)
+                break
+        }
     }
 
-    const handleCloseMessageMenu = (
-        event: React.MouseEvent<HTMLDivElement>,
-    ): void => {
+    const handleCloseMenu = (event: React.MouseEvent<HTMLDivElement>): void => {
         event.preventDefault()
 
         // Stop event bubbling as avatar click (which trigger the user's meta panel)
@@ -135,21 +164,40 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
         setSelectedComponent(undefined)
         setSelectedUser(undefined)
         setIsMenuOpen(false)
+        setIsCardOpen(false)
     }
 
     const menuWithOverlay = () => {
         return (
             selectedUser && (
                 <>
-                    <OptionsMenu
+                    <UserMenu
                         isOpen={isMenuOpen}
                         selectedUser={selectedUser}
                         openMetaPanel={handleOpenUserMetaPanel}
-                        closeMenu={handleCloseMessageMenu}
-                        menuStyle={menuStyle(selectedComponent, isMenuUpward)}
-                        upward={isMenuUpward}
+                        closeMenu={handleCloseMenu}
+                        menuStyle={menuStyle(selectedComponent)}
+                        upward={isComponentUpward}
                     />
-                    <ScreenOverlay handleOnClick={handleCloseMessageMenu} />
+                    <ScreenOverlay handleOnClick={handleCloseMenu} />
+                </>
+            )
+        )
+    }
+
+    const cardWithOverlay = () => {
+        return (
+            selectedUser && (
+                <>
+                    <UserCard
+                        isOpen={isCardOpen}
+                        selectedUser={selectedUser}
+                        openMetaPanel={handleOpenUserMetaPanel}
+                        closeMenu={handleCloseMenu}
+                        cardStyle={cardStyle(selectedComponent)}
+                        upward={isComponentUpward}
+                    />
+                    <ScreenOverlay handleOnClick={handleCloseMenu} />
                 </>
             )
         )
@@ -165,24 +213,20 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
                     src={createdBy.photoUrl}
                     alt="avt"
                     className="rounded-md h-12 w-12 cursor-pointer"
-                    onClick={handleOpenUserMetaPanel}
-                    onContextMenu={(e) =>
-                        handleComponentRightClick(e, 'avatar')
-                    }
+                    onMouseUp={(e) => handleComponentClick(e, 'avatar')}
                 />
+                {shouldCardShowHere('avatar') && cardWithOverlay()}
                 {shouldMenuShowHere('avatar') && menuWithOverlay()}
             </span>
             <div className="ml-4">
                 <div className="flex items-baseline pb-1">
                     <h3
                         className="font-bold hover:underline cursor-pointer"
-                        onClick={handleOpenUserMetaPanel}
-                        onContextMenu={(e) =>
-                            handleComponentRightClick(e, 'username')
-                        }
+                        onMouseDown={(e) => handleComponentClick(e, 'username')}
                     >
                         {createdBy.username}
                     </h3>
+                    {shouldCardShowHere('username') && cardWithOverlay()}
                     {shouldMenuShowHere('username') && menuWithOverlay()}
                     <h5 className="text-slack-text-blur px-2">{messageTime}</h5>
                 </div>

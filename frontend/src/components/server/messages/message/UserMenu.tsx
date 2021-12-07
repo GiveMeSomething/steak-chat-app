@@ -12,7 +12,7 @@ import {
 
 import { Dropdown } from 'semantic-ui-react'
 
-interface OptionsMenuProps {
+interface UserMenuProps {
     isOpen: boolean
     selectedUser: UserInfo
     openMetaPanel: Function
@@ -21,7 +21,7 @@ interface OptionsMenuProps {
     upward: boolean
 }
 
-const OptionsMenu: FunctionComponent<OptionsMenuProps> = ({
+const UserMenu: FunctionComponent<UserMenuProps> = ({
     isOpen,
     selectedUser,
     openMetaPanel,
@@ -106,4 +106,4 @@ const OptionsMenu: FunctionComponent<OptionsMenuProps> = ({
     )
 }
 
-export default OptionsMenu
+export default UserMenu
