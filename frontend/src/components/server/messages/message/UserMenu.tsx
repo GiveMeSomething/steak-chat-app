@@ -56,7 +56,7 @@ const UserMenu: FunctionComponent<UserMenuProps> = ({
     const handleOnViewProfileClick = (
         event: React.MouseEvent<HTMLDivElement>,
     ): void => {
-        openMetaPanel()
+        openMetaPanel(selectedUser)
         closeMenu(event)
     }
 

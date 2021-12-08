@@ -56,16 +56,37 @@ const UserDetailPanel: FunctionComponent<UserDetailPanelProps> = ({ data }) => {
                     />
                 </div>
             </div>
-            <div className="flex justify-evenly text-base font-light">
-                <div className="flex flex-col items-center justify-center">
-                    <Button
-                        circular
-                        icon="comments"
-                        onClick={handleOnMessageClick}
-                    />
-                    <p>Messages</p>
-                </div>
-            </div>
+            {
+                // TODO: Maybe seperate to another button components
+                currentUser?.uid === data.uid ? (
+                    <div className="grid grid-cols-3 text-base font-normal mx-10 my-4">
+                        <div className="col-span-1 flex flex-col items-center justify-center">
+                            <Button circular icon="smile outline" />
+                            <p className="mt-1">Set status</p>
+                        </div>
+                        <div className="col-span-1 flex flex-col items-center justify-center">
+                            <Button circular icon="pencil" />
+                            <p className="mt-1">Edit profile</p>
+                        </div>
+                        <div className="col-span-1 flex flex-col items-center justify-center">
+                            <Button circular icon="ellipsis horizontal" />
+                            <p className="mt-1">More</p>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="grid text-base font-normal mx-10 my-4">
+                        <div className="flex flex-col items-center justify-center">
+                            <Button
+                                circular
+                                icon="comments"
+                                onClick={handleOnMessageClick}
+                            />
+                            <p className="mt-1">Messages</p>
+                        </div>
+                    </div>
+                )
+            }
+
             <div className="flex flex-col px-4 font-light gap-4 pt-4">
                 <div>
                     <h3 className="font-semibold">Display name</h3>

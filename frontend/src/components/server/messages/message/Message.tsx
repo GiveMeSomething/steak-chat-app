@@ -12,7 +12,7 @@ import { getDateString, getTimeString } from 'utils/timeUtil'
 import { CARD_HEIGHT, MENU_HEIGHT } from 'constants/appConst'
 import { Undefinable } from 'types/commonType'
 
-import ScreenOverlay from 'components/commons/ScreenOverlay'
+import ScreenOverlay from 'components/commons/overlay/ScreenOverlay'
 import UserMenu from './UserMenu'
 import UserCard from './UserCard'
 
@@ -60,31 +60,14 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
         serverTime,
     )}`
 
-    /**
-     * @param positionAt - string - Determine menu position
-     * @param shouldMenuUpward - boolean - Determine menu direction
-     * @return  The corresponding style
-     */
-    const menuStyle = (positionAt: Undefinable<ClickableComponent>): string => {
-        if (positionAt === 'username') {
+    const menuStyle = (): string => {
+        if (selectedComponent === 'username') {
             return 'z-20 -top-6 -left-6'
         } else {
             if (isComponentUpward) {
                 return 'z-20 top-6 -left-6'
             } else {
                 return 'z-20 top-6 -left-6'
-            }
-        }
-    }
-
-    const cardStyle = (positionAt: Undefinable<ClickableComponent>): string => {
-        if (positionAt === 'username') {
-            return 'z-20 -top-6 -left-6'
-        } else {
-            if (isComponentUpward) {
-                return 'z-20 top-10 -left-6'
-            } else {
-                return 'z-20 -top-6 -left-6'
             }
         }
     }
@@ -120,10 +103,8 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
         setSelectedUser(selectedUser)
     }
 
-    const handleOpenUserMetaPanel = (): void => {
-        findSelectedUser()
-
-        selectedUser && dispatch(setCurrentMetaPanelData(selectedUser))
+    const handleOpenUserMetaPanel = (user: UserInfo): void => {
+        dispatch(setCurrentMetaPanelData(user))
         dispatch(setMetaPanelOpen(true))
     }
 
@@ -176,7 +157,7 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
                         selectedUser={selectedUser}
                         openMetaPanel={handleOpenUserMetaPanel}
                         closeMenu={handleCloseMenu}
-                        menuStyle={menuStyle(selectedComponent)}
+                        menuStyle={menuStyle()}
                         upward={isComponentUpward}
                     />
                     <ScreenOverlay handleOnClick={handleCloseMenu} />
@@ -194,7 +175,7 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
                         selectedUser={selectedUser}
                         openMetaPanel={handleOpenUserMetaPanel}
                         closeMenu={handleCloseMenu}
-                        cardStyle={cardStyle(selectedComponent)}
+                        cardStyle={menuStyle()}
                         upward={isComponentUpward}
                     />
                     <ScreenOverlay handleOnClick={handleCloseMenu} />

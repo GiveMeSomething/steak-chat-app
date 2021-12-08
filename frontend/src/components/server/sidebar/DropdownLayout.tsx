@@ -11,7 +11,7 @@ import { setCurrentChannel } from 'components/server/redux/channels/channels.thu
 
 import { Accordion, Icon, Label, Popup } from 'semantic-ui-react'
 
-import ScreenOverlay from 'components/commons/ScreenOverlay'
+import ScreenOverlay from 'components/commons/overlay/ScreenOverlay'
 import ChannelOptionsDropdown from './channels/ChannelOptionsMenu'
 
 interface ChannelDropdownLayoutProps {
