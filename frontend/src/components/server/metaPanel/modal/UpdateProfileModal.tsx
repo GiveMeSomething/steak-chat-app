@@ -67,109 +67,139 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = ({
         <Modal
             as="form"
             onClose={onModalClose}
-            size="tiny"
+            size="small"
             dimmer="blurring"
             open={isOpen}
             onSubmit={handleSubmit(onSubmit)}
         >
             <Modal.Header>
-                <h1>Edit description</h1>
+                <h1>Edit your profile</h1>
             </Modal.Header>
             <Modal.Content>
                 <Modal.Description>
-                    <div>
-                        <FormInput
-                            {...register('fullname', {
-                                maxLength: {
-                                    value: 120,
-                                    message:
-                                        'Full name must not exceeds 120 characters',
-                                },
-                            })}
-                            label="Full name"
-                            type="text"
-                            autoComplete="off"
-                        />
-                        {errors.fullname && (
-                            <DescMessage
-                                type="error"
-                                message={errors.fullname.message}
-                            />
-                        )}
+                    <div className="grid grid-cols-3 place-items-start">
+                        <div className="col-span-2">
+                            <div className="mb-4">
+                                <FormInput
+                                    {...register('fullname', {
+                                        maxLength: {
+                                            value: 120,
+                                            message:
+                                                'Full name must not exceeds 120 characters',
+                                        },
+                                    })}
+                                    label="Full name"
+                                    type="text"
+                                    autoComplete="off"
+                                />
+                                {errors.fullname && (
+                                    <DescMessage
+                                        type="error"
+                                        message={errors.fullname.message}
+                                    />
+                                )}
 
-                        <FormInput
-                            {...register('username', {
-                                maxLength: {
-                                    value: 120,
-                                    message:
-                                        'Display name must not exceeds 120 characters',
-                                },
-                            })}
-                            label="Display name"
-                            type="text"
-                            autoComplete="off"
-                        />
-                        {errors.username ? (
-                            <DescMessage
-                                type="error"
-                                message={errors.username.message}
-                            />
-                        ) : (
-                            <DescMessage
-                                type="desc"
-                                message="However you'd like people to refer to you in Steak"
-                            />
-                        )}
+                                <FormInput
+                                    {...register('username', {
+                                        maxLength: {
+                                            value: 120,
+                                            message:
+                                                'Display name must not exceeds 120 characters',
+                                        },
+                                    })}
+                                    label="Display name"
+                                    type="text"
+                                    autoComplete="off"
+                                />
+                                {errors.username ? (
+                                    <DescMessage
+                                        type="error"
+                                        message={errors.username.message}
+                                    />
+                                ) : (
+                                    <DescMessage
+                                        className="pt-0 pb-2 text-sm"
+                                        type="desc"
+                                        message="However you'd like people to refer to you in Steak"
+                                    />
+                                )}
+                            </div>
 
-                        <FormInput
-                            {...register('role', {
-                                maxLength: {
-                                    value: 120,
-                                    message:
-                                        'Role must not exceeds 120 characters',
-                                },
-                            })}
-                            label="What I do"
-                            type="text"
-                            autoComplete="off"
-                        />
-                        {errors.role ? (
-                            <DescMessage
-                                type="error"
-                                message={errors.role.message}
-                            />
-                        ) : (
-                            <DescMessage
-                                type="desc"
-                                message="Let people know what you do"
-                            />
-                        )}
+                            <div className="my-2">
+                                <FormInput
+                                    {...register('role', {
+                                        maxLength: {
+                                            value: 120,
+                                            message:
+                                                'Role must not exceeds 120 characters',
+                                        },
+                                    })}
+                                    label="Server Role"
+                                    type="text"
+                                    autoComplete="off"
+                                />
+                                {errors.role ? (
+                                    <DescMessage
+                                        type="error"
+                                        message={errors.role.message}
+                                    />
+                                ) : (
+                                    <DescMessage
+                                        className="pt-0 pb-2 text-sm"
+                                        type="desc"
+                                        message="Let people know what you do"
+                                    />
+                                )}
+                            </div>
+                            <div className="my-2">
+                                <FormInput
+                                    {...register('phonenumber', {
+                                        pattern: {
+                                            value: VIETNAMESE_PHONENUM_REGEX,
+                                            message: 'Invalid phone number',
+                                        },
+                                    })}
+                                    label="Phone number"
+                                    type="text"
+                                    autoComplete="off"
+                                />
+                                {errors.phonenumber ? (
+                                    <DescMessage
+                                        type="error"
+                                        message={errors.phonenumber.message}
+                                    />
+                                ) : (
+                                    <DescMessage
+                                        className="pt-0 pb-2 text-sm"
+                                        type="desc"
+                                        message="Enter a phone number"
+                                    />
+                                )}
+                            </div>
 
-                        <FormInput
-                            {...register('phonenumber', {
-                                pattern: {
-                                    value: VIETNAMESE_PHONENUM_REGEX,
-                                    message: 'Invalid phone number',
-                                },
-                            })}
-                            label="Phone number"
-                            type="text"
-                            autoComplete="off"
-                        />
-                        {errors.phonenumber ? (
-                            <DescMessage
-                                type="error"
-                                message={errors.phonenumber.message}
+                            {updateError && (
+                                <DescMessage
+                                    type="error"
+                                    message={updateError}
+                                />
+                            )}
+                        </div>
+                        <div className="col-span-1 w-full px-8 -my-2">
+                            <DescMessage type="desc" message="Profile photo" />
+                            <img
+                                src={selectedUser.photoUrl}
+                                alt="Avatar"
+                                className="w-full rounded-md"
                             />
-                        ) : (
-                            <DescMessage
-                                type="desc"
-                                message="Enter a phone number"
-                            />
-                        )}
-                        {updateError && (
-                            <DescMessage type="error" message={updateError} />
-                        )}
+                            <div className="w-full flex flex-col items-center">
+                                <button className="w-full font-semibold py-2 text-slack-text-dark mt-2 hover:bg-gray-100 border-2 border-gray-300 rounded-md">
+                                    Upload Photo
+                                </button>
+                                <p className="text-red-700 hover:underline cursor-pointer mt-2">
+                                    Remove Photo
+                                </p>
+                            </div>
+                        </div>
                     </div>
                 </Modal.Description>
             </Modal.Content>

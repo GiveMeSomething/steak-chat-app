@@ -1,5 +1,5 @@
 import { selectCurrentUser, UserInfo } from 'components/auth/redux/auth.slice'
-import React, { FunctionComponent } from 'react'
+import React, { FunctionComponent, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
 import { setIsDirectChannel } from 'components/server/redux/channels/channels.slice'
@@ -12,15 +12,22 @@ import {
 } from 'utils/channelUtil'
 
 import { Button, Icon } from 'semantic-ui-react'
+import UpdateProfileModal from '../modal/UpdateProfileModal'
 
 interface UserDetailPanelProps {
     data: UserInfo
 }
 
 const UserDetailPanel: FunctionComponent<UserDetailPanelProps> = ({ data }) => {
+    const [isUpdateProfileOpen, setUpdateProfileOpen] = useState<boolean>(false)
+
     const dispatch = useAppDispatch()
 
     const currentUser = useAppSelector(selectCurrentUser)
+
+    const handleOnEditProfileClick = () => {
+        setUpdateProfileOpen(true)
+    }
 
     const handleOnMessageClick = () => {
         const { uid, username } = data
@@ -39,6 +46,7 @@ const UserDetailPanel: FunctionComponent<UserDetailPanelProps> = ({ data }) => {
             }
         }
     }
+
     return (
         <div className="w-full h-full">
             <div className="flex flex-col items-center justify-center p-2">
@@ -65,7 +73,11 @@ const UserDetailPanel: FunctionComponent<UserDetailPanelProps> = ({ data }) => {
                             <p className="mt-1">Set status</p>
                         </div>
                         <div className="col-span-1 flex flex-col items-center justify-center">
-                            <Button circular icon="pencil" />
+                            <Button
+                                circular
+                                icon="pencil"
+                                onClick={handleOnEditProfileClick}
+                            />
                             <p className="mt-1">Edit profile</p>
                         </div>
                         <div className="col-span-1 flex flex-col items-center justify-center">
@@ -97,6 +109,11 @@ const UserDetailPanel: FunctionComponent<UserDetailPanelProps> = ({ data }) => {
                     <h3>{data.email}</h3>
                 </div>
             </div>
+            <UpdateProfileModal
+                isOpen={isUpdateProfileOpen}
+                setOpen={setUpdateProfileOpen}
+                selectedUser={data}
+            />
         </div>
     )
 }
