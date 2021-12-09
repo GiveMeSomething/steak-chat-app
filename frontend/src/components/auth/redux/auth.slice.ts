@@ -19,6 +19,9 @@ export interface UserInfo {
     photoUrl: string
     email: string
     status?: UserStatus
+    fullname?: string
+    phonenumber?: string
+    role?: string
     messageCount: IdAsKeyObject
 }
 

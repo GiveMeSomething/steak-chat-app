@@ -9,7 +9,7 @@ import { getAuth, onAuthStateChanged } from '@firebase/auth'
 import { removeUserError } from './redux/auth.slice'
 import { signup, signin } from './redux/auth.thunk'
 
-import ErrorMessage from 'components/commons/ErrorMessage'
+import DescMessage from 'components/commons/formDescription/DescMessage'
 import FormInput from './FormInput'
 
 interface AuthFormProps {
@@ -113,7 +113,10 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
                             type="text"
                         />
                         {errors.email && (
-                            <ErrorMessage message={errors.email.message} />
+                            <DescMessage
+                                type="error"
+                                message={errors.email.message}
+                            />
                         )}
                     </div>
                     <div className="flex flex-col items-start justify-start p-2 w-full">
@@ -130,7 +133,10 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
                             type="password"
                         />
                         {errors.password && (
-                            <ErrorMessage message={errors.password.message} />
+                            <DescMessage
+                                type="error"
+                                message={errors.password.message}
+                            />
                         )}
                     </div>
                     <div className="flex flex-col items-center justify-center w-full mt-8">
@@ -142,7 +148,7 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
                             {props.submitLabel}
                         </button>
                         {requestError && (
-                            <ErrorMessage message={requestError} />
+                            <DescMessage type="error" message={requestError} />
                         )}
                     </div>
                 </div>

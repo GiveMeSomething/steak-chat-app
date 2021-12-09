@@ -19,7 +19,7 @@ import { findChannelById, formatChannelName } from 'utils/channelUtil'
 
 import { Modal, Button, Icon } from 'semantic-ui-react'
 
-import ErrorMessage from 'components/commons/ErrorMessage'
+import DescMessage from 'components/commons/formDescription/DescMessage'
 import FormInput from 'components/commons/FormInput'
 
 interface UpdateChannelNameModalProps {
@@ -154,14 +154,20 @@ const UpdateChannelNameModal: FunctionComponent<
                         />
                         {errors.channelName &&
                             errors.channelName.type === 'noSpecialChar' && (
-                                <ErrorMessage message={noSpecialCharMessage} />
+                                <DescMessage
+                                    type="error"
+                                    message={noSpecialCharMessage}
+                                />
                             )}
                         {errors.channelName && (
-                            <ErrorMessage
+                            <DescMessage
+                                type="error"
                                 message={errors.channelName.message}
                             />
                         )}
-                        {updateError && <ErrorMessage message={updateError} />}
+                        {updateError && (
+                            <DescMessage type="error" message={updateError} />
+                        )}
                         <p className="font-semibold text-slack-text-blur w-full text-base leading-2">
                             Names must be lowercase, without spaces or special
                             characters.

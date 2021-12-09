@@ -5,5 +5,7 @@ export const CHANNEL_NAME_SEPARATOR = '@' // Direct channel name = user1.usernam
 export const BANNED_SPECIAL_CHARACTERS_REGEX =
     /^[!@#$%^&*()_+=[\]{};':"\\|,.<>/?]*$/
 
+export const VIETNAMESE_PHONENUM_REGEX = /(84|0[3|5|7|8|9])+([0-9]{8})\b/
+
 export const MENU_HEIGHT = 13 * 16 // ~13rem
 export const CARD_HEIGHT = 22 * 16 // ~18rem
