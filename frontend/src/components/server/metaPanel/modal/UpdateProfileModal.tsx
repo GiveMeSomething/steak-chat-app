@@ -7,7 +7,6 @@ import { Modal, Button, Icon } from 'semantic-ui-react'
 
 import FormInput from 'components/commons/FormInput'
 import DescMessage from 'components/commons/formDescription/DescMessage'
-import { Undefinable } from 'types/commonType'
 import { VIETNAMESE_PHONENUM_REGEX } from 'constants/appConst'
 
 interface UpdateProfileModalProps {
@@ -29,8 +28,6 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = ({
     selectedUser,
 }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [updateError, setUpdateError] =
-        useState<Undefinable<string>>(undefined)
 
     const {
         register,
@@ -52,8 +49,32 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = ({
         }
     }, [isOpen])
 
+    // // This will show a preview before pushing the userMedia to Firebase Database
+    // const uploadFileToPreview = (
+    //     event: React.ChangeEvent<HTMLInputElement>,
+    // ) => {
+    //     const reader = new FileReader()
+    //     const files = event.target.files
+
+    //     if (files) {
+    //         if (!isImageValid(files[0])) {
+    //             return
+    //         }
+
+    //         const userUploadMedia = files[0]
+
+    //         setUserMedia(userUploadMedia)
+
+    //         reader.readAsDataURL(userUploadMedia)
+    //         reader.onloadend = () => {
+    //             if (reader.result) {
+    //                 setMediaUrl(reader.result as string)
+    //             }
+    //         }
+    //     }
+    // }
+
     const onModalClose = () => {
-        setUpdateError(undefined)
         setIsLoading(false)
 
         reset()
@@ -61,7 +82,9 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = ({
         setOpen(false)
     }
 
-    const onSubmit = () => {}
+    const onSubmit = () => {
+        setOpen(false)
+    }
 
     return (
         <Modal
@@ -176,13 +199,6 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = ({
                                     />
                                 )}
                             </div>
-
-                            {updateError && (
-                                <DescMessage
-                                    type="error"
-                                    message={updateError}
-                                />
-                            )}
                         </div>
                         <div className="col-span-1 w-full px-8 -my-2">
                             <DescMessage type="desc" message="Profile photo" />
