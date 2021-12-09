@@ -1,4 +1,5 @@
 import { ref, uploadBytesResumable } from '@firebase/storage'
+import { MAX_FILE_SIZE_BYTES } from 'constants/appConst'
 import { storage } from 'firebase/firebase'
 import { getDownloadURL } from 'firebase/storage'
 import { useState } from 'react'
@@ -8,6 +9,16 @@ import { v4 as uuid } from 'uuid'
 export function extractFileExt(fileName: string): string {
     const lastDotPos = fileName.lastIndexOf('.')
     return fileName.slice(lastDotPos)
+}
+
+// Check file size
+export function isImageValid(imageFile: File): boolean {
+    // Validate file size (by bytes)
+    if (imageFile.size >= MAX_FILE_SIZE_BYTES) {
+        return false
+    }
+
+    return true
 }
 
 // Refs: https://firebase.google.com/docs/storage/web/upload-files#manage_uploads

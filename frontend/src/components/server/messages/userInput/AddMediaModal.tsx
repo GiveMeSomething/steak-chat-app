@@ -4,8 +4,7 @@ import { useForm } from 'react-hook-form'
 
 import { sendMessage } from 'components/server/redux/messages/messages.thunk'
 
-import { MAX_FILE_SIZE_BYTES } from 'constants/appConst'
-import { useUploadFile } from 'utils/fileUtil'
+import { isImageValid, useUploadFile } from 'utils/fileUtil'
 import { Undefinable } from 'types/commonType'
 
 import { Modal, Button, Icon } from 'semantic-ui-react'
@@ -50,17 +49,6 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
     const { startUpload, uploadState, uploadProgress, uploadError } =
         useUploadFile()
 
-    // Check file size
-    const isImageValid = (imageFile: File): boolean => {
-        // Validate file size (by bytes)
-        if (imageFile.size >= MAX_FILE_SIZE_BYTES) {
-            setImageError('Image size should not exceed 5MB')
-            return false
-        }
-
-        return true
-    }
-
     // This will show a preview before pushing the userMedia to Firebase Database
     const uploadFileToPreview = (
         event: React.ChangeEvent<HTMLInputElement>,
@@ -70,6 +58,7 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
 
         if (files) {
             if (!isImageValid(files[0])) {
+                setImageError('Image size should not exceed 5MB')
                 return
             }
 

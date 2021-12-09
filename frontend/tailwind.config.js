@@ -1,4 +1,6 @@
 const colors = require('tailwindcss/colors')
+const aspectRatio = require('@tailwindcss/aspect-ratio')
+
 module.exports = {
     important: true,
     purge: ['./pages/**/*.tsx', './src/**/*.tsx'],
@@ -84,5 +86,5 @@ module.exports = {
             opacity: ['disabled'],
         },
     },
-    plugins: [],
+    plugins: [aspectRatio],
 }
