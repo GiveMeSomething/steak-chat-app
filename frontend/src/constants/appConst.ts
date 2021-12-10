@@ -16,5 +16,4 @@ export const cropSetting: Partial<Crop> = {
     aspect: 1,
     unit: '%',
     width: 100,
-    height: 100,
 }

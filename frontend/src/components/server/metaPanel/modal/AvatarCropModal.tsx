@@ -18,6 +18,7 @@ import { selectCurrentUser } from 'components/auth/redux/auth.slice'
 import DescMessage from 'components/commons/formDescription/DescMessage'
 import { updateUserAvatar } from 'components/auth/redux/auth.thunk'
 import { cropSetting } from 'constants/appConst'
+import ProgressBar from 'components/server/messages/userInput/ProgressBar'
 
 interface AvatarCropModalProps {
     isOpen: boolean
@@ -40,7 +41,13 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
 
     const { handleSubmit } = useForm()
 
-    const { uploadError, startUpload } = useUploadFile()
+    const {
+        uploadState,
+        uploadProgress,
+        uploadError,
+        startUpload,
+        resetState,
+    } = useUploadFile()
 
     const dispatch = useAppDispatch()
     const currentUser = useAppSelector(selectCurrentUser)
@@ -94,6 +101,7 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
             await dispatch(
                 updateUserAvatar({ userId: currentUser.uid, photoUrl }),
             )
+
             onModalClose()
         }
 
@@ -111,6 +119,9 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
     }
 
     const onLoad = useCallback((img) => {
+        resetState()
+        setCrop(cropSetting)
+
         imageRef.current = img
     }, [])
 
@@ -149,7 +160,7 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
                 <h1>Edit your profile</h1>
             </Modal.Header>
             <Modal.Content>
-                <div className="mx-8">
+                <div className="mx-10">
                     <div className="aspect-w-1 aspect-h-1">
                         <div className="flex items-center justify-center bg-slack-sidebar-blur rounded-md">
                             <ReactCrop
@@ -158,28 +169,39 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
                                 circularCrop={true}
                                 onImageLoaded={onLoad}
                                 onChange={handleOnCropChange}
+                                style={{
+                                    maxHeight: '30rem',
+                                    overflowY: 'auto',
+                                }}
                             />
                         </div>
                     </div>
-                    <div>
-                        <canvas
-                            ref={canvasRef}
-                            // Rounding is important so the canvas width and height matches/is a multiple for sharpness.
-                            style={{
-                                width:
-                                    Math.round(completedCrop?.width ?? 0) / 4,
-                                height:
-                                    Math.round(completedCrop?.height ?? 0) / 4,
-                            }}
-                        />
+                    <p className="font-semibold text-xl py-2">Preview:</p>
+                    <div className="grid grid-cols-3">
+                        <div className="col-span-1">
+                            <canvas
+                                ref={canvasRef}
+                                // Rounding is important so the canvas width and height matches/is a multiple for sharpness.
+                                style={{
+                                    width: '8rem',
+                                    height: '8rem',
+                                }}
+                            />
+                        </div>
+                        <div className="col-span-2 flex items-center justify-center">
+                            <p>
+                                <b>&apos;Drag and drop&apos;</b> to crop avatar
+                            </p>
+                        </div>
                     </div>
+                    {uploadState && <ProgressBar progress={uploadProgress} />}
                     {uploadError && (
                         <DescMessage type="error" message={uploadError} />
                     )}
                 </div>
             </Modal.Content>
             <Modal.Actions>
-                <Button color="red" disabled={isLoading}>
+                <Button color="red" disabled={isLoading} onClick={onModalClose}>
                     <Icon name="remove" /> Cancel
                 </Button>
                 <Button

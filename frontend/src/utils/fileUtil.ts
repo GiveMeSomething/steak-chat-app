@@ -73,8 +73,15 @@ export function useUploadFile() {
         )
     }
 
+    const resetState = () => {
+        setUploadState(undefined)
+        setUploadError(undefined)
+        setUploadProgress(0)
+    }
+
     return {
         startUpload,
+        resetState,
         uploadState,
         uploadProgress,
         uploadError,

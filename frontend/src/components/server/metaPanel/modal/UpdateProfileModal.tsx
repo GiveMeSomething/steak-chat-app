@@ -81,9 +81,9 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = ({
                     setMediaUrl(reader.result as string)
                 }
             }
-        }
 
-        setIsAvatarCropOpen(true)
+            setIsAvatarCropOpen(true)
+        }
     }
 
     const onModalClose = () => {
