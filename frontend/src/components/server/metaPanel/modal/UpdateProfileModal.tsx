@@ -62,10 +62,16 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = ({
     const uploadFileToPreview = (
         event: React.ChangeEvent<HTMLInputElement>,
     ) => {
+        if (isLoading) {
+            return
+        }
+
         const reader = new FileReader()
         const files = event.target.files
 
-        if (files) {
+        console.log('Running')
+
+        if (files && files[0]) {
             if (!isImageValid(files[0])) {
                 setImageError('Image size should not exceed 5MB')
                 return
@@ -79,11 +85,15 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = ({
             reader.onloadend = () => {
                 if (reader.result) {
                     setMediaUrl(reader.result as string)
-                }
-            }
 
-            setIsAvatarCropOpen(true)
+                    setIsAvatarCropOpen(true)
+                }
+
+                setIsLoading(false)
+            }
         }
+
+        event.target.files = null
     }
 
     const onModalClose = () => {
@@ -94,6 +104,12 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = ({
         reset()
 
         setOpen(false)
+    }
+
+    const onAvatarCropClose = () => {
+        setUserMedia(undefined)
+        setMediaUrl(undefined)
+        setIsLoading(false)
     }
 
     const onSubmit = () => {
@@ -282,6 +298,7 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = ({
                     isOpen={isAvatarCropOpen}
                     setOpen={setIsAvatarCropOpen}
                     imageSrc={mediaUrl}
+                    onAvatarCropClose={onAvatarCropClose}
                 />
             )}
         </>

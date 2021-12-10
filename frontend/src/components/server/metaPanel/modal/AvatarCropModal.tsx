@@ -24,12 +24,14 @@ interface AvatarCropModalProps {
     isOpen: boolean
     setOpen: React.Dispatch<React.SetStateAction<boolean>>
     imageSrc: string
+    onAvatarCropClose: Function
 }
 
 const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
     isOpen,
     setOpen,
     imageSrc,
+    onAvatarCropClose,
 }) => {
     const imageRef = useRef<HTMLImageElement | null>(null)
     const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -145,6 +147,7 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
         setCompletedCrop(undefined)
 
         setOpen(false)
+        onAvatarCropClose()
     }
 
     return (
