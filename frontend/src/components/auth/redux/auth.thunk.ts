@@ -1,6 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
-import { AuthPayload, UserInfo } from './auth.slice'
+import { AuthPayload, updateAvatar, UserInfo } from './auth.slice'
 
 import { database, firebaseApp } from 'firebase/firebase'
 import { ref, update, set, get } from 'firebase/database'
@@ -17,6 +17,7 @@ import {
 import { Undefinable, ThunkState } from 'types/commonType'
 import { UserStatus } from 'types/appEnum'
 import md5 from 'md5'
+import { setCurrentMetaPanelData } from 'components/server/metaPanel/redux/metaPanel.slice'
 
 const auth = getAuth(firebaseApp)
 
@@ -126,9 +127,23 @@ export const updateUserStatus = createAsyncThunk<
 })
 
 export const updateUserAvatar = createAsyncThunk<
-    string,
-    { userId: string; photoUrl: string }
->('user/updateAvatar', async ({ userId, photoUrl }) => {
+    void,
+    { userId: string; photoUrl: string },
+    ThunkState
+>('user/updateAvatar', async ({ userId, photoUrl }, { getState, dispatch }) => {
+    const appState = getState()
+
     await update(currentUserRef(userId), { photoUrl })
-    return photoUrl
+
+    // Set currentUser avatar
+    dispatch(updateAvatar(photoUrl))
+
+    // update currentData for metaPanel if it is open (currently editing profile)
+    if (appState.metaPanelState.isOpen) {
+        if (appState.user.user) {
+            dispatch(
+                setCurrentMetaPanelData({ ...appState.user.user, photoUrl }),
+            )
+        }
+    }
 })
