@@ -36,6 +36,8 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = ({
     const [mediaUrl, setMediaUrl] = useState<Undefinable<string>>(undefined)
     const [imageError, setImageError] = useState<Undefinable<string>>(undefined)
 
+    const [keepFormContent, setKeepFormContent] = useState<boolean>(false)
+
     const [isAvatarCropOpen, setIsAvatarCropOpen] = useState<boolean>(false)
 
     const {
@@ -48,11 +50,17 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = ({
     } = useForm<FormValues>()
 
     useEffect(() => {
+        console.log('Use Effect:' + keepFormContent)
+
         if (isOpen) {
-            setValue('fullname', selectedUser.fullname || '')
-            setValue('username', selectedUser.username)
-            setValue('role', selectedUser.role || '')
-            setValue('phonenumber', selectedUser.phonenumber || '')
+            if (!keepFormContent) {
+                setValue('fullname', selectedUser.fullname || '')
+                setValue('username', selectedUser.username)
+                setValue('role', selectedUser.role || '')
+                setValue('phonenumber', selectedUser.phonenumber || '')
+            } else {
+                setKeepFormContent(false)
+            }
 
             setFocus('fullname')
         }
@@ -69,8 +77,6 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = ({
         const reader = new FileReader()
         const files = event.target.files
 
-        console.log('Running')
-
         if (files && files[0]) {
             if (!isImageValid(files[0])) {
                 setImageError('Image size should not exceed 5MB')
@@ -78,7 +84,6 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = ({
             }
 
             const userUploadMedia = files[0]
-
             setUserMedia(userUploadMedia)
 
             reader.readAsDataURL(userUploadMedia)
@@ -86,30 +91,37 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = ({
                 if (reader.result) {
                     setMediaUrl(reader.result as string)
 
+                    // Keep edit profile content and open edit avatar modal
+                    setKeepFormContent(true)
+                    setOpen(false)
+
                     setIsAvatarCropOpen(true)
                 }
-
-                setIsLoading(false)
             }
         }
 
-        event.target.files = null
+        event.target.value = ''
     }
 
-    const onModalClose = () => {
+    const resetModalState = () => {
         setUserMedia(undefined)
         setMediaUrl(undefined)
         setIsLoading(false)
+    }
 
-        reset()
+    const onModalClose = () => {
+        resetModalState()
+
+        if (!keepFormContent) {
+            reset()
+        }
 
         setOpen(false)
     }
 
     const onAvatarCropClose = () => {
-        setUserMedia(undefined)
-        setMediaUrl(undefined)
-        setIsLoading(false)
+        resetModalState()
+        setOpen(true)
     }
 
     const onSubmit = () => {

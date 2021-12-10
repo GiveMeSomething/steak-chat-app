@@ -160,7 +160,21 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
             onSubmit={handleSubmit(handleAvatarSubmit)}
         >
             <Modal.Header>
-                <h1>Edit your profile</h1>
+                <div className="flex items-center justify-between w-full">
+                    <div
+                        className="flex items-start cursor-pointer"
+                        onClick={onModalClose}
+                    >
+                        <Icon name="chevron left" />
+                        <h1 className="leading-none">Crop your photo</h1>
+                    </div>
+                    <div
+                        className="flex justify-end cursor-pointer"
+                        onClick={onModalClose}
+                    >
+                        <Icon name="x" />
+                    </div>
+                </div>
             </Modal.Header>
             <Modal.Content>
                 <div className="mx-10">
