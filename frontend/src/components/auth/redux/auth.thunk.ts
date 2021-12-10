@@ -124,3 +124,11 @@ export const updateUserStatus = createAsyncThunk<
     await update(currentUserRef(userId), { status })
     return status
 })
+
+export const updateUserAvatar = createAsyncThunk<
+    string,
+    { userId: string; photoUrl: string }
+>('user/updateAvatar', async ({ userId, photoUrl }) => {
+    await update(currentUserRef(userId), { photoUrl })
+    return photoUrl
+})

@@ -4,7 +4,6 @@ import { storage } from 'firebase/firebase'
 import { getDownloadURL } from 'firebase/storage'
 import { useState } from 'react'
 import { Undefinable } from 'types/commonType'
-import { v4 as uuid } from 'uuid'
 
 export function extractFileExt(fileName: string): string {
     const lastDotPos = fileName.lastIndexOf('.')
@@ -31,13 +30,11 @@ export function useUploadFile() {
     const [uploadProgress, setUploadProgress] = useState<number>(0)
 
     const startUpload = async (
-        file: File,
+        file: File | Blob,
+        filePath: string,
         successCallback: (url: string) => void,
     ) => {
-        const storageFilePath = `chat/public/${uuid()}.${extractFileExt(
-            file.name,
-        )}`
-        const storageRef = ref(storage, storageFilePath)
+        const storageRef = ref(storage, filePath)
 
         // Set current form states
         setUploadState('uploading')

@@ -4,8 +4,9 @@ import { useForm } from 'react-hook-form'
 
 import { sendMessage } from 'components/server/redux/messages/messages.thunk'
 
-import { isImageValid, useUploadFile } from 'utils/fileUtil'
+import { extractFileExt, isImageValid, useUploadFile } from 'utils/fileUtil'
 import { Undefinable } from 'types/commonType'
+import { v4 as uuid } from 'uuid'
 
 import { Modal, Button, Icon } from 'semantic-ui-react'
 
@@ -46,8 +47,7 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
         }
     }, [isOpen])
 
-    const { startUpload, uploadState, uploadProgress, uploadError } =
-        useUploadFile()
+    const { startUpload, uploadProgress, uploadError } = useUploadFile()
 
     // This will show a preview before pushing the userMedia to Firebase Database
     const uploadFileToPreview = (
@@ -103,7 +103,11 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
         }
 
         if (userMedia) {
-            await startUpload(userMedia, onUploadFinish)
+            await startUpload(
+                userMedia,
+                `chat/public/${uuid()}.${extractFileExt(userMedia.name)}`,
+                onUploadFinish,
+            )
         }
     }
 
@@ -163,7 +167,7 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
                         {...register('desc')}
                     />
                 </div>
-                {uploadState && <ProgressBar progress={uploadProgress} />}
+                {uploadProgress && <ProgressBar progress={uploadProgress} />}
             </Modal.Content>
             <Modal.Actions>
                 <Button color="red" onClick={handleClose}>

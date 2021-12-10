@@ -7,6 +7,7 @@ import {
     fetchUser,
     signout,
     updateUserStatus,
+    updateUserAvatar,
 } from './auth.thunk'
 
 import { UserStatus } from 'types/appEnum'
@@ -77,6 +78,12 @@ export const userSlice = createSlice({
         builder.addCase(updateUserStatus.fulfilled, (state, action) => {
             if (state.user) {
                 state.user = { ...state.user, status: action.payload }
+            }
+        })
+
+        builder.addCase(updateUserAvatar.fulfilled, (state, action) => {
+            if (state.user) {
+                state.user = { ...state.user, photoUrl: action.payload }
             }
         })
 
