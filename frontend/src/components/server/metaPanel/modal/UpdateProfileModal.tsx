@@ -252,11 +252,13 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = ({
                                     type="desc"
                                     message="Profile photo"
                                 />
-                                <img
-                                    src={selectedUser.photoUrl}
-                                    alt="Avatar"
-                                    className="w-full rounded-md"
-                                />
+                                <div className="w-full aspect-w-1 aspect-h-1">
+                                    <img
+                                        src={selectedUser.photoUrl}
+                                        alt="Avatar"
+                                        className="w-full rounded-md"
+                                    />
+                                </div>
                                 {imageError && (
                                     <DescMessage
                                         type="error"
