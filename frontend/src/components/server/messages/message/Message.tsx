@@ -174,7 +174,7 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
                         isOpen={isCardOpen}
                         selectedUser={selectedUser}
                         openMetaPanel={handleOpenUserMetaPanel}
-                        closeMenu={handleCloseMenu}
+                        closeCard={handleCloseMenu}
                         cardStyle={menuStyle()}
                         upward={isComponentUpward}
                     />

@@ -1,7 +1,7 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 
-import { UserInfo } from 'components/auth/redux/auth.slice'
+import { selectCurrentUser } from 'components/auth/redux/auth.slice'
 
 import { Modal, Button, Icon } from 'semantic-ui-react'
 
@@ -11,12 +11,13 @@ import { Undefinable } from 'types/commonType'
 import { VIETNAMESE_PHONENUM_REGEX } from 'constants/appConst'
 import { isImageValid } from 'utils/fileUtil'
 import AvatarCropModal from './AvatarCropModal'
+import { useAppDispatch, useAppSelector } from 'redux/hooks'
+import {
+    selectIsEditProfileOpen,
+    setEditProfileOpen,
+} from '../redux/metaPanel.slice'
 
-interface UpdateProfileModalProps {
-    isOpen: boolean
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>
-    selectedUser: UserInfo
-}
+interface UpdateProfileModalProps {}
 
 interface FormValues {
     fullname: string
@@ -25,11 +26,7 @@ interface FormValues {
     phonenumber: string
 }
 
-const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = ({
-    isOpen,
-    setOpen,
-    selectedUser,
-}) => {
+const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
     const [userMedia, setUserMedia] = useState<File>()
@@ -39,6 +36,15 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = ({
     const [keepFormContent, setKeepFormContent] = useState<boolean>(false)
 
     const [isAvatarCropOpen, setIsAvatarCropOpen] = useState<boolean>(false)
+
+    const dispatch = useAppDispatch()
+
+    const isOpen = useAppSelector(selectIsEditProfileOpen)
+    const setOpen = (isOpen: boolean) => {
+        dispatch(setEditProfileOpen(isOpen))
+    }
+
+    const selectedUser = useAppSelector(selectCurrentUser)
 
     const {
         register,
@@ -52,7 +58,7 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = ({
     useEffect(() => {
         console.log('Use Effect:' + keepFormContent)
 
-        if (isOpen) {
+        if (isOpen && selectedUser) {
             if (!keepFormContent) {
                 setValue('fullname', selectedUser.fullname || '')
                 setValue('username', selectedUser.username)
@@ -130,6 +136,10 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = ({
         console.log(imageError)
 
         setOpen(false)
+    }
+
+    if (!selectedUser) {
+        return null
     }
 
     return (

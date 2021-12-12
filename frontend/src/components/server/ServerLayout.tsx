@@ -7,6 +7,7 @@ import ServerNavbar from './navbar/ServerNavbar'
 import ServerSidebar from './sidebar/ServerSidebar'
 import ServerMessages from './messages/ServerMessages'
 import MetaPanel from './metaPanel/MetaPanel'
+import UpdateProfileModal from './metaPanel/modal/UpdateProfileModal'
 
 interface ServerLayoutProps {}
 
@@ -35,6 +36,7 @@ const ServerLayout: FunctionComponent<ServerLayoutProps> = () => {
                         <MetaPanel />
                     </div>
                 </div>
+                <UpdateProfileModal />
             </div>
         </div>
     )

@@ -1,5 +1,5 @@
 import { selectCurrentUser, UserInfo } from 'components/auth/redux/auth.slice'
-import React, { FunctionComponent, useState } from 'react'
+import React, { FunctionComponent } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
 import { setIsDirectChannel } from 'components/server/redux/channels/channels.slice'
@@ -12,21 +12,19 @@ import {
 } from 'utils/channelUtil'
 
 import { Button, Icon } from 'semantic-ui-react'
-import UpdateProfileModal from '../modal/UpdateProfileModal'
+import { setEditProfileOpen } from '../redux/metaPanel.slice'
 
 interface UserDetailPanelProps {
     data: UserInfo
 }
 
 const UserDetailPanel: FunctionComponent<UserDetailPanelProps> = ({ data }) => {
-    const [isUpdateProfileOpen, setUpdateProfileOpen] = useState<boolean>(false)
-
     const dispatch = useAppDispatch()
 
     const currentUser = useAppSelector(selectCurrentUser)
 
     const handleOnEditProfileClick = () => {
-        setUpdateProfileOpen(true)
+        dispatch(setEditProfileOpen(true))
     }
 
     const handleOnMessageClick = () => {
@@ -112,11 +110,6 @@ const UserDetailPanel: FunctionComponent<UserDetailPanelProps> = ({ data }) => {
                     <h3>{data.email}</h3>
                 </div>
             </div>
-            <UpdateProfileModal
-                isOpen={isUpdateProfileOpen}
-                setOpen={setUpdateProfileOpen}
-                selectedUser={data}
-            />
         </div>
     )
 }
