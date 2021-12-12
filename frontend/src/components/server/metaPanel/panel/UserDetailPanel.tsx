@@ -46,14 +46,18 @@ const UserDetailPanel: FunctionComponent<UserDetailPanelProps> = ({ data }) => {
     }
 
     return (
-        <div className="w-full h-full">
-            <div className="flex flex-col items-center justify-center p-2">
-                <div className="mx-auto">
+        <div className="w-full">
+            <div className="my-4 mx-12">
+                <div className="aspect-w-1 aspect-h-1">
                     <img
                         src={data.photoUrl}
-                        className="w-40 h-auto rounded-md"
+                        alt="Avatar"
+                        className="w-full rounded-md"
                     />
                 </div>
+            </div>
+
+            <div className="flex flex-col items-center justify-center p-2 w-full">
                 <div className="flex items-baseline justify-center">
                     <h2 className="font-semibold p-2">{data.username}</h2>
                     <Icon
