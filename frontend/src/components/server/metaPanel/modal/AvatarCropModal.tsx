@@ -198,7 +198,7 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
                         <div className="col-span-1">
                             <canvas
                                 ref={canvasRef}
-                                // Rounding is important so the canvas width and height matches/is a multiple for sharpness.
+                                // Fixed size, also help reducing size when upload to database
                                 style={{
                                     width: '8rem',
                                     height: '8rem',
