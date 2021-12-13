@@ -39,6 +39,7 @@ import {
 } from 'components/server/redux/users/users.slice'
 import {
     addTyper,
+    clearTyper,
     removeTyper,
     selectChannelMessageCount,
     setChannelMessageCount,
@@ -198,20 +199,27 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
             dispatch(clearMessages())
             dispatch(clearSearchMessage())
 
-            // Remove currentUser typing tracker (in store and in realtime database)
+            // Remove currentUser typing tracker (in realtime database)
             dispatch(
                 removeCurrentUserTyping({
                     channelId: currentChannel.id,
                     userId: currentUser.uid,
                 }),
             )
+            // Remove all typing tracker (in store)
+            dispatch(clearTyper())
 
             const typingRef = child(TYPING_REF, `${currentChannel.id}`)
-            const unsubscribeTypingTrackChanged = onChildChanged(
+            const unsubscribeTypingTrackChanged = onChildAdded(
                 typingRef,
                 (data) => {
                     if (data && data.key) {
-                        dispatch(addTyper(data.key))
+                        dispatch(
+                            addTyper({
+                                userId: data.key,
+                                username: data.val(),
+                            }),
+                        )
                     }
                 },
             )
@@ -220,7 +228,7 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
                 typingRef,
                 (data) => {
                     if (data && data.key) {
-                        dispatch(removeTyper(data.key))
+                        dispatch(removeTyper({ userId: data.key }))
                     }
                 },
             )

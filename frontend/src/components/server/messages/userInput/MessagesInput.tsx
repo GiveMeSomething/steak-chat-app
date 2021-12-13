@@ -14,6 +14,8 @@ import {
     removeCurrentUserTyping,
     setCurrentUserTyping,
 } from 'components/server/redux/notifications/notifications.thunk'
+import { selectTyper } from 'components/server/redux/notifications/notifications.slice'
+import TypingLoader from './TypingLoader'
 
 interface MessagesInputProps {}
 
@@ -27,6 +29,7 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
     const dispatch = useAppDispatch()
     const currentChannel = useAppSelector(selectCurrentChannel)
     const currentUser = useAppSelector(selectCurrentUser)
+    const typers = useAppSelector(selectTyper)
 
     const { register, handleSubmit, reset, setFocus, getValues } =
         useForm<FormValues>()
@@ -35,6 +38,28 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
     useEffect(() => {
         setFocus('message')
     }, [currentChannel])
+
+    const getTypers = (): string => {
+        const numberOfTyper = Object.keys(typers).length
+        let result = ''
+        if (numberOfTyper === 1) {
+            result = Object.values(typers)[0]
+        } else {
+            result = Object.values(typers).reduce(
+                (previousValue, currentValue, currentIndex) => {
+                    if (currentIndex === 0) {
+                        return currentValue
+                    } else if (currentIndex === numberOfTyper - 1) {
+                        return previousValue + ' and ' + currentValue
+                    } else {
+                        return previousValue + ', ' + currentValue
+                    }
+                },
+            )
+        }
+
+        return result + ' is typing'
+    }
 
     const onSubmit = async ({ message }: FormValues) => {
         if (message && message.trim() !== '') {
@@ -58,7 +83,7 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
         setAddMediaModalOpen(true)
     }
 
-    const handleInputKeydown = () => {
+    const handleInputKeyup = () => {
         if (!currentUser) {
             return
         }
@@ -67,48 +92,57 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
         const payload = {
             channelId: currentChannel.id,
             userId: currentUser.uid,
+            username: currentUser.username,
         }
-        if (currentMessage) {
-            dispatch(setCurrentUserTyping(payload))
-        } else {
+
+        if (!currentMessage || currentMessage.trim().length <= 0) {
             dispatch(removeCurrentUserTyping(payload))
+        } else if (!typers[currentUser.uid]) {
+            dispatch(setCurrentUserTyping(payload))
         }
     }
 
     return (
-        <div className="flex items-baseline mb-4 px-4 mx-auto w-full max-h-15">
-            <Popup
-                content="Attach file"
-                trigger={
-                    <Button
-                        basic
-                        icon="paperclip"
-                        color="blue"
-                        onClick={handleAddMediaClick}
-                    />
-                }
-            />
-            <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-                <Input
-                    placeholder={`Message #${currentChannel.name}`}
-                    className="rounded-md border-slack-text-blur w-full"
-                >
-                    <input
-                        {...register('message')}
-                        className="w-full"
-                        autoComplete="off"
-                        onKeyDown={handleInputKeydown}
-                    />
-                </Input>
-            </form>
-            {isAddMediaModalOpen && (
+        <>
+            {Object.keys(typers).length > 0 && (
+                <div className="flex items-center px-2 m-0">
+                    <TypingLoader />
+                    {getTypers()}
+                </div>
+            )}
+            <div className="flex items-baseline mb-4 px-4 mx-auto w-full max-h-15">
+                <Popup
+                    message="Attach file"
+                    trigger={
+                        <Button
+                            basic
+                            icon="paperclip"
+                            color="blue"
+                            onClick={handleAddMediaClick}
+                        />
+                    }
+                />
+                <form onSubmit={handleSubmit(onSubmit)} className="w-full">
+                    <Input
+                        placeholder={`Message #${currentChannel.name}`}
+                        className="rounded-md border-slack-text-blur w-full"
+                    >
+                        <input
+                            {...register('message')}
+                            className="w-full"
+                            autoComplete="off"
+                            onKeyUp={handleInputKeyup}
+                        />
+                    </Input>
+                </form>
                 <AddMediaModal
                     currentMessage={getValues('message')}
                     isOpen={isAddMediaModalOpen}
                     setOpen={setAddMediaModalOpen}
                 />
-            )}
-        </div>
+                )
+            </div>
+        </>
     )
 }
 
