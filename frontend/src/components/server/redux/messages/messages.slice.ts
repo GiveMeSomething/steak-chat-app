@@ -8,9 +8,7 @@ export interface Message {
     timestamp: object
     media: Undefinable<string>
     createdBy: {
-        uid?: string
-        username?: string
-        photoUrl?: string
+        uid: string
     }
 }
 

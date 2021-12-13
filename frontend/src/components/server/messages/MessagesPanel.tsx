@@ -2,29 +2,49 @@ import React, { FunctionComponent, useEffect, useRef, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
 
 import {
+    Message,
     selectIsSearching,
     selectMessages,
     selectSearchMessages,
 } from 'components/server/redux/messages/messages.slice'
 
 import MessageComponent from './message/Message'
+import { selectChannelUsers } from '../redux/users/users.slice'
+import { UserInfo } from 'components/auth/redux/auth.slice'
 
 interface MessagePanelProps {}
 
+const usersMap = new Map<string, UserInfo>()
+
+console.log('Running outside')
+
 const MessagesPanel: FunctionComponent<MessagePanelProps> = () => {
+    console.log('Running inside')
     const [isLoading, setIsLoading] = useState<boolean>(true)
 
     const messages = useAppSelector(selectMessages)
+    const channelUsers = useAppSelector(selectChannelUsers)
     const searchMessages = useAppSelector(selectSearchMessages)
     const isSearching = useAppSelector(selectIsSearching)
 
     const scrollToBottomDiv = useRef<HTMLDivElement>(null)
 
     useEffect(() => {
+        // Init usersMap when component mount
+        channelUsers.forEach((user) => {
+            usersMap.set(user.uid, user)
+            console.log(usersMap.get(user.uid))
+        })
+
         if (!messages || messages.length === 0) {
             setIsLoading(false)
         }
     }, [])
+
+    useEffect(() => {
+        // Update usersMap when an user is added/removed
+        channelUsers.forEach((user) => usersMap.set(user.uid, user))
+    }, [channelUsers])
 
     // Scroll to bottom after the image is loaded
     useEffect(() => {
@@ -34,16 +54,27 @@ const MessagesPanel: FunctionComponent<MessagePanelProps> = () => {
         }
     }, [messages, searchMessages])
 
+    const getMessageComponent = (message: Message) => {
+        const { createdBy, ...messageInfo } = message
+
+        const creator = usersMap.get(createdBy.uid)
+
+        return creator ? (
+            <MessageComponent
+                {...messageInfo}
+                key={messageInfo.id}
+                createdBy={creator}
+            />
+        ) : null
+    }
+
     // Display messages based on searchMessages and messages
     const messagePanelContent = () => {
         if (isSearching) {
             if (searchMessages.length > 0) {
-                return searchMessages.map((searchMessage) => (
-                    <MessageComponent
-                        {...searchMessage}
-                        key={searchMessage.id}
-                    />
-                ))
+                return searchMessages.map((message) =>
+                    getMessageComponent(message),
+                )
             } else {
                 // TODO: Make better UI for dis
                 return <div>No message found</div>
@@ -51,9 +82,7 @@ const MessagesPanel: FunctionComponent<MessagePanelProps> = () => {
         }
 
         if (!isSearching && messages.length > 0) {
-            return messages.map((message) => (
-                <MessageComponent {...message} key={message.id} />
-            ))
+            return messages.map((message) => getMessageComponent(message))
         }
 
         // Display welcome message if there are no messages

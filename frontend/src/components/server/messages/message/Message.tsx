@@ -20,11 +20,7 @@ interface MessageComponentProps {
     content?: string
     timestamp?: object
     media?: string
-    createdBy: {
-        uid?: string
-        username?: string
-        photoUrl?: string
-    }
+    createdBy: UserInfo
 }
 
 type ClickableComponent = 'avatar' | 'username'
