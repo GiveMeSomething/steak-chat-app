@@ -5,7 +5,7 @@ import { IdAsKeyObject, WithPayload } from 'types/commonType'
 interface NotificationSliceInititalState {
     messageCount: IdAsKeyObject<number>
     notifications: IdAsKeyObject<number>
-    typing: IdAsKeyObject<boolean>
+    typing: IdAsKeyObject<string>
 }
 
 const initialState: NotificationSliceInititalState = {
@@ -59,15 +59,23 @@ const notificationSlice = createSlice({
         },
 
         // Typer work only on currentChannel, will be clear when change channel
-        addTyper: (state, action: WithPayload<string>) => {
+        addTyper: (
+            state,
+            action: WithPayload<{ userId: string; username: string }>,
+        ) => {
             if (action.payload) {
-                state.typing[action.payload] = true
+                const { userId, username } = action.payload
+                state.typing[userId] = username
             }
         },
-        removeTyper: (state, action: WithPayload<string>) => {
+        removeTyper: (state, action: WithPayload<{ userId: string }>) => {
             if (action.payload) {
-                state.typing[action.payload] = false
+                const { userId } = action.payload
+                delete state.typing[userId]
             }
+        },
+        clearTyper: (state) => {
+            state.typing = {}
         },
     },
 })
@@ -85,6 +93,9 @@ export const {
     clearOneChannelNotifications,
     addTyper,
     removeTyper,
+    clearTyper,
 } = notificationSlice.actions
+
+export const selectTyper = (state: RootState) => state.notifications.typing
 
 export default notificationSlice.reducer
