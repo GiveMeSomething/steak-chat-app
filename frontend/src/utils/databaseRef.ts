@@ -9,3 +9,5 @@ export const STARRED_REF = (uid?: string) =>
     ref(database, `starredChannels${uid ? `/${uid}` : ''}`)
 
 export const USERS_REF = ref(database, 'users')
+
+export const TYPING_REF = ref(database, 'typing')

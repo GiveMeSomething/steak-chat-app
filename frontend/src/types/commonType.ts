@@ -8,6 +8,6 @@ export type WithPayload<T> = {
     payload: T
 }
 
-export interface IdAsKeyObject {
-    [channelId: string]: number
+export interface IdAsKeyObject<T = any> {
+    [channelId: string]: T
 }

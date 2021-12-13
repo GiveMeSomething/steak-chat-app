@@ -12,6 +12,7 @@ import {
     query,
     orderByChild,
     onChildRemoved,
+    child,
 } from '@firebase/database'
 
 import {
@@ -37,6 +38,8 @@ import {
     updateChannelUser,
 } from 'components/server/redux/users/users.slice'
 import {
+    addTyper,
+    removeTyper,
     selectChannelMessageCount,
     setChannelMessageCount,
 } from 'components/server/redux/notifications/notifications.slice'
@@ -46,6 +49,7 @@ import {
     CHANNELS_REF,
     MESSAGE_COUNT_REF,
     STARRED_REF,
+    TYPING_REF,
     USERS_REF,
 } from 'utils/databaseRef'
 
@@ -53,6 +57,7 @@ import ServerLayout from 'components/server/ServerLayout'
 import withAuthRedirect from 'components/middleware/withAuthRedirect'
 
 import LoadingOverlay from 'components/commons/LoadingOverlay'
+import { removeCurrentUserTyping } from 'components/server/redux/notifications/notifications.thunk'
 
 interface ChatServerProps {}
 
@@ -101,11 +106,13 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     }
 
     useEffect(() => {
+        if (currentUser) {
+            dispatch(setChannelMessageCount(currentUser?.messageCount))
+        }
+
         dispatch(clearChannels())
         dispatch(clearStarredChannel())
         dispatch(clearChannelUsers())
-
-        dispatch(setChannelMessageCount(currentUser?.messageCount))
 
         const unsubscribeChannels = onChildAdded(CHANNELS_REF, (data) => {
             dispatch(addChannel(data.val()))
@@ -186,10 +193,37 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     }, [])
 
     useEffect(() => {
-        if (currentChannel && currentChannel.id) {
+        if (currentChannel && currentUser && currentChannel.id) {
             // Clear current channel messages in Redux store
             dispatch(clearMessages())
             dispatch(clearSearchMessage())
+
+            // Remove currentUser typing tracker (in store and in realtime database)
+            dispatch(
+                removeCurrentUserTyping({
+                    channelId: currentChannel.id,
+                    userId: currentUser.uid,
+                }),
+            )
+
+            const typingRef = child(TYPING_REF, `${currentChannel.id}`)
+            const unsubscribeTypingTrackChanged = onChildChanged(
+                typingRef,
+                (data) => {
+                    if (data && data.key) {
+                        dispatch(addTyper(data.key))
+                    }
+                },
+            )
+
+            const unsubscribeTypingTrackRemoved = onChildRemoved(
+                typingRef,
+                (data) => {
+                    if (data && data.key) {
+                        dispatch(removeTyper(data.key))
+                    }
+                },
+            )
 
             // Add messages listener for current channel
             // onChildAdded will run for all initial value in database
@@ -203,7 +237,11 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
 
             updateUserMessageCount()
 
-            return () => unsubscribeMessages()
+            return () => {
+                unsubscribeMessages()
+                unsubscribeTypingTrackChanged()
+                unsubscribeTypingTrackRemoved()
+            }
         }
     }, [currentChannel.id])
 

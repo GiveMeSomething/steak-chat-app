@@ -9,6 +9,11 @@ import { sendMessage } from 'components/server/redux/messages/messages.thunk'
 import { Button, Input, Popup } from 'semantic-ui-react'
 
 import AddMediaModal from './AddMediaModal'
+import { selectCurrentUser } from 'components/auth/redux/auth.slice'
+import {
+    removeCurrentUserTyping,
+    setCurrentUserTyping,
+} from 'components/server/redux/notifications/notifications.thunk'
 
 interface MessagesInputProps {}
 
@@ -21,6 +26,7 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
 
     const dispatch = useAppDispatch()
     const currentChannel = useAppSelector(selectCurrentChannel)
+    const currentUser = useAppSelector(selectCurrentUser)
 
     const { register, handleSubmit, reset, setFocus, getValues } =
         useForm<FormValues>()
@@ -36,12 +42,38 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
             await dispatch(sendMessage({ message }))
         }
 
+        // Remove currentChannel typingRef when user send current message
+        currentUser &&
+            dispatch(
+                removeCurrentUserTyping({
+                    channelId: currentChannel.id,
+                    userId: currentUser.uid,
+                }),
+            )
+
         reset()
     }
 
     const handleAddMediaClick = () => {
         setAddMediaModalOpen(true)
         reset()
+    }
+
+    const handleInputKeydown = () => {
+        if (!currentUser) {
+            return
+        }
+
+        const currentMessage = getValues('message')
+        const payload = {
+            channelId: currentChannel.id,
+            userId: currentUser.uid,
+        }
+        if (currentMessage) {
+            dispatch(setCurrentUserTyping(payload))
+        } else {
+            dispatch(removeCurrentUserTyping(payload))
+        }
     }
 
     return (
@@ -66,6 +98,7 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
                         {...register('message')}
                         className="w-full"
                         autoComplete="off"
+                        onKeyDown={handleInputKeydown}
                     />
                 </Input>
             </form>
