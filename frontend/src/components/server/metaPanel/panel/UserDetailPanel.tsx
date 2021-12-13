@@ -47,7 +47,7 @@ const UserDetailPanel: FunctionComponent<UserDetailPanelProps> = ({ data }) => {
 
     return (
         <div className="w-full">
-            <div className="my-4 mx-12">
+            <div className="my-4 mx-20">
                 <div className="aspect-w-1 aspect-h-1">
                     <img
                         src={data.photoUrl}
@@ -105,6 +105,12 @@ const UserDetailPanel: FunctionComponent<UserDetailPanelProps> = ({ data }) => {
             }
 
             <div className="flex flex-col px-4 font-light gap-4 pt-4">
+                {data.fullname && (
+                    <div>
+                        <h3 className="font-semibold">Full name</h3>
+                        <h3>{data.fullname}</h3>
+                    </div>
+                )}
                 <div>
                     <h3 className="font-semibold">Display name</h3>
                     <h3>{data.username}</h3>
@@ -113,6 +119,12 @@ const UserDetailPanel: FunctionComponent<UserDetailPanelProps> = ({ data }) => {
                     <h3 className="font-semibold">Email</h3>
                     <h3>{data.email}</h3>
                 </div>
+                {data.phonenumber && (
+                    <div>
+                        <h3 className="font-semibold">Phone number</h3>
+                        <h3>{data.phonenumber}</h3>
+                    </div>
+                )}
             </div>
         </div>
     )
