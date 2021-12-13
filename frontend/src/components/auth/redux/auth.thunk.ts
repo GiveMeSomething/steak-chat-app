@@ -1,9 +1,14 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
-import { AuthPayload, updateAvatar, UserInfo } from './auth.slice'
+import {
+    AuthPayload,
+    EditableField,
+    updateAvatar,
+    UserInfo,
+} from './auth.slice'
 
 import { database, firebaseApp } from 'firebase/firebase'
-import { ref, update, set, get } from 'firebase/database'
+import { ref, update, set, get, DatabaseReference } from 'firebase/database'
 import {
     createUserWithEmailAndPassword,
     getAuth,
@@ -21,9 +26,10 @@ import { setCurrentMetaPanelData } from 'components/server/metaPanel/redux/metaP
 
 const auth = getAuth(firebaseApp)
 
-const currentUserRef = (userId: string) => ref(database, `users/${userId}`)
+const userRef = (userId: string): DatabaseReference =>
+    ref(database, `users/${userId}`)
 
-async function updateUserInfo(createdUser: User) {
+async function initUserInfo(createdUser: User): Promise<void> {
     if (createdUser && createdUser.email) {
         const displayName = createdUser.email.split('@')[0]
         const photoURL = `https://gravatar.com/avatar/${md5(
@@ -31,7 +37,7 @@ async function updateUserInfo(createdUser: User) {
         )}?d=identicon`
 
         // Update user info also update user status
-        await set(currentUserRef(createdUser.uid), {
+        await set(userRef(createdUser.uid), {
             uid: createdUser.uid,
             username: displayName,
             email: createdUser.email,
@@ -42,8 +48,9 @@ async function updateUserInfo(createdUser: User) {
     }
 }
 
-async function getUser(uid: string): Promise<UserInfo> {
-    const currentUser = await get(currentUserRef(uid))
+// Accept both userId or reference as parameter
+async function getUser(userId: string): Promise<UserInfo> {
+    const currentUser = await get(userRef(userId))
     return currentUser.val()
 }
 
@@ -83,7 +90,7 @@ export const signup = createAsyncThunk<Undefinable<UserInfo>, AuthPayload>(
 
         // Redux store's currentUser is not available at this time
         if (auth.currentUser) {
-            await updateUserInfo(auth.currentUser)
+            await initUserInfo(auth.currentUser)
 
             return getUser(auth.currentUser?.uid)
         }
@@ -122,7 +129,7 @@ export const updateUserStatus = createAsyncThunk<
     UserStatus,
     { userId: string; status: UserStatus }
 >('user/updateStatus', async ({ userId, status }) => {
-    await update(currentUserRef(userId), { status })
+    await update(userRef(userId), { status })
     return status
 })
 
@@ -133,7 +140,7 @@ export const updateUserAvatar = createAsyncThunk<
 >('user/updateAvatar', async ({ userId, photoUrl }, { getState, dispatch }) => {
     const appState = getState()
 
-    await update(currentUserRef(userId), { photoUrl })
+    await update(userRef(userId), { photoUrl })
 
     // Set currentUser avatar
     dispatch(updateAvatar(photoUrl))
@@ -147,3 +154,21 @@ export const updateUserAvatar = createAsyncThunk<
         }
     }
 })
+
+interface UpdateUserPayload extends EditableField {
+    userId: string
+}
+
+export const updateUserProfile = createAsyncThunk<UserInfo, UpdateUserPayload>(
+    'user/updateProfile',
+    async (data) => {
+        const { userId, ...updateInfo } = data
+
+        const updatedUserRef = userRef(userId)
+
+        await update(updatedUserRef, { ...updateInfo })
+
+        const updatedUser = await get(updatedUserRef)
+        return updatedUser.val()
+    },
+)

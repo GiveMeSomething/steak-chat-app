@@ -7,6 +7,7 @@ import {
     fetchUser,
     signout,
     updateUserStatus,
+    updateUserProfile,
 } from './auth.thunk'
 
 import { UserStatus } from 'types/appEnum'
@@ -22,7 +23,14 @@ export interface UserInfo {
     fullname?: string
     phonenumber?: string
     role?: string
-    messageCount: IdAsKeyObject
+    messageCount: IdAsKeyObject<number>
+}
+
+export interface EditableField {
+    username?: string
+    fullname?: string
+    phonenumber?: string
+    role?: string
 }
 
 export interface AuthPayload {
@@ -82,6 +90,12 @@ export const userSlice = createSlice({
         builder.addCase(updateUserStatus.fulfilled, (state, action) => {
             if (state.user) {
                 state.user = { ...state.user, status: action.payload }
+            }
+        })
+
+        builder.addCase(updateUserProfile.fulfilled, (state, action) => {
+            if (state.user) {
+                state.user = action.payload
             }
         })
 

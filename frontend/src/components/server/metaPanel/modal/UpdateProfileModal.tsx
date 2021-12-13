@@ -16,6 +16,8 @@ import {
     selectIsEditProfileOpen,
     setEditProfileOpen,
 } from '../redux/metaPanel.slice'
+import { updateUserProfile } from 'components/auth/redux/auth.thunk'
+import toast from 'react-hot-toast'
 
 interface UpdateProfileModalProps {}
 
@@ -29,7 +31,6 @@ interface FormValues {
 const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
-    const [userMedia, setUserMedia] = useState<File>()
     const [mediaUrl, setMediaUrl] = useState<Undefinable<string>>(undefined)
     const [imageError, setImageError] = useState<Undefinable<string>>(undefined)
 
@@ -56,8 +57,6 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
     } = useForm<FormValues>()
 
     useEffect(() => {
-        console.log('Use Effect:' + keepFormContent)
-
         if (isOpen && selectedUser) {
             if (!keepFormContent) {
                 setValue('fullname', selectedUser.fullname || '')
@@ -89,10 +88,7 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
                 return
             }
 
-            const userUploadMedia = files[0]
-            setUserMedia(userUploadMedia)
-
-            reader.readAsDataURL(userUploadMedia)
+            reader.readAsDataURL(files[0])
             reader.onloadend = () => {
                 if (reader.result) {
                     setMediaUrl(reader.result as string)
@@ -110,7 +106,6 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
     }
 
     const resetModalState = () => {
-        setUserMedia(undefined)
         setMediaUrl(undefined)
         setIsLoading(false)
     }
@@ -130,14 +125,27 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
         setOpen(true)
     }
 
-    const onSubmit = () => {
-        console.log(userMedia)
-        console.log(mediaUrl)
-        console.log(imageError)
+    const onSubmit = async (data: FormValues) => {
+        if (selectedUser) {
+            await dispatch(
+                updateUserProfile({ ...data, userId: selectedUser.uid }),
+            )
+        }
+
+        toast('Profile updated', {
+            duration: 3000,
+            position: 'top-center',
+            icon: '❤',
+            iconTheme: {
+                primary: '#C21E56',
+                secondary: '#FF5733',
+            },
+        })
 
         setOpen(false)
     }
 
+    /* Rendering */
     if (!selectedUser) {
         return null
     }

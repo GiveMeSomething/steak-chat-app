@@ -140,7 +140,7 @@ export const setCurrentChannel = createAsyncThunk<
 
 export const updateNotifications = createAsyncThunk<
     any,
-    IdAsKeyObject,
+    IdAsKeyObject<number>,
     ThunkState
 >('channels/updateNotifications', async (data, { getState, dispatch }) => {
     const appState = getState()

@@ -8,6 +8,7 @@ import ServerSidebar from './sidebar/ServerSidebar'
 import ServerMessages from './messages/ServerMessages'
 import MetaPanel from './metaPanel/MetaPanel'
 import UpdateProfileModal from './metaPanel/modal/UpdateProfileModal'
+import { Toaster } from 'react-hot-toast'
 
 interface ServerLayoutProps {}
 
@@ -37,6 +38,7 @@ const ServerLayout: FunctionComponent<ServerLayoutProps> = () => {
                     </div>
                 </div>
                 <UpdateProfileModal />
+                <Toaster />
             </div>
         </div>
     )

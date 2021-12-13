@@ -39,18 +39,17 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
         useState<Undefinable<ClickableComponent>>(undefined)
     const [selectedUser, setSelectedUser] =
         useState<Undefinable<UserInfo>>(undefined)
+
     const [isMenuOpen, setIsMenuOpen] = useState<boolean>(false)
     const [isCardOpen, setIsCardOpen] = useState<boolean>(false)
 
     const [isComponentUpward, setIsComponentUpward] = useState<boolean>(false)
 
+    const imageRef = useRef<HTMLImageElement>(null)
     const messageRef = useRef<HTMLDivElement>(null)
 
     const dispatch = useAppDispatch()
-
     const channelUsers = useAppSelector(selectChannelUsers)
-
-    const imageRef = useRef<HTMLImageElement>(null)
 
     // Firebase save timestamp as object, but still number when console log
     // So we need to manually cast to number
@@ -112,7 +111,6 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
      * Handle opening card/menu when user right-click or click
      * @param {React.MouseEvent<T>} event - Normal event object
      * @param {ClickableComponent} componentType - Where the menu/card shown
-     * @param {React.Dispatch<React.SetStateAction<boolean>>} setOpen - setState to set open menu/card
      */
     const handleComponentClick = (
         event: React.MouseEvent,

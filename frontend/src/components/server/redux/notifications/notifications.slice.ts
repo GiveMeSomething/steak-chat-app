@@ -3,8 +3,8 @@ import { RootState } from 'redux/store'
 import { IdAsKeyObject } from 'types/commonType'
 
 interface NotificationSliceInititalState {
-    messageCount: IdAsKeyObject
-    notifications: IdAsKeyObject
+    messageCount: IdAsKeyObject<number>
+    notifications: IdAsKeyObject<number>
 }
 
 const initialState: NotificationSliceInititalState = {
