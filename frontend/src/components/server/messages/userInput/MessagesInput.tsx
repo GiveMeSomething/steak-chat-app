@@ -10,8 +10,9 @@ import { Button, Input, Popup } from 'semantic-ui-react'
 
 import AddMediaModal from './AddMediaModal'
 import 'emoji-mart/css/emoji-mart.css'
-import { Picker, Emoji, EmojiData } from 'emoji-mart'
+import { Picker, Emoji, BaseEmoji } from 'emoji-mart'
 import ScreenOverlay from 'components/commons/ScreenOverlay'
+import { Undefinable } from 'types/commonType'
 
 interface MessagesInputProps {}
 
@@ -27,7 +28,7 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
     const dispatch = useAppDispatch()
     const currentChannel = useAppSelector(selectCurrentChannel)
 
-    const { register, handleSubmit, reset, setFocus, getValues } =
+    const { register, handleSubmit, reset, setFocus, setValue, getValues } =
         useForm<FormValues>()
 
     // Set focus to input when change to new channel (and when load current channel)
@@ -36,12 +37,14 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
     }, [currentChannel])
 
     const onSubmit = async ({ message }: FormValues) => {
+        reset()
+
         if (message && message.trim() !== '') {
             dispatch(setMessageLoading(true))
             await dispatch(sendMessage({ message }))
         }
 
-        reset()
+        setFocus('message')
     }
 
     const handleOnMouseEnterEmojiPicker = () => {
@@ -49,6 +52,9 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
     }
 
     const handleOnMouseLeaveEmojiPicker = () => {
+        if (isEmojiPickerOpen) {
+            return
+        }
         setEmojiPickerHover(false)
     }
 
@@ -61,12 +67,15 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
         setEmojiPickerOpen(!isEmojiPickerOpen)
     }
 
-    const handleSelectEmoji = (emoji: EmojiData) => {
-        if (emoji) {
-            console.log(emoji)
+    const handleSelectEmoji = (emoji: Undefinable<BaseEmoji> = undefined) => {
+        if (emoji && emoji.native) {
+            setValue('message', `${getValues('message')} ${emoji.native} `)
         }
 
         setEmojiPickerOpen(false)
+        setEmojiPickerHover(false)
+
+        setFocus('message')
     }
 
     return (
@@ -105,19 +114,21 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
                     >
                         {isEmojiPickerOpen && (
                             <>
-                                <div className="z-20 absolute bottom-10 right-0">
+                                <div className="absolute bottom-10 right-0">
                                     <Picker
                                         set="facebook"
                                         title="Pick"
                                         perLine={9}
                                         emojiSize={32}
-                                        onSelect={handleSelectEmoji}
+                                        onSelect={(emoji) =>
+                                            handleSelectEmoji(
+                                                emoji as BaseEmoji,
+                                            )
+                                        }
                                     />
                                 </div>
                                 <ScreenOverlay
-                                    handleOnClick={() =>
-                                        setEmojiPickerOpen(false)
-                                    }
+                                    handleOnClick={() => handleSelectEmoji()}
                                 />
                             </>
                         )}
