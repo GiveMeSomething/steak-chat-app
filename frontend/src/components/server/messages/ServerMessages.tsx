@@ -13,7 +13,7 @@ const ServerMessages: FunctionComponent<ServerMessagesProps> = () => {
                 <MessagesHeader />
             </div>
             <MessagesPanel />
-            <div className="fixed bottom-0 w-full bg-white z-10">
+            <div className="absolute bottom-0 w-full bg-white z-20">
                 <MessagesInput />
             </div>
         </div>
