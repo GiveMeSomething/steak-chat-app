@@ -9,7 +9,7 @@ import { formatChannelName } from 'utils/channelUtil'
 import { Button, Dropdown, Icon, Modal } from 'semantic-ui-react'
 
 import FormInput from 'components/commons/FormInput'
-import ErrorMessage from 'components/commons/ErrorMessage'
+import DescMessage from 'components/commons/formDescription/DescMessage'
 
 interface AddChannelModalProps {
     isOpen: boolean
@@ -93,7 +93,8 @@ const AddChannelModal: FunctionComponent<AddChannelModalProps> = ({
                             autoComplete="off"
                         />
                         {errors.channelName && (
-                            <ErrorMessage
+                            <DescMessage
+                                error
                                 message={errors.channelName.message}
                             />
                         )}

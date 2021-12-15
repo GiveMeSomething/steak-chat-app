@@ -18,7 +18,7 @@ import { findChannelById } from 'utils/channelUtil'
 
 import { Modal, Button, Icon } from 'semantic-ui-react'
 
-import ErrorMessage from 'components/commons/ErrorMessage'
+import DescMessage from 'components/commons/formDescription/DescMessage'
 import FormInput from 'components/commons/FormInput'
 
 interface UpdateChannelDescModalProps {
@@ -140,11 +140,14 @@ const UpdateChannelDescModal: FunctionComponent<
                             </p>
                         )}
                         {errors.channelDesc && (
-                            <ErrorMessage
+                            <DescMessage
+                                error
                                 message={errors.channelDesc.message}
                             />
                         )}
-                        {updateError && <ErrorMessage message={updateError} />}
+                        {updateError && (
+                            <DescMessage error message={updateError} />
+                        )}
                     </div>
                 </Modal.Description>
             </Modal.Content>

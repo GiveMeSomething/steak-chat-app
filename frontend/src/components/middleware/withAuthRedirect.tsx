@@ -7,7 +7,7 @@ import { firebaseApp } from 'firebase/firebase'
 
 import { fetchUser } from 'components/auth/redux/auth.thunk'
 
-import LoadingOverlay from 'components/commons/LoadingOverlay'
+import LoadingOverlay from 'components/commons/overlay/LoadingOverlay'
 
 // This will redirect to login page if there are no signed in user
 // Wrap this outside of need-to-authenticate components

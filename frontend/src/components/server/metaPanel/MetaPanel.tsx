@@ -95,7 +95,7 @@ const MetaPanel: FunctionComponent<MetaPanelProps> = () => {
                     />
                 </div>
                 <div
-                    className="flex flex-1 flex-col overflow-auto"
+                    className="h-full overflow-y-auto overflow-x-hidden pb-20"
                     id="member-panel__content"
                 >
                     {metaPanelContent()}

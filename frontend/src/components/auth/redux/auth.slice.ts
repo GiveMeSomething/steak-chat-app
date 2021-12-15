@@ -7,6 +7,7 @@ import {
     fetchUser,
     signout,
     updateUserStatus,
+    updateUserProfile,
 } from './auth.thunk'
 
 import { UserStatus } from 'types/appEnum'
@@ -19,7 +20,17 @@ export interface UserInfo {
     photoUrl: string
     email: string
     status?: UserStatus
-    messageCount: IdAsKeyObject
+    fullname?: string
+    phonenumber?: string
+    role?: string
+    messageCount: IdAsKeyObject<number>
+}
+
+export interface EditableField {
+    username?: string
+    fullname?: string
+    phonenumber?: string
+    role?: string
 }
 
 export interface AuthPayload {
@@ -52,6 +63,11 @@ export const userSlice = createSlice({
         removeUserError: (state) => {
             state.userError = undefined
         },
+        updateAvatar: (state, action) => {
+            if (state.user && action.payload) {
+                state.user = { ...state.user, photoUrl: action.payload }
+            }
+        },
     },
     // TODO: See if this part can be refactored
     extraReducers: (builder) => {
@@ -77,6 +93,12 @@ export const userSlice = createSlice({
             }
         })
 
+        builder.addCase(updateUserProfile.fulfilled, (state, action) => {
+            if (state.user) {
+                state.user = action.payload
+            }
+        })
+
         builder.addMatcher(isRejected, (state, action) => {
             if (action.error.message) {
                 state.userError = action.error.message
@@ -92,6 +114,7 @@ export const {
     removeCurrentUser,
     setUserError,
     removeUserError,
+    updateAvatar,
 } = userSlice.actions
 
 export const selectCurrentUser = (state: RootState) => state.user.user

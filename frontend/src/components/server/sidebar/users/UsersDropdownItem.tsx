@@ -2,9 +2,8 @@ import React, { FunctionComponent } from 'react'
 
 import { UserInfo } from 'components/auth/redux/auth.slice'
 
-import { UserStatus } from 'types/appEnum'
-
 import { Icon } from 'semantic-ui-react'
+import StatusIcon from 'components/commons/StatusIcon'
 
 interface UsersDropdownItemProps {
     user: UserInfo
@@ -15,25 +14,16 @@ const UsersDropdownItem: FunctionComponent<UsersDropdownItemProps> = ({
     user,
     currentUser,
 }) => {
-    const StatusIcon = () => {
-        switch (user.status) {
-            case UserStatus.ONLINE:
-                return <Icon name="circle" color="green" size="small" />
-            case UserStatus.BUSY:
-                return <Icon name="circle" color="red" size="small" />
-            default:
-                return <Icon name="circle" color="grey" size="small" />
-        }
-    }
-
     return (
         <>
             <div className="flex items-center px-4 py-2">
                 <div className="rounded-md max-h-6 w-6 mr-2 relative">
                     <img src={user.photoUrl} className="rounded-md" />
-                    <div className="absolute -right-2 -bottom-2">
-                        <StatusIcon />
-                    </div>
+                    <StatusIcon
+                        userStatus={user.status}
+                        size="small"
+                        className="absolute -right-2 -bottom-2"
+                    />
                 </div>
                 <h4 className="leading-6">
                     <span>{user.username}</span>

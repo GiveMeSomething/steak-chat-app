@@ -9,11 +9,13 @@ import { Undefinable, WithPayload } from 'types/commonType'
 
 interface MetaPanelInitialState {
     isOpen: boolean
+    isEditProfileOpen: boolean
     currentData: Undefinable<ChannelInfo | UserInfo>
 }
 
 const initialState: MetaPanelInitialState = {
     isOpen: false,
+    isEditProfileOpen: false,
     currentData: undefined,
 }
 
@@ -23,6 +25,9 @@ const metaPanelSlice = createSlice({
     reducers: {
         setMetaPanelOpen: (state, action: WithPayload<boolean>) => {
             state.isOpen = action.payload
+        },
+        setEditProfileOpen: (state, action: WithPayload<boolean>) => {
+            state.isEditProfileOpen = action.payload
         },
         setCurrentMetaPanelData: (
             state,
@@ -39,11 +44,15 @@ const metaPanelSlice = createSlice({
 export const selectIsMetaPanelOpen = (state: RootState) =>
     state.metaPanelState.isOpen
 
+export const selectIsEditProfileOpen = (state: RootState) =>
+    state.metaPanelState.isEditProfileOpen
+
 export const selectMetaPanelCurrentData = (state: RootState) =>
     state.metaPanelState.currentData
 
 export const {
     setMetaPanelOpen,
+    setEditProfileOpen,
     setCurrentMetaPanelData,
     clearCurrentMetaPanelData,
 } = metaPanelSlice.actions

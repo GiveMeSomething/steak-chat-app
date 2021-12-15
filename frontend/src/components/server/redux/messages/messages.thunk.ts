@@ -53,8 +53,6 @@ export const sendMessage = createAsyncThunk<
     if (currentUser) {
         const createdBy = {
             uid: currentUser.uid,
-            username: currentUser.username,
-            photoUrl: currentUser.photoUrl,
         }
 
         // Create new message object to send to database

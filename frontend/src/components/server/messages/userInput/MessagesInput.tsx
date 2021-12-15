@@ -41,13 +41,12 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
 
     const handleAddMediaClick = () => {
         setAddMediaModalOpen(true)
-        reset()
     }
 
     return (
         <div className="flex items-baseline mb-4 px-4 mx-auto w-full max-h-15">
             <Popup
-                message="Attach file"
+                content="Attach file"
                 trigger={
                     <Button
                         basic

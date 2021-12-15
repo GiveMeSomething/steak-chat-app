@@ -52,7 +52,7 @@ import {
 import ServerLayout from 'components/server/ServerLayout'
 import withAuthRedirect from 'components/middleware/withAuthRedirect'
 
-import LoadingOverlay from 'components/commons/LoadingOverlay'
+import LoadingOverlay from 'components/commons/overlay/LoadingOverlay'
 
 interface ChatServerProps {}
 
