@@ -69,14 +69,16 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
 
     // Pre-calculate option menu direction based on message position on screen
     const shouldMenuUpward = (menuHeight: number): boolean => {
-        if (messageRef.current) {
-            const windowHeight = window.innerHeight
-            const menuYPos = messageRef.current.getBoundingClientRect().bottom
-            if (windowHeight - menuYPos < menuHeight) {
-                return true
-            }
+        if (!menuHeight || !messageRef.current) {
             return false
         }
+
+        const windowHeight = window.innerHeight
+        const menuYPos = messageRef.current.getBoundingClientRect().bottom
+        if (windowHeight - menuYPos < menuHeight) {
+            return true
+        }
+
         return false
     }
 
