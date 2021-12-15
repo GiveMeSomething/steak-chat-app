@@ -3,28 +3,30 @@ import React, { FunctionComponent } from 'react'
 import { Undefinable } from 'types/commonType'
 
 interface DescMessageProps {
-    type: 'desc' | 'error'
+    description?: boolean
+    error?: boolean
     message: Undefinable<string>
     className?: Undefinable<string>
 }
 
 const DescMessage: FunctionComponent<DescMessageProps> = ({
-    type,
+    description,
+    error,
     message,
     className,
 }) => {
-    const textColor = () => {
-        switch (type) {
-            case 'desc':
-                return 'text-slack-searchbar'
-            case 'error':
-                return 'text-red-600'
-            default:
-                break
+    const textColor = (): string => {
+        if (description) {
+            return 'text-slack-searchbar'
         }
+        if (error) {
+            return 'text-red-500'
+        }
+
+        return ''
     }
     return (
-        <p className={`${textColor()} font-semibold  ${className || 'py-2'}`}>
+        <p className={`${textColor()} font-semibold ${className || 'py-2'}`}>
             {message}
         </p>
     )

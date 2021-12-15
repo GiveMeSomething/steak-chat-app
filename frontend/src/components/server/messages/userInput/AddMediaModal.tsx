@@ -145,16 +145,10 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
                                 onChange={uploadFileToPreview}
                             />
                             {uploadError && (
-                                <DescMessage
-                                    type="error"
-                                    message={uploadError}
-                                />
+                                <DescMessage error message={uploadError} />
                             )}
                             {imageError && (
-                                <DescMessage
-                                    type="error"
-                                    message={imageError}
-                                />
+                                <DescMessage error message={imageError} />
                             )}
                         </div>
                     )

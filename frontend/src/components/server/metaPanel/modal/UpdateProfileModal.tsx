@@ -182,7 +182,7 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
                                     />
                                     {errors.fullname && (
                                         <DescMessage
-                                            type="error"
+                                            error
                                             message={errors.fullname.message}
                                         />
                                     )}
@@ -201,13 +201,13 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
                                     />
                                     {errors.username ? (
                                         <DescMessage
-                                            type="error"
+                                            error
                                             message={errors.username.message}
                                         />
                                     ) : (
                                         <DescMessage
                                             className="pt-0 pb-2 text-sm"
-                                            type="desc"
+                                            description
                                             message="However you'd like people to refer to you in Steak"
                                         />
                                     )}
@@ -228,13 +228,13 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
                                     />
                                     {errors.role ? (
                                         <DescMessage
-                                            type="error"
+                                            error
                                             message={errors.role.message}
                                         />
                                     ) : (
                                         <DescMessage
                                             className="pt-0 pb-2 text-sm"
-                                            type="desc"
+                                            description
                                             message="Let people know what you do"
                                         />
                                     )}
@@ -253,13 +253,13 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
                                     />
                                     {errors.phonenumber ? (
                                         <DescMessage
-                                            type="error"
+                                            error
                                             message={errors.phonenumber.message}
                                         />
                                     ) : (
                                         <DescMessage
                                             className="pt-0 pb-2 text-sm"
-                                            type="desc"
+                                            description
                                             message="Enter a phone number"
                                         />
                                     )}
@@ -267,7 +267,7 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
                             </div>
                             <div className="col-span-1 w-full px-8 -my-2">
                                 <DescMessage
-                                    type="desc"
+                                    description
                                     message="Profile photo"
                                 />
                                 <div className="w-full aspect-w-1 aspect-h-1">
@@ -278,10 +278,7 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
                                     />
                                 </div>
                                 {imageError && (
-                                    <DescMessage
-                                        type="error"
-                                        message={imageError}
-                                    />
+                                    <DescMessage error message={imageError} />
                                 )}
                                 <div className="w-full flex flex-col items-center">
                                     <label

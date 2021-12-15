@@ -212,9 +212,7 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
                         </div>
                     </div>
                     {uploadState && <ProgressBar progress={uploadProgress} />}
-                    {uploadError && (
-                        <DescMessage type="error" message={uploadError} />
-                    )}
+                    {uploadError && <DescMessage error message={uploadError} />}
                 </div>
             </Modal.Content>
             <Modal.Actions>

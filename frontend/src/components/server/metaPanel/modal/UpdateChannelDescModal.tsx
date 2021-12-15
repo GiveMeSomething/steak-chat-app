@@ -141,12 +141,12 @@ const UpdateChannelDescModal: FunctionComponent<
                         )}
                         {errors.channelDesc && (
                             <DescMessage
-                                type="error"
+                                error
                                 message={errors.channelDesc.message}
                             />
                         )}
                         {updateError && (
-                            <DescMessage type="error" message={updateError} />
+                            <DescMessage error message={updateError} />
                         )}
                     </div>
                 </Modal.Description>

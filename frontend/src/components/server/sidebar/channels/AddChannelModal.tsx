@@ -94,7 +94,7 @@ const AddChannelModal: FunctionComponent<AddChannelModalProps> = ({
                         />
                         {errors.channelName && (
                             <DescMessage
-                                type="error"
+                                error
                                 message={errors.channelName.message}
                             />
                         )}

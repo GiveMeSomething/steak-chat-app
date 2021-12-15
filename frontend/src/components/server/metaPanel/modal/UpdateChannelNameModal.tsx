@@ -155,18 +155,18 @@ const UpdateChannelNameModal: FunctionComponent<
                         {errors.channelName &&
                             errors.channelName.type === 'noSpecialChar' && (
                                 <DescMessage
-                                    type="error"
+                                    error
                                     message={noSpecialCharMessage}
                                 />
                             )}
                         {errors.channelName && (
                             <DescMessage
-                                type="error"
+                                error
                                 message={errors.channelName.message}
                             />
                         )}
                         {updateError && (
-                            <DescMessage type="error" message={updateError} />
+                            <DescMessage error message={updateError} />
                         )}
                         <p className="font-semibold text-slack-text-blur w-full text-base leading-2">
                             Names must be lowercase, without spaces or special

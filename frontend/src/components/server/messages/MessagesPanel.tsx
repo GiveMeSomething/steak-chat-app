@@ -16,10 +16,7 @@ interface MessagePanelProps {}
 
 const usersMap = new Map<string, UserInfo>()
 
-console.log('Running outside')
-
 const MessagesPanel: FunctionComponent<MessagePanelProps> = () => {
-    console.log('Running inside')
     const [isLoading, setIsLoading] = useState<boolean>(true)
 
     const messages = useAppSelector(selectMessages)
@@ -33,7 +30,6 @@ const MessagesPanel: FunctionComponent<MessagePanelProps> = () => {
         // Init usersMap when component mount
         channelUsers.forEach((user) => {
             usersMap.set(user.uid, user)
-            console.log(usersMap.get(user.uid))
         })
 
         if (!messages || messages.length === 0) {
