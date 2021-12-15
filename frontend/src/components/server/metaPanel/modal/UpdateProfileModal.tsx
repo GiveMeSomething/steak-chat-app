@@ -1,23 +1,25 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
+import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { useForm } from 'react-hook-form'
 
 import { selectCurrentUser } from 'components/auth/redux/auth.slice'
+import { updateUserProfile } from 'components/auth/redux/auth.thunk'
+import {
+    selectIsEditProfileOpen,
+    setEditProfileOpen,
+} from '../redux/metaPanel.slice'
+
+import toast from 'react-hot-toast'
+import { Undefinable } from 'types/commonType'
+import { VIETNAMESE_PHONENUM_REGEX } from 'constants/appConst'
+import { isImageValid } from 'utils/fileUtil'
+import { isEmpty } from 'lodash'
 
 import { Modal, Button, Icon } from 'semantic-ui-react'
 
 import FormInput from 'components/commons/FormInput'
 import DescMessage from 'components/commons/formDescription/DescMessage'
-import { Undefinable } from 'types/commonType'
-import { VIETNAMESE_PHONENUM_REGEX } from 'constants/appConst'
-import { isImageValid } from 'utils/fileUtil'
 import AvatarCropModal from './AvatarCropModal'
-import { useAppDispatch, useAppSelector } from 'redux/hooks'
-import {
-    selectIsEditProfileOpen,
-    setEditProfileOpen,
-} from '../redux/metaPanel.slice'
-import { updateUserProfile } from 'components/auth/redux/auth.thunk'
-import toast from 'react-hot-toast'
 
 interface UpdateProfileModalProps {}
 

@@ -5,19 +5,21 @@ import React, {
     useRef,
     useState,
 } from 'react'
+import { useAppDispatch, useAppSelector } from 'redux/hooks'
+import { useForm } from 'react-hook-form'
+
+import { selectCurrentUser } from 'components/auth/redux/auth.slice'
+import { updateUserAvatar } from 'components/auth/redux/auth.thunk'
+
+import { Undefinable } from 'types/commonType'
+import { useUploadFile } from 'utils/fileUtil'
+import { cropSetting } from 'constants/appConst'
 
 import { Button, Icon, Modal } from 'semantic-ui-react'
-
 import ReactCrop, { Crop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
-import { Undefinable } from 'types/commonType'
-import { useForm } from 'react-hook-form'
-import { useUploadFile } from 'utils/fileUtil'
-import { useAppDispatch, useAppSelector } from 'redux/hooks'
-import { selectCurrentUser } from 'components/auth/redux/auth.slice'
+
 import DescMessage from 'components/commons/formDescription/DescMessage'
-import { updateUserAvatar } from 'components/auth/redux/auth.thunk'
-import { cropSetting } from 'constants/appConst'
 import ProgressBar from 'components/server/messages/userInput/ProgressBar'
 
 interface AvatarCropModalProps {
@@ -78,7 +80,7 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
         canvas.height = crop.height * pixelRatio * scaleY
 
         ctx.setTransform(pixelRatio, 0, 0, pixelRatio, 0, 0)
-        ctx.imageSmoothingQuality = 'high'
+        ctx.imageSmoothingQuality = 'medium'
 
         ctx.drawImage(
             image,
@@ -98,7 +100,7 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
         overflowY: 'auto',
     }
 
-    // Fixed size, also help reducing size when upload to database
+    // Fixed size 128px*128px, also help reducing size when upload to database
     const canvasStyle: React.CSSProperties = {
         width: 128,
         height: 128,
