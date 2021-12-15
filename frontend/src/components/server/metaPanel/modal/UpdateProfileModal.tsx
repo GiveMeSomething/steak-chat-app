@@ -84,7 +84,7 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
         const reader = new FileReader()
         const files = event.target.files
 
-        if (files && isEmpty(files)) {
+        if (files && !isEmpty(files)) {
             if (!isImageValid(files[0])) {
                 setImageError('Image size should not exceed 5MB')
                 return
