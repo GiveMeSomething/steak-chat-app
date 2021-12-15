@@ -93,6 +93,17 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
         )
     }, [crop])
 
+    const cropperStyle: React.CSSProperties = {
+        maxHeight: '30rem',
+        overflowY: 'auto',
+    }
+
+    // Fixed size, also help reducing size when upload to database
+    const canvasStyle: React.CSSProperties = {
+        width: 128,
+        height: 128,
+    }
+
     const uploadCroppedImage = async () => {
         if (!canvasRef.current || !crop || !currentUser) {
             return
@@ -186,24 +197,14 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
                                 circularCrop={true}
                                 onImageLoaded={onLoad}
                                 onChange={handleOnCropChange}
-                                style={{
-                                    maxHeight: '30rem',
-                                    overflowY: 'auto',
-                                }}
+                                style={cropperStyle}
                             />
                         </div>
                     </div>
                     <p className="font-semibold text-xl py-2">Preview:</p>
                     <div className="grid grid-cols-3">
                         <div className="col-span-1">
-                            <canvas
-                                ref={canvasRef}
-                                // Fixed size, also help reducing size when upload to database
-                                style={{
-                                    width: '8rem',
-                                    height: '8rem',
-                                }}
-                            />
+                            <canvas ref={canvasRef} style={canvasStyle} />
                         </div>
                         <div className="col-span-2 flex items-center justify-center">
                             <p>
