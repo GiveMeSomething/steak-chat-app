@@ -77,6 +77,21 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
         setFocus('message')
     }
 
+    const toggleEmojiPicker = () => {
+        setEmojiPickerOpen(!isEmojiPickerOpen)
+    }
+
+    const handleSelectEmoji = (emoji: Undefinable<BaseEmoji> = undefined) => {
+        if (emoji && emoji.native) {
+            setValue('message', `${getValues('message')} ${emoji.native} `)
+        }
+
+        setEmojiPickerOpen(false)
+        setEmojiPickerHover(false)
+
+        setFocus('message')
+    }
+
     return (
         <div className="flex mb-4 px-4 mx-auto w-full max-h-15">
             <Popup
