@@ -102,25 +102,6 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
         }
     }
 
-    const handleInputKeyup = () => {
-        if (!currentUser) {
-            return
-        }
-
-        const currentMessage = getValues('message')
-        const payload = {
-            channelId: currentChannel.id,
-            userId: currentUser.uid,
-            username: currentUser.username,
-        }
-
-        if (!currentMessage || currentMessage.trim().length <= 0) {
-            dispatch(removeCurrentUserTyping(payload))
-        } else if (!typers[currentUser.uid]) {
-            dispatch(setCurrentUserTyping(payload))
-        }
-    }
-
     return (
         <>
             {Object.keys(typers).length > 0 && (
