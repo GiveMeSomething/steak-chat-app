@@ -27,7 +27,7 @@ interface FormValues {
 const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
     currentMessage,
     isOpen,
-    setOpen,
+    setOpen
 }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -47,11 +47,12 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
         }
     }, [isOpen])
 
-    const { startUpload, uploadProgress, uploadError } = useUploadFile()
+    const { startUpload, uploadState, uploadProgress, uploadError } =
+        useUploadFile()
 
     // This will show a preview before pushing the userMedia to Firebase Database
     const uploadFileToPreview = (
-        event: React.ChangeEvent<HTMLInputElement>,
+        event: React.ChangeEvent<HTMLInputElement>
     ) => {
         const reader = new FileReader()
         const files = event.target.files
@@ -94,8 +95,8 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
             await dispatch(
                 sendMessage({
                     mediaPath: downloadUrl,
-                    message: desc,
-                }),
+                    message: desc
+                })
             )
 
             // Close the modal after finish uploading
@@ -106,7 +107,7 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
             await startUpload(
                 userMedia,
                 `chat/public/${uuid()}.${extractFileExt(userMedia.name)}`,
-                onUploadFinish,
+                onUploadFinish
             )
         }
     }
@@ -161,7 +162,7 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
                         {...register('desc')}
                     />
                 </div>
-                {uploadProgress && <ProgressBar progress={uploadProgress} />}
+                {uploadState && <ProgressBar progress={uploadProgress} />}
             </Modal.Content>
             <Modal.Actions>
                 <Button color="red" onClick={handleClose}>

@@ -12,7 +12,7 @@ import {
     query,
     orderByChild,
     onChildRemoved,
-    child,
+    child
 } from '@firebase/database'
 
 import {
@@ -23,26 +23,26 @@ import {
     selectCurrentChannel,
     selectIsDirectChannel,
     unStarChannel,
-    updateChannelInfo,
+    updateChannelInfo
 } from 'components/server/redux/channels/channels.slice'
 import { selectCurrentUser } from 'components/auth/redux/auth.slice'
 import {
     setMessages,
     clearMessages,
     clearSearchMessage,
-    addMessage,
+    addMessage
 } from 'components/server/redux/messages/messages.slice'
 import {
     clearChannelUsers,
     addChannelUser,
-    updateChannelUser,
+    updateChannelUser
 } from 'components/server/redux/users/users.slice'
 import {
     addTyper,
     clearTyper,
     removeTyper,
     selectChannelMessageCount,
-    setChannelMessageCount,
+    setChannelMessageCount
 } from 'components/server/redux/notifications/notifications.slice'
 import { updateNotifications } from 'components/server/redux/channels/channels.thunk'
 
@@ -51,7 +51,7 @@ import {
     MESSAGE_COUNT_REF,
     STARRED_REF,
     TYPING_REF,
-    USERS_REF,
+    USERS_REF
 } from 'utils/databaseRef'
 
 import ServerLayout from 'components/server/ServerLayout'
@@ -95,7 +95,7 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
 
                 dispatch(setMessages(result))
             },
-            { onlyOnce: true },
+            { onlyOnce: true }
         )
     }
 
@@ -123,7 +123,7 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
             CHANNELS_REF,
             (data) => {
                 dispatch(updateChannelInfo(data.val()))
-            },
+            }
         )
 
         const unsubscribeChannelUsers = onChildAdded(USERS_REF, (data) => {
@@ -134,21 +134,21 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
             USERS_REF,
             (data) => {
                 dispatch(updateChannelUser(data.val()))
-            },
+            }
         )
 
         const unsubscribeStarredChannel = onChildAdded(
             STARRED_REF(currentUser?.uid),
             (data) => {
                 dispatch(addStarredChannel(data.val()))
-            },
+            }
         )
 
         const unsubscribeUnStarChannel = onChildRemoved(
             STARRED_REF(currentUser?.uid),
             (data) => {
                 dispatch(unStarChannel(data.val()))
-            },
+            }
         )
         // This run once and auto unsubscribe
         // Update notifications when user first load application
@@ -160,8 +160,8 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
                 }
             },
             {
-                onlyOnce: true,
-            },
+                onlyOnce: true
+            }
         )
 
         // This will trigger on single child
@@ -173,11 +173,11 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
                     dispatch(
                         // Construct similar object to onValue to reuse updateNotifications
                         updateNotifications({
-                            [data.key as string]: data.val(),
-                        }),
+                            [data.key as string]: data.val()
+                        })
                     )
                 }
-            },
+            }
         )
 
         setIsMessageLoading(false)
@@ -203,8 +203,8 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
             dispatch(
                 removeCurrentUserTyping({
                     channelId: currentChannel.id,
-                    userId: currentUser.uid,
-                }),
+                    userId: currentUser.uid
+                })
             )
             // Remove all typing tracker (in store)
             dispatch(clearTyper())
@@ -217,11 +217,11 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
                         dispatch(
                             addTyper({
                                 userId: data.key,
-                                username: data.val(),
-                            }),
+                                username: data.val()
+                            })
                         )
                     }
-                },
+                }
             )
 
             const unsubscribeTypingTrackRemoved = onChildRemoved(
@@ -230,7 +230,7 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
                     if (data && data.key) {
                         dispatch(removeTyper({ userId: data.key }))
                     }
-                },
+                }
             )
 
             // Add messages listener for current channel

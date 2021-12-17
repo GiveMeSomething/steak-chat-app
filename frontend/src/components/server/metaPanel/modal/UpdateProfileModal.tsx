@@ -6,7 +6,7 @@ import { selectCurrentUser } from 'components/auth/redux/auth.slice'
 import { updateUserProfile } from 'components/auth/redux/auth.thunk'
 import {
     selectIsEditProfileOpen,
-    setEditProfileOpen,
+    setEditProfileOpen
 } from '../redux/metaPanel.slice'
 
 import toast from 'react-hot-toast'
@@ -55,7 +55,7 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
         handleSubmit,
         setFocus,
         setValue,
-        formState: { errors },
+        formState: { errors }
     } = useForm<FormValues>()
 
     useEffect(() => {
@@ -75,7 +75,7 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
 
     // This will show a preview before pushing the userMedia to Firebase Database
     const uploadFileToPreview = (
-        event: React.ChangeEvent<HTMLInputElement>,
+        event: React.ChangeEvent<HTMLInputElement>
     ) => {
         if (isLoading) {
             return
@@ -130,7 +130,7 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
     const onSubmit = async (data: FormValues) => {
         if (selectedUser) {
             await dispatch(
-                updateUserProfile({ ...data, userId: selectedUser.uid }),
+                updateUserProfile({ ...data, userId: selectedUser.uid })
             )
         }
 
@@ -140,8 +140,8 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
             icon: '❤',
             iconTheme: {
                 primary: '#C21E56',
-                secondary: '#FF5733',
-            },
+                secondary: '#FF5733'
+            }
         })
 
         setOpen(false)
@@ -175,8 +175,8 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
                                             maxLength: {
                                                 value: 120,
                                                 message:
-                                                    'Full name must not exceeds 120 characters',
-                                            },
+                                                    'Full name must not exceeds 120 characters'
+                                            }
                                         })}
                                         label="Full name"
                                         type="text"
@@ -194,8 +194,8 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
                                             maxLength: {
                                                 value: 120,
                                                 message:
-                                                    'Display name must not exceeds 120 characters',
-                                            },
+                                                    'Display name must not exceeds 120 characters'
+                                            }
                                         })}
                                         label="Display name"
                                         type="text"
@@ -221,8 +221,8 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
                                             maxLength: {
                                                 value: 120,
                                                 message:
-                                                    'Role must not exceeds 120 characters',
-                                            },
+                                                    'Role must not exceeds 120 characters'
+                                            }
                                         })}
                                         label="Server Role"
                                         type="text"
@@ -246,8 +246,8 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
                                         {...register('phonenumber', {
                                             pattern: {
                                                 value: VIETNAMESE_PHONENUM_REGEX,
-                                                message: 'Invalid phone number',
-                                            },
+                                                message: 'Invalid phone number'
+                                            }
                                         })}
                                         label="Phone number"
                                         type="text"

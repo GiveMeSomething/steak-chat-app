@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react'
 import Icon, {
-    IconSizeProp,
+    IconSizeProp
 } from 'semantic-ui-react/dist/commonjs/elements/Icon/Icon'
 import { UserStatus } from 'types/appEnum'
 import { Undefinable } from 'types/commonType'
@@ -14,7 +14,7 @@ interface StatusIconProps {
 const StatusIcon: FunctionComponent<StatusIconProps> = ({
     userStatus,
     size,
-    className,
+    className
 }) => {
     switch (userStatus) {
         case UserStatus.ONLINE:

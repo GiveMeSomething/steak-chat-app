@@ -8,7 +8,7 @@ import { setCurrentChannel } from 'components/server/redux/channels/channels.thu
 import { UserStatus } from 'types/appEnum'
 import {
     generateDirectChannelInfo,
-    getDirectChannelId,
+    getDirectChannelId
 } from 'utils/channelUtil'
 
 import { Button, Icon } from 'semantic-ui-react'
@@ -35,7 +35,7 @@ const UserDetailPanel: FunctionComponent<UserDetailPanelProps> = ({ data }) => {
             const directChannelInfo = generateDirectChannelInfo(
                 currentUser,
                 channelId,
-                username,
+                username
             )
 
             if (directChannelInfo) {

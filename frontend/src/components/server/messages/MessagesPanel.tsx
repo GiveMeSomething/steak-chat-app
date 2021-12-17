@@ -5,7 +5,7 @@ import {
     Message,
     selectIsSearching,
     selectMessages,
-    selectSearchMessages,
+    selectSearchMessages
 } from 'components/server/redux/messages/messages.slice'
 
 import MessageComponent from './message/Message'
@@ -69,7 +69,7 @@ const MessagesPanel: FunctionComponent<MessagePanelProps> = () => {
         if (isSearching) {
             if (searchMessages.length > 0) {
                 return searchMessages.map((message) =>
-                    getMessageComponent(message),
+                    getMessageComponent(message)
                 )
             } else {
                 // TODO: Make better UI for dis

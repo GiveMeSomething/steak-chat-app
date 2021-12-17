@@ -7,11 +7,11 @@ import {
     ChannelInfo,
     selectChannels,
     selectStarredChannels,
-    selectCurrentChannel,
+    selectCurrentChannel
 } from 'components/server/redux/channels/channels.slice'
 import {
     setCurrentChannel,
-    updateChannelDesc,
+    updateChannelDesc
 } from 'components/server/redux/channels/channels.thunk'
 
 import { findChannelById } from 'utils/channelUtil'
@@ -49,7 +49,7 @@ const UpdateChannelDescModal: FunctionComponent<
         setFocus,
         setValue,
         reset,
-        handleSubmit,
+        handleSubmit
     } = useForm<FormValues>()
 
     useEffect(() => {
@@ -63,7 +63,7 @@ const UpdateChannelDescModal: FunctionComponent<
         const updatedChannel = findChannelById(
             channelInfo.id,
             channels,
-            starred,
+            starred
         )
 
         if (updatedChannel) {
@@ -90,8 +90,8 @@ const UpdateChannelDescModal: FunctionComponent<
             await dispatch(
                 updateChannelDesc({
                     channelId: id,
-                    content: data.channelDesc,
-                }),
+                    content: data.channelDesc
+                })
             )
         } catch (e: any) {
             if (e.message) {
@@ -127,8 +127,8 @@ const UpdateChannelDescModal: FunctionComponent<
                                 maxLength: {
                                     value: 120,
                                     message:
-                                        'Channel description must not exceeds 120 characters',
-                                },
+                                        'Channel description must not exceeds 120 characters'
+                                }
                             })}
                             label="Channel description"
                             type="text"

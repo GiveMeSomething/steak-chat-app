@@ -15,5 +15,5 @@ export const CARD_HEIGHT = 22 * 16 // ~18rem
 export const cropSetting: Partial<Crop> = {
     aspect: 1,
     unit: '%',
-    width: 100,
+    width: 100
 }

@@ -12,7 +12,7 @@ interface StarredDropdownProps {
 
 const StarredDropdown: FunctionComponent<StarredDropdownProps> = ({
     isActive,
-    setActive,
+    setActive
 }) => {
     const starredChannel = useAppSelector(selectStarredChannels)
 

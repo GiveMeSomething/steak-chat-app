@@ -6,7 +6,7 @@ import { selectCurrentChannel } from 'components/server/redux/channels/channels.
 import {
     selectMessages,
     clearSearchMessage,
-    setSearchMessages,
+    setSearchMessages
 } from 'components/server/redux/messages/messages.slice'
 
 import { Undefinable } from 'types/commonType'
@@ -25,7 +25,7 @@ interface FormValues {
 
 const SearchModal: FunctionComponent<SearchModalProps> = ({
     isOpen,
-    setOpen,
+    setOpen
 }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [searchError, setSearchError] = useState<Undefinable<string>>('')
@@ -45,7 +45,7 @@ const SearchModal: FunctionComponent<SearchModalProps> = ({
     useEffect(() => {
         if (!messages || messages.length === 0) {
             setSearchError(
-                'There is nothing in this channel. Try adding a new message 😉',
+                'There is nothing in this channel. Try adding a new message 😉'
             )
         } else {
             setSearchError(undefined)
@@ -78,7 +78,7 @@ const SearchModal: FunctionComponent<SearchModalProps> = ({
 
             // Currently only search for messages in currentChannel
             const result = searchMessages.filter((message) =>
-                messageRegex.test(message.content),
+                messageRegex.test(message.content)
             )
 
             dispatch(setSearchMessages(result))

@@ -7,7 +7,7 @@ interface ScreenOverlayProps {
 const overlayRoot = document.getElementById('overlay-root')
 
 const ScreenOverlay: FunctionComponent<ScreenOverlayProps> = ({
-    handleOnClick,
+    handleOnClick
 }) => {
     if (overlayRoot) {
         return ReactDOM.createPortal(
@@ -15,7 +15,7 @@ const ScreenOverlay: FunctionComponent<ScreenOverlayProps> = ({
                 className="absolute h-screen w-screen top-0 left-0 z-10"
                 onClick={handleOnClick}
             ></div>,
-            overlayRoot,
+            overlayRoot
         )
     } else {
         return (

@@ -22,20 +22,20 @@ const UserCard: FunctionComponent<UserCardProps> = ({
     openMetaPanel,
     closeCard,
     cardStyle,
-    upward,
+    upward
 }) => {
     const dispatch = useAppDispatch()
     const currentUser = useAppSelector(selectCurrentUser)
 
     const handleOnEditProfileClick = (
-        event: React.MouseEvent<HTMLButtonElement>,
+        event: React.MouseEvent<HTMLButtonElement>
     ) => {
         dispatch(setEditProfileOpen(true))
         closeCard(event)
     }
 
     const handleOnViewProfileClick = (
-        event: React.MouseEvent<HTMLDivElement>,
+        event: React.MouseEvent<HTMLDivElement>
     ): void => {
         openMetaPanel(selectedUser)
         closeCard(event)

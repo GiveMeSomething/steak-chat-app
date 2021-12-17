@@ -11,7 +11,7 @@ interface NotificationSliceInititalState {
 const initialState: NotificationSliceInititalState = {
     messageCount: {},
     notifications: {},
-    typing: {},
+    typing: {}
 }
 
 const notificationSlice = createSlice({
@@ -23,14 +23,14 @@ const notificationSlice = createSlice({
             action: WithPayload<{
                 channelId: string
                 notifications: number
-            }>,
+            }>
         ) => {
             const { channelId, notifications } = action.payload
             state.notifications[channelId] = notifications
         },
         clearOneChannelNotifications: (
             state,
-            action: WithPayload<{ channelId: string }>,
+            action: WithPayload<{ channelId: string }>
         ) => {
             const { channelId } = action.payload
             state.notifications[channelId] = 0
@@ -38,7 +38,7 @@ const notificationSlice = createSlice({
 
         setChannelMessageCount: (
             state,
-            action: WithPayload<IdAsKeyObject<number>>,
+            action: WithPayload<IdAsKeyObject<number>>
         ) => {
             if (action.payload) {
                 state.messageCount = action.payload
@@ -52,7 +52,7 @@ const notificationSlice = createSlice({
             action: WithPayload<{
                 channelId: string
                 messageCount: number
-            }>,
+            }>
         ) => {
             const { channelId, messageCount } = action.payload
             state.messageCount[channelId] = messageCount
@@ -61,7 +61,7 @@ const notificationSlice = createSlice({
         // Typer work only on currentChannel, will be clear when change channel
         addTyper: (
             state,
-            action: WithPayload<{ userId: string; username: string }>,
+            action: WithPayload<{ userId: string; username: string }>
         ) => {
             if (action.payload) {
                 const { userId, username } = action.payload
@@ -76,8 +76,8 @@ const notificationSlice = createSlice({
         },
         clearTyper: (state) => {
             state.typing = {}
-        },
-    },
+        }
+    }
 })
 
 export const selectChannelNotifications = (state: RootState) =>
@@ -93,7 +93,7 @@ export const {
     clearOneChannelNotifications,
     addTyper,
     removeTyper,
-    clearTyper,
+    clearTyper
 } = notificationSlice.actions
 
 export const selectTyper = (state: RootState) => state.notifications.typing

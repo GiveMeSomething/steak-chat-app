@@ -13,7 +13,7 @@ export const setCurrentUserTyping = createAsyncThunk<void, TypingPayload>(
     async ({ userId, channelId, username }) => {
         const userTypingRef = child(TYPING_REF, `${channelId}/${userId}`)
         await set(userTypingRef, username)
-    },
+    }
 )
 
 export const removeCurrentUserTyping = createAsyncThunk<

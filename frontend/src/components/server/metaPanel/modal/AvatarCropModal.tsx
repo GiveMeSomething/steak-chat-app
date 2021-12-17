@@ -3,7 +3,7 @@ import React, {
     useCallback,
     useEffect,
     useRef,
-    useState,
+    useState
 } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { useForm } from 'react-hook-form'
@@ -33,7 +33,7 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
     isOpen,
     setOpen,
     imageSrc,
-    onAvatarCropClose,
+    onAvatarCropClose
 }) => {
     const imageRef = useRef<HTMLImageElement | null>(null)
     const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -50,7 +50,7 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
         uploadProgress,
         uploadError,
         startUpload,
-        resetState,
+        resetState
     } = useUploadFile()
 
     const dispatch = useAppDispatch()
@@ -91,20 +91,37 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
             0,
             0,
             crop.width * scaleX,
-            crop.height * scaleY,
+            crop.height * scaleY
         )
     }, [crop])
 
     const cropperStyle: React.CSSProperties = {
         maxHeight: '30rem',
-        overflowY: 'auto',
+        overflowY: 'auto'
     }
 
     // Fixed size 128px*128px, also help reducing size when upload to database
     const canvasStyle: React.CSSProperties = {
         width: 128,
-        height: 128,
+        height: 128
     }
+
+    const onModalClose = () => {
+        setIsLoading(false)
+
+        setCrop(cropSetting)
+        setCompletedCrop(undefined)
+
+        setOpen(false)
+        onAvatarCropClose()
+    }
+
+    const onLoad = useCallback((img) => {
+        resetState()
+        setCrop(cropSetting)
+
+        imageRef.current = img
+    }, [])
 
     const uploadCroppedImage = async () => {
         if (!canvasRef.current || !crop || !currentUser) {
@@ -114,7 +131,7 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
         const onUploadFinish = async (photoUrl: string): Promise<void> => {
             // Then update profile based on the receiveURL
             await dispatch(
-                updateUserAvatar({ userId: currentUser.uid, photoUrl }),
+                updateUserAvatar({ userId: currentUser.uid, photoUrl })
             )
 
             onModalClose()
@@ -127,18 +144,11 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
                 await startUpload(
                     blob,
                     `chat/avatar/${currentUser.uid}`,
-                    onUploadFinish,
+                    onUploadFinish
                 )
             }
         })
     }
-
-    const onLoad = useCallback((img) => {
-        resetState()
-        setCrop(cropSetting)
-
-        imageRef.current = img
-    }, [])
 
     const handleOnCropChange = (crop: Crop) => {
         setCrop(crop)
@@ -151,16 +161,6 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
         await uploadCroppedImage()
 
         setIsLoading(false)
-    }
-
-    const onModalClose = () => {
-        setIsLoading(false)
-
-        setCrop(cropSetting)
-        setCompletedCrop(undefined)
-
-        setOpen(false)
-        onAvatarCropClose()
     }
 
     return (
