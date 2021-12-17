@@ -4,12 +4,6 @@
 
 -   Node.js LTS version
 
-## Config local dev enviroment
-
--   Swap content of `frontend/src/.env.example` with `frontend/src/.env`
-
--   Before opening a pull request, please swap back
-
 ## Start local dev environment
 
 Install npm dependencies:
