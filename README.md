@@ -6,9 +6,9 @@
 
 ## Config local dev enviroment
 
--   Delete `frontend/src/.env`
+-   Swap content of `frontend/src/.env.example` with `frontend/src/.env`
 
--   Rename `frontend/src/.env.example` to `frontend/src/.env`
+-   Before opening a pull request, please swap back
 
 ## Start local dev environment
 
