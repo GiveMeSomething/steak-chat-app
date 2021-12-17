@@ -45,6 +45,7 @@ import {
     setChannelMessageCount
 } from 'components/server/redux/notifications/notifications.slice'
 import { updateNotifications } from 'components/server/redux/channels/channels.thunk'
+import { removeCurrentUserTyping } from 'components/server/redux/notifications/notifications.thunk'
 
 import {
     CHANNELS_REF,
@@ -55,10 +56,8 @@ import {
 } from 'utils/databaseRef'
 
 import ServerLayout from 'components/server/ServerLayout'
-import withAuthRedirect from 'components/middleware/withAuthRedirect'
-
 import LoadingOverlay from 'components/commons/overlay/LoadingOverlay'
-import { removeCurrentUserTyping } from 'components/server/redux/notifications/notifications.thunk'
+import withAuthRedirect from 'components/middleware/withAuthRedirect'
 
 interface ChatServerProps {}
 

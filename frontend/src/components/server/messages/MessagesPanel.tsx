@@ -7,10 +7,10 @@ import {
     selectMessages,
     selectSearchMessages
 } from 'components/server/redux/messages/messages.slice'
-
-import MessageComponent from './message/Message'
 import { selectChannelUsers } from '../redux/users/users.slice'
 import { UserInfo } from 'components/auth/redux/auth.slice'
+
+import MessageComponent from './message/Message'
 
 interface MessagePanelProps {}
 
