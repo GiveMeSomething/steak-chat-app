@@ -12,6 +12,5 @@ package-lock.json
 *.gz
 
 .vscode
-.env
 
 build
