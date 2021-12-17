@@ -32,7 +32,7 @@ export function useUploadFile() {
     const startUpload = async (
         file: File | Blob,
         filePath: string,
-        successCallback: (url: string) => void,
+        successCallback: (url: string) => void
     ) => {
         const storageRef = ref(storage, filePath)
 
@@ -51,7 +51,7 @@ export function useUploadFile() {
             (snapshot) => {
                 // Watch progress to display a progress bar for better UX
                 const progress = Math.round(
-                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100,
+                    (snapshot.bytesTransferred / snapshot.totalBytes) * 100
                 )
                 setUploadProgress(progress)
 
@@ -67,9 +67,9 @@ export function useUploadFile() {
             async () => {
                 // If successfully uploaded, dispatch sendMessage to display and save message to database
                 getDownloadURL(result.snapshot.ref).then(async (downloadUrl) =>
-                    successCallback(downloadUrl),
+                    successCallback(downloadUrl)
                 )
-            },
+            }
         )
     }
 
@@ -84,6 +84,6 @@ export function useUploadFile() {
         resetState,
         uploadState,
         uploadProgress,
-        uploadError,
+        uploadError
     }
 }

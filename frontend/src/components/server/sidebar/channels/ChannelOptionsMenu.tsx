@@ -3,12 +3,12 @@ import { useAppDispatch } from 'redux/hooks'
 
 import {
     setCurrentMetaPanelData,
-    setMetaPanelOpen,
+    setMetaPanelOpen
 } from 'components/server/metaPanel/redux/metaPanel.slice'
 import { ChannelInfo } from 'components/server/redux/channels/channels.slice'
 import {
     unStarSelectedChannel,
-    starSelectedChannel,
+    starSelectedChannel
 } from 'components/server/redux/channels/channels.thunk'
 
 import { Undefinable } from 'types/commonType'
@@ -26,41 +26,41 @@ const ChannelOptions: FunctionComponent<ChannelOptionsProps> = ({
     starred,
     isOpen,
     selectedChannel,
-    closeMenu,
+    closeMenu
 }) => {
     const dispatch = useAppDispatch()
 
     const menuOptions = {
         notificationSetting: {
             text: 'Change notifications',
-            disabled: true,
+            disabled: true
         },
         notificationMute: {
             text: 'Mute channel',
-            disabled: true,
+            disabled: true
         },
         copyName: {
             text: 'Copy name',
-            disabled: true,
+            disabled: true
         },
         copyLink: {
             text: 'Copy link',
-            disabled: true,
+            disabled: true
         },
         toggleStar: {
-            text: starred ? 'Unstar channel' : 'Star channel',
+            text: starred ? 'Unstar channel' : 'Star channel'
         },
         channelDetail: {
-            text: 'Open channel details',
+            text: 'Open channel details'
         },
         leaveChannel: {
             text: 'Leave channel',
-            disabled: true,
-        },
+            disabled: true
+        }
     }
 
     const handleOnStarChannel = async (
-        event: React.MouseEvent<HTMLDivElement>,
+        event: React.MouseEvent<HTMLDivElement>
     ) => {
         if (selectedChannel) {
             if (starred) {

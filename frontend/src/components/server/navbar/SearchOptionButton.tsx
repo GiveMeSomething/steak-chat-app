@@ -9,7 +9,7 @@ interface SearchOptionButtonProps {
 
 const SearchOptionButton: FunctionComponent<SearchOptionButtonProps> = ({
     buttonLabel,
-    iconName,
+    iconName
 }) => {
     return (
         <Button icon className="font-light">

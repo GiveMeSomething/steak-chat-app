@@ -12,7 +12,7 @@ import LoadingOverlay from 'components/commons/overlay/LoadingOverlay'
 // This will redirect to login page if there are no signed in user
 // Wrap this outside of need-to-authenticate components
 function withAuthRedirect<PropsType>(
-    WrappedComponent: FunctionComponent<PropsType>,
+    WrappedComponent: FunctionComponent<PropsType>
 ) {
     return (props: PropsType) => {
         const [needToRedirect, setNeedToRedirect] = useState<boolean>(false)
@@ -49,7 +49,7 @@ function withAuthRedirect<PropsType>(
                 <Redirect
                     to={{
                         pathname: '/auth/signin',
-                        state: { from: 'From Chat Server' },
+                        state: { from: 'From Chat Server' }
                     }}
                 />
             )

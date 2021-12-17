@@ -23,7 +23,7 @@ interface FormValues {
 
 const AddChannelModal: FunctionComponent<AddChannelModalProps> = ({
     isOpen,
-    setOpen,
+    setOpen
 }) => {
     const [isLoading, setLoading] = useState<boolean>(false)
     const {
@@ -32,7 +32,7 @@ const AddChannelModal: FunctionComponent<AddChannelModalProps> = ({
         clearErrors,
         reset,
         setFocus,
-        formState: { errors },
+        formState: { errors }
     } = useForm<FormValues>()
 
     const dispatch = useAppDispatch()
@@ -42,6 +42,16 @@ const AddChannelModal: FunctionComponent<AddChannelModalProps> = ({
             setFocus('channelName')
         }
     }, [isOpen])
+
+    const handleClose = () => {
+        // Reset form state
+        clearErrors()
+        reset()
+
+        // Close the modal
+        setLoading(false)
+        setOpen(false)
+    }
 
     async function onSubmit(data: FormValues) {
         setLoading(true)
@@ -54,16 +64,6 @@ const AddChannelModal: FunctionComponent<AddChannelModalProps> = ({
         await dispatch(addNewChannel({ ...data, channelName: channelName }))
 
         handleClose()
-    }
-
-    const handleClose = () => {
-        // Reset form state
-        clearErrors()
-        reset()
-
-        // Close the modal
-        setLoading(false)
-        setOpen(false)
     }
 
     return (
@@ -92,8 +92,8 @@ const AddChannelModal: FunctionComponent<AddChannelModalProps> = ({
                                 minLength: {
                                     value: 6,
                                     message:
-                                        'Channel name must be longer than 6 characters',
-                                },
+                                        'Channel name must be longer than 6 characters'
+                                }
                             })}
                             label="Channel Name"
                             type="text"

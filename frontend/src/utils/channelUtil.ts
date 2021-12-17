@@ -23,7 +23,7 @@ export const getDirectChannelId = (currentUserId: string, userId: string) => {
 export const generateDirectChannelInfo = (
     currentUser: UserInfo,
     channelId: string,
-    toUser: string,
+    toUser: string
 ) => {
     if (currentUser) {
         const directChannelInfo: ChannelInfo = {
@@ -32,8 +32,8 @@ export const generateDirectChannelInfo = (
             createdBy: {
                 uid: currentUser.uid,
                 username: currentUser.username,
-                photoUrl: currentUser.photoUrl,
-            },
+                photoUrl: currentUser.photoUrl
+            }
         }
 
         return directChannelInfo
@@ -43,7 +43,7 @@ export const generateDirectChannelInfo = (
 export const findChannelById = (
     channelId: string,
     channels: ChannelInfo[],
-    starred: ChannelInfo[],
+    starred: ChannelInfo[]
 ) => {
     let result = channels.find((channel) => channel.id === channelId)
 

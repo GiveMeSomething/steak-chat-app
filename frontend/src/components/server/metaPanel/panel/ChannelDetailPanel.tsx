@@ -9,7 +9,7 @@ import {
     Accordion,
     AccordionTitleProps,
     Icon,
-    Segment,
+    Segment
 } from 'semantic-ui-react'
 
 import UpdateChannelDescModal from 'components/server/metaPanel/modal/UpdateChannelDescModal'
@@ -20,7 +20,7 @@ interface ChannelDetailPanelProps {
 }
 
 const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
-    data,
+    data
 }) => {
     const [activeIndex, setActiveIndex] = useState<number>(0)
     const [isUpdateNameModalOpen, setIsUpdateNameModalOpen] =
@@ -33,7 +33,7 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
 
     const handleClick = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-        titleProps: AccordionTitleProps,
+        titleProps: AccordionTitleProps
     ) => {
         event.stopPropagation()
 

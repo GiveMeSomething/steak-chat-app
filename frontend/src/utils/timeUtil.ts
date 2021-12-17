@@ -19,6 +19,6 @@ export function getDateString(time: number): string {
 export function getTimeString(time: number): string {
     return new Date(time).toLocaleString([], {
         hour: '2-digit',
-        minute: '2-digit',
+        minute: '2-digit'
     })
 }

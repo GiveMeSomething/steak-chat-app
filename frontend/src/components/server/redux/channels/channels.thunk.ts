@@ -6,12 +6,12 @@ import { ThunkState, IdAsKeyObject, Undefinable } from 'types/commonType'
 import {
     setChannelNotifications,
     setOneChannelMessageCount,
-    clearOneChannelNotifications,
+    clearOneChannelNotifications
 } from '../notifications/notifications.slice'
 import {
     ChannelInfo,
     ChannelInfoPayload,
-    UpdateChannelInfoPayload,
+    UpdateChannelInfoPayload
 } from './channels.slice'
 import { MESSAGE_COUNT_REF } from 'utils/databaseRef'
 import { UserInfo } from 'components/auth/redux/auth.slice'
@@ -22,13 +22,13 @@ const addChannel = async ({ id, name, desc, createdBy }: ChannelInfo) => {
         id,
         name,
         desc,
-        createdBy,
+        createdBy
     })
 }
 
 const addChannelCount = async (channelId: string) => {
     await set(MESSAGE_COUNT_REF, {
-        [channelId]: 0,
+        [channelId]: 0
     })
 }
 
@@ -41,7 +41,7 @@ const getChannelCount = async (channelId: string) => {
 
 const channelInfoFromUser = (
     data: ChannelInfoPayload,
-    user: Undefinable<UserInfo>,
+    user: Undefinable<UserInfo>
 ): ChannelInfo => ({
     id: uuid(),
     name: data.channelName,
@@ -49,8 +49,8 @@ const channelInfoFromUser = (
     createdBy: {
         uid: user?.uid,
         username: user?.username,
-        photoUrl: user?.photoUrl,
-    },
+        photoUrl: user?.photoUrl
+    }
 })
 
 export const addNewChannel = createAsyncThunk<
@@ -75,10 +75,10 @@ export const starSelectedChannel = createAsyncThunk<
     // Save starred channel to starredChannels with userId as key
     const starredChannelRef = ref(
         database,
-        `starredChannels/${currentUser?.uid}`,
+        `starredChannels/${currentUser?.uid}`
     )
     await set(starredChannelRef, {
-        [channelInfo.id]: true,
+        [channelInfo.id]: true
     })
 })
 
@@ -93,7 +93,7 @@ export const unStarSelectedChannel = createAsyncThunk<
     // Remove starred channel
     const starredChannelRef = ref(
         database,
-        `starredChannels/${channelInfo.id}/${currentUser?.uid}`,
+        `starredChannels/${channelInfo.id}/${currentUser?.uid}`
     )
     await remove(starredChannelRef)
 })
@@ -127,8 +127,8 @@ export const setCurrentChannel = createAsyncThunk<
     dispatch(
         setOneChannelMessageCount({
             channelId: data.id,
-            messageCount: currentMessageCount,
-        }),
+            messageCount: currentMessageCount
+        })
     )
 
     // Clear notifications of currentChannel
@@ -165,8 +165,8 @@ export const updateNotifications = createAsyncThunk<
             dispatch(
                 setOneChannelMessageCount({
                     channelId: channelId,
-                    messageCount: data[channelId],
-                }),
+                    messageCount: data[channelId]
+                })
             )
         }
     })

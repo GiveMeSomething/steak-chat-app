@@ -13,7 +13,7 @@ const DescMessage: FunctionComponent<DescMessageProps> = ({
     description,
     error,
     message,
-    className,
+    className
 }) => {
     const textColor = (): string => {
         if (description) {

@@ -5,7 +5,7 @@ import { UserInfo } from 'components/auth/redux/auth.slice'
 import { selectChannelUsers } from 'components/server/redux/users/users.slice'
 import {
     setCurrentMetaPanelData,
-    setMetaPanelOpen,
+    setMetaPanelOpen
 } from 'components/server/metaPanel/redux/metaPanel.slice'
 
 import { getDateString, getTimeString } from 'utils/timeUtil'
@@ -29,7 +29,7 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
     content,
     timestamp,
     createdBy,
-    media,
+    media
 }) => {
     const [selectedComponent, setSelectedComponent] =
         useState<Undefinable<ClickableComponent>>(undefined)
@@ -52,7 +52,7 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
     const serverTime = timestamp as unknown as number
 
     const messageTime = `${getDateString(serverTime)}${getTimeString(
-        serverTime,
+        serverTime
     )}`
 
     const menuStyle = (): string => {
@@ -94,7 +94,7 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
         }
 
         const selectedUser = channelUsers.find(
-            (user) => user.uid === createdBy.uid,
+            (user) => user.uid === createdBy.uid
         )
 
         setSelectedUser(selectedUser)
@@ -112,7 +112,7 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
      */
     const handleComponentClick = (
         event: React.MouseEvent,
-        componentType: ClickableComponent,
+        componentType: ClickableComponent
     ): void => {
         findSelectedUser()
         setSelectedComponent(componentType)

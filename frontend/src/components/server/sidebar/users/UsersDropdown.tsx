@@ -4,14 +4,14 @@ import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { selectCurrentUser, UserInfo } from 'components/auth/redux/auth.slice'
 import {
     selectCurrentChannel,
-    setIsDirectChannel,
+    setIsDirectChannel
 } from 'components/server/redux/channels/channels.slice'
 import { setCurrentChannel } from 'components/server/redux/channels/channels.thunk'
 import { selectChannelUsers } from 'components/server/redux/users/users.slice'
 
 import {
     generateDirectChannelInfo,
-    getDirectChannelId,
+    getDirectChannelId
 } from 'utils/channelUtil'
 
 import ChannelDropdownLayout from '../DropdownLayout'
@@ -24,7 +24,7 @@ interface UsersDropdownProps {
 
 const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
     isActive,
-    setActive,
+    setActive
 }) => {
     const dispatch = useAppDispatch()
 
@@ -58,7 +58,7 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
             const directChannelInfo = generateDirectChannelInfo(
                 currentUser,
                 channelId,
-                user.username,
+                user.username
             )
 
             // This should be always true

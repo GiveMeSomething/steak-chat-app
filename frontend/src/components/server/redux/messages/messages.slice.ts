@@ -32,7 +32,7 @@ const initialState: MessagesState = {
     messageError: '',
     isMessageLoading: false,
     isDirectMessage: false,
-    isSearching: false,
+    isSearching: false
 }
 
 const messageSlice = createSlice({
@@ -78,8 +78,8 @@ const messageSlice = createSlice({
         },
         setMessageLoading: (state, action) => {
             state.isMessageLoading = action.payload
-        },
-    },
+        }
+    }
 })
 
 export const {
@@ -88,7 +88,7 @@ export const {
     clearMessages,
     setMessageLoading,
     setSearchMessages,
-    clearSearchMessage,
+    clearSearchMessage
 } = messageSlice.actions
 
 export const selectMessages = (state: RootState) => state.messages.messages

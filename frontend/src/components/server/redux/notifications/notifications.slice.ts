@@ -9,7 +9,7 @@ interface NotificationSliceInititalState {
 
 const initialState: NotificationSliceInititalState = {
     messageCount: {},
-    notifications: {},
+    notifications: {}
 }
 
 const notificationSlice = createSlice({
@@ -36,8 +36,8 @@ const notificationSlice = createSlice({
         setOneChannelMessageCount: (state, action) => {
             const { channelId, messageCount } = action.payload
             state.messageCount[channelId] = messageCount
-        },
-    },
+        }
+    }
 })
 
 export const selectChannelNotifications = (state: RootState) =>
@@ -50,7 +50,7 @@ export const {
     setChannelMessageCount,
     setChannelNotifications,
     setOneChannelMessageCount,
-    clearOneChannelNotifications,
+    clearOneChannelNotifications
 } = notificationSlice.actions
 
 export default notificationSlice.reducer

@@ -4,7 +4,7 @@ import {
     AuthPayload,
     EditableField,
     updateAvatar,
-    UserInfo,
+    UserInfo
 } from './auth.slice'
 
 import { database, firebaseApp } from 'firebase/firebase'
@@ -16,7 +16,7 @@ import {
     signOut,
     setPersistence,
     User,
-    browserSessionPersistence,
+    browserSessionPersistence
 } from '@firebase/auth'
 
 import { Undefinable, ThunkState } from 'types/commonType'
@@ -33,7 +33,7 @@ async function initUserInfo(createdUser: User): Promise<void> {
     if (createdUser && createdUser.email) {
         const displayName = createdUser.email.split('@')[0]
         const photoURL = `https://gravatar.com/avatar/${md5(
-            createdUser.email,
+            createdUser.email
         )}?d=identicon`
 
         // Update user info also update user status
@@ -43,7 +43,7 @@ async function initUserInfo(createdUser: User): Promise<void> {
             email: createdUser.email,
             photoUrl: photoURL,
             status: UserStatus.ONLINE,
-            messageCount: {},
+            messageCount: {}
         })
     }
 }
@@ -53,6 +53,14 @@ async function getUser(userId: string): Promise<UserInfo> {
     const currentUser = await get(userRef(userId))
     return currentUser.val()
 }
+
+export const updateUserStatus = createAsyncThunk<
+    UserStatus,
+    { userId: string; status: UserStatus }
+>('user/updateStatus', async ({ userId, status }) => {
+    await update(userRef(userId), { status })
+    return status
+})
 
 export const signin = createAsyncThunk<Undefinable<UserInfo>, AuthPayload>(
     'user/signin',
@@ -66,15 +74,15 @@ export const signin = createAsyncThunk<Undefinable<UserInfo>, AuthPayload>(
             dispatch(
                 updateUserStatus({
                     userId: auth.currentUser.uid,
-                    status: UserStatus.ONLINE,
-                }),
+                    status: UserStatus.ONLINE
+                })
             )
 
             return getUser(auth.currentUser?.uid)
         }
 
         return undefined
-    },
+    }
 )
 
 export const signup = createAsyncThunk<Undefinable<UserInfo>, AuthPayload>(
@@ -84,7 +92,7 @@ export const signup = createAsyncThunk<Undefinable<UserInfo>, AuthPayload>(
             return createUserWithEmailAndPassword(
                 auth,
                 data.email,
-                data.password,
+                data.password
             )
         })
 
@@ -96,7 +104,7 @@ export const signup = createAsyncThunk<Undefinable<UserInfo>, AuthPayload>(
         }
 
         return undefined
-    },
+    }
 )
 
 export const signout = createAsyncThunk<void, void, ThunkState>(
@@ -108,13 +116,13 @@ export const signout = createAsyncThunk<void, void, ThunkState>(
             dispatch(
                 updateUserStatus({
                     userId: currentUser.uid,
-                    status: UserStatus.AWAY,
-                }),
+                    status: UserStatus.AWAY
+                })
             )
         }
 
         await signOut(auth)
-    },
+    }
 )
 
 export const fetchUser = createAsyncThunk('user/fetchInfo', async () => {
@@ -123,14 +131,6 @@ export const fetchUser = createAsyncThunk('user/fetchInfo', async () => {
     }
 
     return undefined
-})
-
-export const updateUserStatus = createAsyncThunk<
-    UserStatus,
-    { userId: string; status: UserStatus }
->('user/updateStatus', async ({ userId, status }) => {
-    await update(userRef(userId), { status })
-    return status
 })
 
 export const updateUserAvatar = createAsyncThunk<
@@ -149,7 +149,7 @@ export const updateUserAvatar = createAsyncThunk<
     if (appState.metaPanelState.isOpen) {
         if (appState.user.user) {
             dispatch(
-                setCurrentMetaPanelData({ ...appState.user.user, photoUrl }),
+                setCurrentMetaPanelData({ ...appState.user.user, photoUrl })
             )
         }
     }
@@ -170,5 +170,5 @@ export const updateUserProfile = createAsyncThunk<UserInfo, UpdateUserPayload>(
 
         const updatedUser = await get(updatedUserRef)
         return updatedUser.val()
-    },
+    }
 )

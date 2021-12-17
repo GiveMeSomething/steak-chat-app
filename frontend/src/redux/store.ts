@@ -14,8 +14,8 @@ export const store = configureStore({
         messages: channelMessageSlice,
         channelUsers: channelUsersSlice,
         notifications: notificationSlice,
-        metaPanelState: metaPanelSlice,
-    },
+        metaPanelState: metaPanelSlice
+    }
 })
 
 // Infer the `RootState` and `AppDispatch` types from the store itself

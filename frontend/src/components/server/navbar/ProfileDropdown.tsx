@@ -7,7 +7,7 @@ import { signout } from 'components/auth/redux/auth.thunk'
 import { Dropdown } from 'semantic-ui-react'
 import {
     setCurrentMetaPanelData,
-    setMetaPanelOpen,
+    setMetaPanelOpen
 } from '../metaPanel/redux/metaPanel.slice'
 
 interface ProfileDropdownProps {}
@@ -18,15 +18,15 @@ const ProfileDropdown: FunctionComponent<ProfileDropdownProps> = () => {
 
     const menuOptions = {
         userProfile: {
-            text: 'Profile',
+            text: 'Profile'
         },
         userSetting: {
             text: 'Preferences',
-            disabled: true,
+            disabled: true
         },
         signout: {
-            text: 'Sign out',
-        },
+            text: 'Sign out'
+        }
     }
 
     const handleOnProfileClick = () => {

@@ -33,7 +33,7 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
         register,
         handleSubmit,
         setFocus,
-        formState: { errors },
+        formState: { errors }
     } = useForm<FormValues>()
 
     const dispatch = useAppDispatch()
@@ -106,8 +106,8 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
                                 required: 'Email is required',
                                 pattern: {
                                     value: /^[^@]+@[^@]+\.[^@]+$/,
-                                    message: 'Invalid email address',
-                                },
+                                    message: 'Invalid email address'
+                                }
                             })}
                             label="email"
                             type="text"
@@ -123,8 +123,8 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
                                 minLength: {
                                     value: 6,
                                     message:
-                                        'Password should be at least 6 characters',
-                                },
+                                        'Password should be at least 6 characters'
+                                }
                             })}
                             label="password"
                             type="password"

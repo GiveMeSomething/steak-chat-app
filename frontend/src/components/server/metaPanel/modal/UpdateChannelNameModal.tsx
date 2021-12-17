@@ -7,11 +7,11 @@ import {
     ChannelInfo,
     selectChannels,
     selectStarredChannels,
-    selectCurrentChannel,
+    selectCurrentChannel
 } from 'components/server/redux/channels/channels.slice'
 import {
     setCurrentChannel,
-    updateChannelName,
+    updateChannelName
 } from 'components/server/redux/channels/channels.thunk'
 
 import { BANNED_SPECIAL_CHARACTERS_REGEX } from 'constants/appConst'
@@ -53,7 +53,7 @@ const UpdateChannelNameModal: FunctionComponent<
         setFocus,
         setValue,
         reset,
-        handleSubmit,
+        handleSubmit
     } = useForm<FormValues>()
 
     useEffect(() => {
@@ -67,7 +67,7 @@ const UpdateChannelNameModal: FunctionComponent<
         const updatedChannel = findChannelById(
             channelInfo.id,
             channels,
-            starred,
+            starred
         )
 
         if (updatedChannel) {
@@ -95,8 +95,8 @@ const UpdateChannelNameModal: FunctionComponent<
                 await dispatch(
                     updateChannelName({
                         channelId: channelInfo.id,
-                        content: channelName,
-                    }),
+                        content: channelName
+                    })
                 )
             } catch (e: any) {
                 if (e.message) {
@@ -134,19 +134,19 @@ const UpdateChannelNameModal: FunctionComponent<
                                 minLength: {
                                     value: 6,
                                     message:
-                                        'Channel name must be longer than 6 characters',
+                                        'Channel name must be longer than 6 characters'
                                 },
                                 maxLength: {
                                     value: 80,
                                     message:
-                                        'Channel name must not exceeds 80 characters',
+                                        'Channel name must not exceeds 80 characters'
                                 },
                                 validate: {
                                     noSpecialChar: (value: string) =>
                                         !value.match(
-                                            BANNED_SPECIAL_CHARACTERS_REGEX,
-                                        ),
-                                },
+                                            BANNED_SPECIAL_CHARACTERS_REGEX
+                                        )
+                                }
                             })}
                             label="Channel Name"
                             type="text"
