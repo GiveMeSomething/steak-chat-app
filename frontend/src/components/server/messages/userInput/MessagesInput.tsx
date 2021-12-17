@@ -6,13 +6,15 @@ import { selectCurrentChannel } from 'components/server/redux/channels/channels.
 import { setMessageLoading } from 'components/server/redux/messages/messages.slice'
 import { sendMessage } from 'components/server/redux/messages/messages.thunk'
 
+import { Undefinable } from 'types/commonType'
+
 import { Button, Input, Popup } from 'semantic-ui-react'
 
-import AddMediaModal from './AddMediaModal'
 import 'emoji-mart/css/emoji-mart.css'
 import { Picker, Emoji, BaseEmoji } from 'emoji-mart'
-import ScreenOverlay from 'components/commons/ScreenOverlay'
-import { Undefinable } from 'types/commonType'
+
+import ScreenOverlay from 'components/commons/overlay/ScreenOverlay'
+import AddMediaModal from './AddMediaModal'
 
 interface MessagesInputProps {}
 
@@ -60,21 +62,6 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
 
     const handleAddMediaClick = () => {
         setAddMediaModalOpen(true)
-    }
-
-    const toggleEmojiPicker = () => {
-        setEmojiPickerOpen(!isEmojiPickerOpen)
-    }
-
-    const handleSelectEmoji = (emoji: Undefinable<BaseEmoji> = undefined) => {
-        if (emoji && emoji.native) {
-            setValue('message', `${getValues('message')} ${emoji.native} `)
-        }
-
-        setEmojiPickerOpen(false)
-        setEmojiPickerHover(false)
-
-        setFocus('message')
     }
 
     const toggleEmojiPicker = () => {
