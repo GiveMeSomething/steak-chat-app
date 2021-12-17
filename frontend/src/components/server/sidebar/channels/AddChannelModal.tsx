@@ -108,7 +108,7 @@ const AddChannelModal: FunctionComponent<AddChannelModalProps> = ({
                 </Modal.Description>
             </Modal.Content>
             <Modal.Actions>
-                <Button color="red" onClick={() => setOpen(false)}>
+                <Button color="red" onClick={handleClose}>
                     <Icon name="remove" /> Cancel
                 </Button>
                 <Button
