@@ -12,7 +12,7 @@ interface UsersDropdownItemProps {
 
 const UsersDropdownItem: FunctionComponent<UsersDropdownItemProps> = ({
     user,
-    currentUser,
+    currentUser
 }) => {
     return (
         <>

@@ -25,10 +25,10 @@
     "rules": {
         // note you must disable the base rule as it can report incorrect errors
         "indent": "off",
-        // "@typescript-eslint/indent": ["error", 4, { "SwitchCase": 1 }],
+        "@typescript-eslint/indent": "off",
         "comma-dangle": "off",
         "no-use-before-define": "off",
-        "@typescript-eslint/no-use-before-define": ["off"],
+        "@typescript-eslint/no-use-before-define": 1,
         "space-before-function-paren": "off",
         "react/display-name": "off",
         "react/prop-types": "off",

@@ -7,7 +7,7 @@ import {
     fetchUser,
     signout,
     updateUserStatus,
-    updateUserProfile,
+    updateUserProfile
 } from './auth.thunk'
 
 import { UserStatus } from 'types/appEnum'
@@ -44,7 +44,7 @@ interface AuthSliceState {
 
 const initialState: AuthSliceState = {
     user: undefined,
-    userError: undefined,
+    userError: undefined
 }
 
 export const userSlice = createSlice({
@@ -67,7 +67,7 @@ export const userSlice = createSlice({
             if (state.user && action.payload) {
                 state.user = { ...state.user, photoUrl: action.payload }
             }
-        },
+        }
     },
     // TODO: See if this part can be refactored
     extraReducers: (builder) => {
@@ -106,7 +106,7 @@ export const userSlice = createSlice({
                 state.userError = 'Error occured in auth.slice'
             }
         })
-    },
+    }
 })
 
 export const {
@@ -114,7 +114,7 @@ export const {
     removeCurrentUser,
     setUserError,
     removeUserError,
-    updateAvatar,
+    updateAvatar
 } = userSlice.actions
 
 export const selectCurrentUser = (state: RootState) => state.user.user

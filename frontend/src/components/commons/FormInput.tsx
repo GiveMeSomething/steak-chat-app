@@ -25,7 +25,7 @@ const FormInput = React.forwardRef<HTMLInputElement, FormInputProps>(
                 />
             </>
         )
-    },
+    }
 )
 
 export default FormInput

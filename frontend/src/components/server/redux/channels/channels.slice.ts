@@ -37,10 +37,10 @@ const initalState: ChannelSliceInitialState = {
     channelError: '',
     currentChannel: {
         id: '',
-        name: '',
+        name: ''
     },
     isDirectChannel: false,
-    starred: [],
+    starred: []
 }
 
 const channelSlice = createSlice({
@@ -90,7 +90,7 @@ const channelSlice = createSlice({
                         starredChannels[starredCount]
                     ) {
                         state.starred.push(
-                            state.channels.splice(channelCount, 1)[0],
+                            state.channels.splice(channelCount, 1)[0]
                         )
 
                         starredCount++
@@ -104,12 +104,12 @@ const channelSlice = createSlice({
                 const starredChannelId = Object.keys(action.payload)[0]
 
                 const starredChannelIndex = state.channels.findIndex(
-                    (channel) => channel.id !== starredChannelId,
+                    (channel) => channel.id !== starredChannelId
                 )
 
                 // Add channel to starred dropdown
                 state.starred.push(
-                    state.channels.splice(starredChannelIndex, 1)[0],
+                    state.channels.splice(starredChannelIndex, 1)[0]
                 )
             }
         },
@@ -118,12 +118,12 @@ const channelSlice = createSlice({
                 const starredChannelId = Object.keys(action.payload)[0]
 
                 const starredChannelIndex = state.starred.findIndex(
-                    (channel) => channel.id !== starredChannelId,
+                    (channel) => channel.id !== starredChannelId
                 )
 
                 // Add channel to channel dropdown
                 state.channels.push(
-                    state.starred.splice(starredChannelIndex, 1)[0],
+                    state.starred.splice(starredChannelIndex, 1)[0]
                 )
             }
         },
@@ -139,13 +139,13 @@ const channelSlice = createSlice({
                 // Find updatedChannel by id in channels list
                 let selectedChannelIndex
                 selectedChannelIndex = state.channels.findIndex(
-                    (channel) => channel.id === updatedChannel.id,
+                    (channel) => channel.id === updatedChannel.id
                 )
 
                 // If not found, continue to find in starred list
                 if (selectedChannelIndex < 0) {
                     selectedChannelIndex = state.starred.findIndex(
-                        (channel) => channel.id === updatedChannel.id,
+                        (channel) => channel.id === updatedChannel.id
                     )
                     isInChannelList = false
                 }
@@ -160,13 +160,13 @@ const channelSlice = createSlice({
                     }
                 }
             }
-        },
+        }
     },
     extraReducers: (builder) => {
         builder.addCase(setCurrentChannel.fulfilled, (state, action) => {
             state.currentChannel = action.payload
         })
-    },
+    }
 })
 
 export const {
@@ -178,7 +178,7 @@ export const {
     addStarredChannel,
     clearStarredChannel,
     unStarChannel,
-    updateChannelInfo,
+    updateChannelInfo
 } = channelSlice.actions
 
 // Select all channels

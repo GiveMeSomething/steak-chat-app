@@ -7,7 +7,7 @@ import { setCurrentChannel } from 'components/server/redux/channels/channels.thu
 
 import {
     generateDirectChannelInfo,
-    getDirectChannelId,
+    getDirectChannelId
 } from 'utils/channelUtil'
 
 import { Dropdown } from 'semantic-ui-react'
@@ -27,26 +27,26 @@ const UserMenu: FunctionComponent<UserMenuProps> = ({
     openMetaPanel,
     closeMenu,
     menuStyle,
-    upward,
+    upward
 }) => {
     const dispatch = useAppDispatch()
     const currentUser = useAppSelector(selectCurrentUser)
 
     const menuOptions = {
         profile: {
-            text: 'View profile',
+            text: 'View profile'
         },
         message: {
-            text: `Message ${selectedUser.username}`,
+            text: `Message ${selectedUser.username}`
         },
         copyName: {
             text: 'Copy name',
-            disabled: true,
+            disabled: true
         },
         copyLink: {
             text: 'Copy link',
-            disabled: true,
-        },
+            disabled: true
+        }
     }
 
     const directChannelId = (userId: string): string => {
@@ -54,21 +54,21 @@ const UserMenu: FunctionComponent<UserMenuProps> = ({
     }
 
     const handleOnViewProfileClick = (
-        event: React.MouseEvent<HTMLDivElement>,
+        event: React.MouseEvent<HTMLDivElement>
     ): void => {
         openMetaPanel(selectedUser)
         closeMenu(event)
     }
 
     const handleOnMessageClick = (
-        event: React.MouseEvent<HTMLDivElement>,
+        event: React.MouseEvent<HTMLDivElement>
     ): void => {
         if (currentUser) {
             const channelId = directChannelId(selectedUser.uid)
             const directChannelInfo = generateDirectChannelInfo(
                 currentUser,
                 channelId,
-                selectedUser.username,
+                selectedUser.username
             )
 
             if (directChannelInfo) {

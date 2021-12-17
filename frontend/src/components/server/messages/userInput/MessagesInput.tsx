@@ -123,7 +123,7 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
                                         emojiSize={32}
                                         onSelect={(emoji) =>
                                             handleSelectEmoji(
-                                                emoji as BaseEmoji,
+                                                emoji as BaseEmoji
                                             )
                                         }
                                     />

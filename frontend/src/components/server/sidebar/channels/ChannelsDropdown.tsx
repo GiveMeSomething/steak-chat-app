@@ -13,7 +13,7 @@ interface ChannelsDropdownProps {
 
 const ChannelsDropdown: FunctionComponent<ChannelsDropdownProps> = ({
     isActive,
-    setActive,
+    setActive
 }) => {
     const [isAddChannelModalActive, setIsAddChannelModalActive] =
         useState<boolean>(false)

@@ -12,7 +12,7 @@ interface channelUsersSliceInitialState {
 const initialState: channelUsersSliceInitialState = {
     users: [],
     currentUser: undefined,
-    userError: '',
+    userError: ''
 }
 
 const channelUsersSlice = createSlice({
@@ -28,22 +28,22 @@ const channelUsersSlice = createSlice({
         updateChannelUser: (state, action) => {
             const updatedUser: UserInfo = action.payload
             const index = state.users.findIndex(
-                (user) => user.uid === updatedUser.uid,
+                (user) => user.uid === updatedUser.uid
             )
 
             state.users[index] = updatedUser
         },
         clearChannelUsers: (state) => {
             state.users = []
-        },
-    },
+        }
+    }
 })
 
 export const {
     setChannelUsers,
     addChannelUser,
     clearChannelUsers,
-    updateChannelUser,
+    updateChannelUser
 } = channelUsersSlice.actions
 
 export const selectChannelUsers = (state: RootState) => state.channelUsers.users

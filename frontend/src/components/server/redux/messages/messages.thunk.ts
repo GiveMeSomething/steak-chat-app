@@ -7,13 +7,13 @@ import { v4 as uuid } from 'uuid'
 import {
     Message,
     SendMessagePayload,
-    setMessageLoading,
+    setMessageLoading
 } from './messages.slice'
 
 const saveMessageToDatabase = async (
     message: Message,
     currentChannel: ChannelInfo,
-    isDirectChannel: boolean,
+    isDirectChannel: boolean
 ) => {
     let messageRef
     const messageCountRef = ref(database, `messageCount/${currentChannel.id}`)
@@ -22,12 +22,12 @@ const saveMessageToDatabase = async (
     if (isDirectChannel) {
         messageRef = ref(
             database,
-            `direct-message/${currentChannel.id}/messages/${message.id}`,
+            `direct-message/${currentChannel.id}/messages/${message.id}`
         )
     } else {
         messageRef = ref(
             database,
-            `channels/${currentChannel.id}/messages/${message.id}`,
+            `channels/${currentChannel.id}/messages/${message.id}`
         )
     }
 
@@ -52,7 +52,7 @@ export const sendMessage = createAsyncThunk<
 
     if (currentUser) {
         const createdBy = {
-            uid: currentUser.uid,
+            uid: currentUser.uid
         }
 
         // Create new message object to send to database
@@ -61,7 +61,7 @@ export const sendMessage = createAsyncThunk<
             timestamp: serverTimestamp(),
             content: data.message,
             media: data.mediaPath || '',
-            createdBy,
+            createdBy
         }
 
         await saveMessageToDatabase(message, currentChannel, isDirectMessage)

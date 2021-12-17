@@ -6,7 +6,7 @@ import { ChannelInfo } from 'components/server/redux/channels/channels.slice'
 import {
     selectMetaPanelCurrentData,
     setMetaPanelOpen,
-    clearCurrentMetaPanelData,
+    clearCurrentMetaPanelData
 } from 'components/server/metaPanel/redux/metaPanel.slice'
 
 import { Undefinable } from 'types/commonType'
@@ -20,7 +20,7 @@ interface MetaPanelProps {}
 
 enum ItemDataType {
     ChannelInfo = 'Channel Details',
-    UserInfo = 'User Details',
+    UserInfo = 'User Details'
 }
 
 const MetaPanel: FunctionComponent<MetaPanelProps> = () => {

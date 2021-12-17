@@ -5,7 +5,7 @@ import { selectChannelNotifications } from 'components/server/redux/notification
 import {
     ChannelInfo,
     selectCurrentChannel,
-    setIsDirectChannel,
+    setIsDirectChannel
 } from 'components/server/redux/channels/channels.slice'
 import { setCurrentChannel } from 'components/server/redux/channels/channels.thunk'
 
@@ -33,7 +33,7 @@ const ChannelDropdownLayout: FunctionComponent<ChannelDropdownLayoutProps> = ({
     label,
     starred,
     listItems,
-    children,
+    children
 }) => {
     const [selectedChannel, setSelectedChannel] = useState<ChannelInfo>()
 
@@ -55,7 +55,7 @@ const ChannelDropdownLayout: FunctionComponent<ChannelDropdownLayoutProps> = ({
 
     const handleOpenChannelMenu = (
         event: React.MouseEvent<HTMLDivElement>,
-        channel: ChannelInfo,
+        channel: ChannelInfo
     ) => {
         // Prevent open context menu
         event.preventDefault()
@@ -67,7 +67,7 @@ const ChannelDropdownLayout: FunctionComponent<ChannelDropdownLayoutProps> = ({
     }
 
     const closeChannelOptionMenu = (
-        event: React.MouseEvent<HTMLDivElement>,
+        event: React.MouseEvent<HTMLDivElement>
     ) => {
         event.preventDefault()
 
@@ -123,7 +123,7 @@ const ChannelDropdownLayout: FunctionComponent<ChannelDropdownLayoutProps> = ({
                                             handleOnChannelClick(channel)
                                         }
                                         onContextMenu={(
-                                            e: React.MouseEvent<HTMLDivElement>,
+                                            e: React.MouseEvent<HTMLDivElement>
                                         ) => handleOpenChannelMenu(e, channel)}
                                     >
                                         <div className="flex items-baseline px-4 py-2">
@@ -169,11 +169,11 @@ const ChannelDropdownLayout: FunctionComponent<ChannelDropdownLayoutProps> = ({
                                                     <Icon
                                                         name="ellipsis horizontal"
                                                         onClick={(
-                                                            e: React.MouseEvent<HTMLDivElement>,
+                                                            e: React.MouseEvent<HTMLDivElement>
                                                         ) =>
                                                             handleOpenChannelMenu(
                                                                 e,
-                                                                channel,
+                                                                channel
                                                             )
                                                         }
                                                     />
