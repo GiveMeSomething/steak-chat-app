@@ -47,7 +47,8 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
         }
     }, [isOpen])
 
-    const { startUpload, uploadProgress, uploadError } = useUploadFile()
+    const { startUpload, uploadState, uploadProgress, uploadError } =
+        useUploadFile()
 
     // This will show a preview before pushing the userMedia to Firebase Database
     const uploadFileToPreview = (
@@ -161,7 +162,7 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
                         {...register('desc')}
                     />
                 </div>
-                {uploadProgress && <ProgressBar progress={uploadProgress} />}
+                {uploadState && <ProgressBar progress={uploadProgress} />}
             </Modal.Content>
             <Modal.Actions>
                 <Button color="red" onClick={handleClose}>
