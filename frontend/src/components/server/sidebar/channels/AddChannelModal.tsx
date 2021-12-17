@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react'
+import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useAppDispatch } from 'redux/hooks'
 import { useForm } from 'react-hook-form'
 
@@ -31,10 +31,17 @@ const AddChannelModal: FunctionComponent<AddChannelModalProps> = ({
         handleSubmit,
         clearErrors,
         reset,
+        setFocus,
         formState: { errors },
     } = useForm<FormValues>()
 
     const dispatch = useAppDispatch()
+
+    useEffect(() => {
+        if (isOpen) {
+            setFocus('channelName')
+        }
+    }, [isOpen])
 
     async function onSubmit(data: FormValues) {
         setLoading(true)
@@ -108,7 +115,7 @@ const AddChannelModal: FunctionComponent<AddChannelModalProps> = ({
                 </Modal.Description>
             </Modal.Content>
             <Modal.Actions>
-                <Button color="red" onClick={() => setOpen(false)}>
+                <Button color="red" onClick={handleClose}>
                     <Icon name="remove" /> Cancel
                 </Button>
                 <Button
