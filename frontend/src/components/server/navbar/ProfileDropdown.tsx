@@ -87,7 +87,10 @@ const ProfileDropdown: FunctionComponent<ProfileDropdownProps> = () => {
             </div>
         )
     } else {
-        return null
+        // If currentUser not available, show an empty box as placeholder
+        return (
+            <div className="ml-auto mx-4 h-6 w-6 rounded-md bg-slack-text-blur" />
+        )
     }
 }
 
