@@ -16,8 +16,9 @@ import { useUploadFile } from 'utils/fileUtil'
 import { cropSetting } from 'constants/appConst'
 
 import { Button, Icon, Modal } from 'semantic-ui-react'
-import ReactCrop, { Crop } from 'react-image-crop'
+
 import 'react-image-crop/dist/ReactCrop.css'
+import ReactCrop, { Crop } from 'react-image-crop'
 
 import DescMessage from 'components/commons/formDescription/DescMessage'
 import ProgressBar from 'components/server/messages/userInput/ProgressBar'

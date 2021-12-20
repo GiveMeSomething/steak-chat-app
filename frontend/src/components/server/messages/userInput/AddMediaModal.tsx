@@ -10,8 +10,8 @@ import { v4 as uuid } from 'uuid'
 
 import { Modal, Button, Icon } from 'semantic-ui-react'
 
-import FormInput from 'components/commons/FormInput'
 import DescMessage from 'components/commons/formDescription/DescMessage'
+import FormInput from 'components/commons/FormInput'
 import ProgressBar from './ProgressBar'
 
 interface AddMediaModalProps {
