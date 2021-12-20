@@ -11,6 +11,7 @@ import { selectChannelUsers } from '../redux/users/users.slice'
 import { UserInfo } from 'components/auth/redux/auth.slice'
 
 import MessageComponent from './message/Message'
+import { selectCurrentChannel } from '../redux/channels/channels.slice'
 
 interface MessagePanelProps {}
 
@@ -20,6 +21,7 @@ const MessagesPanel: FunctionComponent<MessagePanelProps> = () => {
     const [isLoading, setIsLoading] = useState<boolean>(true)
 
     const messages = useAppSelector(selectMessages)
+    const currentChannel = useAppSelector(selectCurrentChannel)
     const channelUsers = useAppSelector(selectChannelUsers)
     const searchMessages = useAppSelector(selectSearchMessages)
     const isSearching = useAppSelector(selectIsSearching)
@@ -66,6 +68,9 @@ const MessagesPanel: FunctionComponent<MessagePanelProps> = () => {
 
     // Display messages based on searchMessages and messages
     const messagePanelContent = () => {
+        if (!currentChannel.id || currentChannel.id === '') {
+            return <h3>Create your first channel to start messaging</h3>
+        }
         if (isSearching) {
             if (searchMessages.length > 0) {
                 return searchMessages.map((message) =>
@@ -83,7 +88,7 @@ const MessagesPanel: FunctionComponent<MessagePanelProps> = () => {
 
         // Display welcome message if there are no messages
         // TODO: Make better UI for dis
-        return <div>Display welcome message if there is no message</div>
+        return <h3>Display welcome message if there is no message</h3>
     }
 
     return (

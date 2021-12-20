@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { child, remove, set } from 'firebase/database'
+import { child, onDisconnect, remove, set } from 'firebase/database'
 import { TYPING_REF } from 'utils/databaseRef'
 
 interface TypingPayload {
@@ -13,6 +13,8 @@ export const setCurrentUserTyping = createAsyncThunk<void, TypingPayload>(
     async ({ userId, channelId, username }) => {
         const userTypingRef = child(TYPING_REF, `${channelId}/${userId}`)
         await set(userTypingRef, username)
+
+        onDisconnect(userTypingRef).remove()
     }
 )
 

@@ -8,7 +8,15 @@ import {
 } from './auth.slice'
 
 import { database, firebaseApp } from 'firebase/firebase'
-import { ref, update, set, get, DatabaseReference } from 'firebase/database'
+import {
+    ref,
+    update,
+    set,
+    get,
+    DatabaseReference,
+    onDisconnect,
+    child
+} from 'firebase/database'
 import {
     createUserWithEmailAndPassword,
     getAuth,
@@ -59,6 +67,9 @@ export const updateUserStatus = createAsyncThunk<
     { userId: string; status: UserStatus }
 >('user/updateStatus', async ({ userId, status }) => {
     await update(userRef(userId), { status })
+
+    // Change user status when user exit app
+    onDisconnect(child(userRef(userId), 'status')).set(UserStatus.AWAY)
     return status
 })
 
@@ -87,7 +98,7 @@ export const signin = createAsyncThunk<Undefinable<UserInfo>, AuthPayload>(
 
 export const signup = createAsyncThunk<Undefinable<UserInfo>, AuthPayload>(
     'user/signup',
-    async (data) => {
+    async (data, { dispatch }) => {
         await setPersistence(auth, browserSessionPersistence).then(() => {
             return createUserWithEmailAndPassword(
                 auth,
@@ -99,6 +110,13 @@ export const signup = createAsyncThunk<Undefinable<UserInfo>, AuthPayload>(
         // Redux store's currentUser is not available at this time
         if (auth.currentUser) {
             await initUserInfo(auth.currentUser)
+
+            dispatch(
+                updateUserStatus({
+                    userId: auth.currentUser.uid,
+                    status: UserStatus.ONLINE
+                })
+            )
 
             return getUser(auth.currentUser?.uid)
         }

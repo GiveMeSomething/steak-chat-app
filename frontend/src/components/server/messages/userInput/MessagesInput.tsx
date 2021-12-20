@@ -44,8 +44,10 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
 
     // Set focus to input when change to new channel (and when load current channel)
     useEffect(() => {
-        setFocus('message')
-    }, [currentChannel])
+        if (currentChannel.id) {
+            setFocus('message')
+        }
+    }, [currentChannel.id])
 
     const getTypers = (): string => {
         const numberOfTyper = Object.keys(typers).length
@@ -139,6 +141,10 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
         setFocus('message')
     }
 
+    if (!currentChannel.id || currentChannel.id === '') {
+        return null
+    }
+
     return (
         <>
             {Object.keys(typers).length > 0 && (
@@ -165,7 +171,7 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
                 >
                     <Input
                         placeholder={`Message #${currentChannel.name}`}
-                        className="rounded-md border-slack-text-blur w-full"
+                        className="rounded-md col-span-7 border-slack-text-blur w-full"
                     >
                         <input
                             {...register('message')}

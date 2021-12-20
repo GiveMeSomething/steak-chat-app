@@ -58,6 +58,8 @@ import {
 import ServerLayout from 'components/server/ServerLayout'
 import LoadingOverlay from 'components/commons/overlay/LoadingOverlay'
 import withAuthRedirect from 'components/middleware/withAuthRedirect'
+import { updateUserStatus } from 'components/auth/redux/auth.thunk'
+import { UserStatus } from 'types/appEnum'
 
 interface ChatServerProps {}
 
@@ -100,13 +102,22 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
 
     // Update message count to database, with user id as key
     const updateUserMessageCount = async () => {
-        // Save status to users notifications
-        const userMessageCountPath = `users/${currentUser?.uid}/messageCount`
-        await set(ref(database, userMessageCountPath), channelMessageCount)
+        if (currentUser) {
+            // Save status to users notifications
+            const userMessageCountPath = `users/${currentUser.uid}/messageCount`
+            const userMessageCountRef = ref(database, userMessageCountPath)
+            await set(userMessageCountRef, channelMessageCount)
+        }
     }
 
     useEffect(() => {
         if (currentUser) {
+            dispatch(
+                updateUserStatus({
+                    userId: currentUser.uid,
+                    status: UserStatus.ONLINE
+                })
+            )
             dispatch(setChannelMessageCount(currentUser?.messageCount))
         }
 
@@ -149,6 +160,7 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
                 dispatch(unStarChannel(data.val()))
             }
         )
+
         // This run once and auto unsubscribe
         // Update notifications when user first load application
         onValue(
