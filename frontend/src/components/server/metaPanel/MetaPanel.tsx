@@ -11,7 +11,8 @@ import {
 
 import { Undefinable } from 'types/commonType'
 
-import { Button, Dimmer, Loader } from 'semantic-ui-react'
+import { Button } from 'semantic-ui-react'
+import LoadingOverlay from 'components/commons/overlay/LoadingOverlay'
 
 const ChannelDetailPanel = React.lazy(
     () => import('./panel/ChannelDetailPanel')
@@ -82,7 +83,7 @@ const MetaPanel: FunctionComponent<MetaPanelProps> = () => {
         }
 
         return (
-            <div className="flex w-full h-full flex-col border-l-2">
+            <div className="flex w-full h-full flex-col border-l-2 relative">
                 <div className="flex items-center justify-between px-4 border-b-2 py-2">
                     <h3 className="font-semibold leading-none">
                         {currentDataType}
@@ -97,16 +98,10 @@ const MetaPanel: FunctionComponent<MetaPanelProps> = () => {
                     />
                 </div>
                 <div
-                    className="h-full overflow-y-auto overflow-x-hidden pb-20"
+                    className="max-w-full h-full overflow-y-auto overflow-x-hidden pb-20"
                     id="member-panel__content"
                 >
-                    <Suspense
-                        fallback={
-                            <Dimmer active inverted>
-                                <Loader inverted>Loading</Loader>
-                            </Dimmer>
-                        }
-                    >
+                    <Suspense fallback={<LoadingOverlay />}>
                         {metaPanelContent()}
                     </Suspense>
                 </div>

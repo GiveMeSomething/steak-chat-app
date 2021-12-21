@@ -8,10 +8,11 @@ import {
     selectSearchMessages
 } from 'components/server/redux/messages/messages.slice'
 import { selectChannelUsers } from '../redux/users/users.slice'
+import { selectCurrentChannel } from '../redux/channels/channels.slice'
 import { UserInfo } from 'components/auth/redux/auth.slice'
 
 import MessageComponent from './message/Message'
-import { selectCurrentChannel } from '../redux/channels/channels.slice'
+import LoadingOverlay from 'components/commons/overlay/LoadingOverlay'
 
 interface MessagePanelProps {}
 
@@ -93,13 +94,7 @@ const MessagesPanel: FunctionComponent<MessagePanelProps> = () => {
 
     return (
         <>
-            {isLoading && (
-                <div className="h-full w-full flex items-center justify-center">
-                    <div className="ui active inverted dimmer">
-                        <div className="ui text loader">Loading</div>
-                    </div>
-                </div>
-            )}
+            {isLoading && <LoadingOverlay />}
             <div className="flex flex-1 flex-col items-start justify-end overflow-auto overflow-x-hidden mb-20 px-4">
                 <div
                     className="flex flex-col mt-auto"

@@ -4,8 +4,8 @@ interface LoadingOverlayProps {}
 
 const LoadingOverlay: FunctionComponent<LoadingOverlayProps> = () => {
     return (
-        <div className="h-screen w-screen max-h-screen flex items-center justify-center">
-            <div className="ui active inverted dimmer">
+        <div className="h-full w-full flex items-center justify-center">
+            <div className="ui active inline center inverted dimmer">
                 <div className="ui text loader">Loading</div>
             </div>
         </div>
