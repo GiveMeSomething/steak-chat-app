@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from 'react'
+import React, { FunctionComponent, Suspense, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { useForm } from 'react-hook-form'
 
@@ -19,7 +19,8 @@ import { Modal, Button, Icon } from 'semantic-ui-react'
 
 import FormInput from 'components/commons/FormInput'
 import DescMessage from 'components/commons/formDescription/DescMessage'
-import AvatarCropModal from './AvatarCropModal'
+import LoadingOverlay from 'components/commons/overlay/LoadingOverlay'
+const AvatarCropModal = React.lazy(() => import('./AvatarCropModal'))
 
 interface UpdateProfileModalProps {}
 
@@ -161,6 +162,7 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
                 dimmer="blurring"
                 open={isOpen}
                 onSubmit={handleSubmit(onSubmit)}
+                className="relative"
             >
                 <Modal.Header>
                     <h1>Edit your profile</h1>
@@ -324,14 +326,16 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
                     </Button>
                 </Modal.Actions>
             </Modal>
-            {mediaUrl && (
-                <AvatarCropModal
-                    isOpen={isAvatarCropOpen}
-                    setOpen={setIsAvatarCropOpen}
-                    imageSrc={mediaUrl}
-                    onAvatarCropClose={onAvatarCropClose}
-                />
-            )}
+            <Suspense fallback={<LoadingOverlay />}>
+                {mediaUrl && (
+                    <AvatarCropModal
+                        isOpen={isAvatarCropOpen}
+                        setOpen={setIsAvatarCropOpen}
+                        imageSrc={mediaUrl}
+                        onAvatarCropClose={onAvatarCropClose}
+                    />
+                )}
+            </Suspense>
         </>
     )
 }
