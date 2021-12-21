@@ -7,7 +7,7 @@ import { firebaseApp } from 'firebase/firebase'
 
 import { fetchUser } from 'components/auth/redux/auth.thunk'
 
-import LoadingOverlay from 'components/commons/overlay/LoadingOverlay'
+import LoadingScreen from 'components/commons/overlay/LoadingScreen'
 
 // This will redirect to login page if there are no signed in user
 // Wrap this outside of need-to-authenticate components
@@ -55,7 +55,7 @@ function withAuthRedirect<PropsType>(
             )
         } else {
             if (isLoading) {
-                return <LoadingOverlay />
+                return <LoadingScreen />
             } else {
                 return <WrappedComponent {...props} />
             }

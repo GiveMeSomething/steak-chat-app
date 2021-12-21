@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from 'react'
+import React, { FunctionComponent, Suspense, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
 import { UserInfo } from 'components/auth/redux/auth.slice'
@@ -12,9 +12,12 @@ import {
 import { Undefinable } from 'types/commonType'
 
 import { Button } from 'semantic-ui-react'
+import LoadingOverlay from 'components/commons/overlay/LoadingOverlay'
 
-import ChannelDetailPanel from './panel/ChannelDetailPanel'
-import UserDetailPanel from './panel/UserDetailPanel'
+const ChannelDetailPanel = React.lazy(
+    () => import('./panel/ChannelDetailPanel')
+)
+const UserDetailPanel = React.lazy(() => import('./panel/UserDetailPanel'))
 
 interface MetaPanelProps {}
 
@@ -80,7 +83,7 @@ const MetaPanel: FunctionComponent<MetaPanelProps> = () => {
         }
 
         return (
-            <div className="flex w-full h-full flex-col border-l-2">
+            <div className="flex w-full h-full flex-col border-l-2 relative">
                 <div className="flex items-center justify-between px-4 border-b-2 py-2">
                     <h3 className="font-semibold leading-none">
                         {currentDataType}
@@ -95,10 +98,12 @@ const MetaPanel: FunctionComponent<MetaPanelProps> = () => {
                     />
                 </div>
                 <div
-                    className="h-full overflow-y-auto overflow-x-hidden pb-20"
+                    className="max-w-full h-full overflow-y-auto overflow-x-hidden pb-20"
                     id="member-panel__content"
                 >
-                    {metaPanelContent()}
+                    <Suspense fallback={<LoadingOverlay />}>
+                        {metaPanelContent()}
+                    </Suspense>
                 </div>
             </div>
         )

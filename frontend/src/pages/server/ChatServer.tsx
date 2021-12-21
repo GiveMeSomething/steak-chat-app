@@ -56,7 +56,7 @@ import {
 } from 'utils/databaseRef'
 
 import ServerLayout from 'components/server/ServerLayout'
-import LoadingOverlay from 'components/commons/overlay/LoadingOverlay'
+import LoadingScreen from 'components/commons/overlay/LoadingScreen'
 import withAuthRedirect from 'components/middleware/withAuthRedirect'
 import { updateUserStatus } from 'components/auth/redux/auth.thunk'
 import { UserStatus } from 'types/appEnum'
@@ -265,7 +265,7 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     }, [currentChannel.id])
 
     if (isMessageLoading) {
-        return <LoadingOverlay />
+        return <LoadingScreen />
     } else {
         return <ServerLayout />
     }
