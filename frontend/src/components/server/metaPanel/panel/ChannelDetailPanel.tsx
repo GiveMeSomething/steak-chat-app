@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useState } from 'react'
+import React, { FunctionComponent, Suspense, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
 
 import { selectCurrentUser } from 'components/auth/redux/auth.slice'
@@ -11,9 +11,14 @@ import {
     Icon,
     Segment
 } from 'semantic-ui-react'
+import LoadingOverlay from 'components/commons/overlay/LoadingOverlay'
 
-import UpdateChannelDescModal from 'components/server/metaPanel/modal/UpdateChannelDescModal'
-import UpdateChannelNameModal from 'components/server/metaPanel/modal/UpdateChannelNameModal'
+const UpdateChannelDescModal = React.lazy(
+    () => import('components/server/metaPanel/modal/UpdateChannelDescModal')
+)
+const UpdateChannelNameModal = React.lazy(
+    () => import('components/server/metaPanel/modal/UpdateChannelNameModal')
+)
 
 interface ChannelDetailPanelProps {
     data: ChannelInfo
@@ -201,16 +206,18 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
                     </div>
                 </Accordion.Content>
             </Accordion>
-            <UpdateChannelNameModal
-                isOpen={isUpdateNameModalOpen}
-                setOpen={setIsUpdateNameModalOpen}
-                channelInfo={data}
-            />
-            <UpdateChannelDescModal
-                isOpen={isUpdateDescModalOpen}
-                setOpen={setIsUpdateDescModalOpen}
-                channelInfo={data}
-            />
+            <Suspense fallback={<LoadingOverlay />}>
+                <UpdateChannelNameModal
+                    isOpen={isUpdateNameModalOpen}
+                    setOpen={setIsUpdateNameModalOpen}
+                    channelInfo={data}
+                />
+                <UpdateChannelDescModal
+                    isOpen={isUpdateDescModalOpen}
+                    setOpen={setIsUpdateDescModalOpen}
+                    channelInfo={data}
+                />
+            </Suspense>
         </div>
     )
 }
