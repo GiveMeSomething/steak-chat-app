@@ -1,4 +1,4 @@
-import { ref, uploadBytesResumable } from '@firebase/storage'
+import { ref, uploadBytesResumable, UploadMetadata } from '@firebase/storage'
 import { MAX_FILE_SIZE_BYTES } from 'constants/appConst'
 import { storage } from 'firebase/firebase'
 import { getDownloadURL } from 'firebase/storage'
@@ -36,11 +36,15 @@ export function useUploadFile() {
     ) => {
         const storageRef = ref(storage, filePath)
 
+        const storageMetadata: UploadMetadata = {
+            cacheControl: 'public, max-age=8000' // About 2 hours
+        }
+
         // Set current form states
         setUploadState('uploading')
 
         // Upload things
-        const result = uploadBytesResumable(storageRef, file)
+        const result = uploadBytesResumable(storageRef, file, storageMetadata)
 
         // Register three observers:
         // 1. 'state_changed' observer, called any time the state changes
@@ -53,10 +57,10 @@ export function useUploadFile() {
                 const progress = Math.round(
                     (snapshot.bytesTransferred / snapshot.totalBytes) * 100
                 )
-                setUploadProgress(progress)
 
-                // Set the state for according UI update
+                // Set the state for UI update
                 setUploadState(snapshot.state)
+                setUploadProgress(progress)
             },
             (err: any) => {
                 // TODO: Handle upload errors more specific if needed
@@ -66,9 +70,8 @@ export function useUploadFile() {
             },
             async () => {
                 // If successfully uploaded, dispatch sendMessage to display and save message to database
-                getDownloadURL(result.snapshot.ref).then(async (downloadUrl) =>
-                    successCallback(downloadUrl)
-                )
+                const imageUrl = await getDownloadURL(result.snapshot.ref)
+                successCallback(imageUrl)
             }
         )
     }

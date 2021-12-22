@@ -76,52 +76,46 @@ export const updateUserStatus = createAsyncThunk<
 export const signin = createAsyncThunk<Undefinable<UserInfo>, AuthPayload>(
     'user/signin',
     async (data, { dispatch }) => {
-        await setPersistence(auth, browserSessionPersistence).then(() => {
-            return signInWithEmailAndPassword(auth, data.email, data.password)
-        })
+        await setPersistence(auth, browserSessionPersistence)
+        const userCredential = await signInWithEmailAndPassword(
+            auth,
+            data.email,
+            data.password
+        )
 
         // Redux store's currentUser is not available at this time
-        if (auth.currentUser) {
-            dispatch(
-                updateUserStatus({
-                    userId: auth.currentUser.uid,
-                    status: UserStatus.ONLINE
-                })
-            )
+        dispatch(
+            updateUserStatus({
+                userId: userCredential.user.uid,
+                status: UserStatus.ONLINE
+            })
+        )
 
-            return getUser(auth.currentUser?.uid)
-        }
-
-        return undefined
+        return getUser(userCredential.user.uid)
     }
 )
 
 export const signup = createAsyncThunk<Undefinable<UserInfo>, AuthPayload>(
     'user/signup',
     async (data, { dispatch }) => {
-        await setPersistence(auth, browserSessionPersistence).then(() => {
-            return createUserWithEmailAndPassword(
-                auth,
-                data.email,
-                data.password
-            )
-        })
+        await setPersistence(auth, browserSessionPersistence)
+        const userCredential = await createUserWithEmailAndPassword(
+            auth,
+            data.email,
+            data.password
+        )
 
         // Redux store's currentUser is not available at this time
-        if (auth.currentUser) {
-            await initUserInfo(auth.currentUser)
+        await initUserInfo(userCredential.user)
 
-            dispatch(
-                updateUserStatus({
-                    userId: auth.currentUser.uid,
-                    status: UserStatus.ONLINE
-                })
-            )
+        dispatch(
+            updateUserStatus({
+                userId: userCredential.user.uid,
+                status: UserStatus.ONLINE
+            })
+        )
 
-            return getUser(auth.currentUser?.uid)
-        }
-
-        return undefined
+        return getUser(userCredential.user.uid)
     }
 )
 
@@ -145,7 +139,7 @@ export const signout = createAsyncThunk<void, void, ThunkState>(
 
 export const fetchUser = createAsyncThunk('user/fetchInfo', async () => {
     if (auth.currentUser) {
-        return getUser(auth.currentUser?.uid)
+        return getUser(auth.currentUser.uid)
     }
 
     return undefined
@@ -160,10 +154,10 @@ export const updateUserAvatar = createAsyncThunk<
 
     await update(userRef(userId), { photoUrl })
 
-    // Set currentUser avatar
+    // Set currentUser avatar in Redux store
     dispatch(updateAvatar(photoUrl))
 
-    // update currentData for metaPanel if it is open (currently editing profile)
+    // Update currentData for metaPanel if open (currently editing profile)
     if (appState.metaPanelState.isOpen) {
         if (appState.user.user) {
             dispatch(
