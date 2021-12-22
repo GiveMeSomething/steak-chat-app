@@ -32,7 +32,9 @@ const UsersDropdownItem: FunctionComponent<UsersDropdownItemProps> = ({
                 <h4 className="leading-6">
                     <span>{user.username}</span>
                     {user.uid === currentUser?.uid && (
-                        <span className="mx-2 current-indicator">you</span>
+                        <span className="mx-2 current-indicator text-gray-500">
+                            you
+                        </span>
                     )}
                 </h4>
             </div>
