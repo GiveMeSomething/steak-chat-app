@@ -14,7 +14,7 @@ import {
 
 import { Undefinable } from 'types/commonType'
 
-import { Button, Input, Popup } from 'semantic-ui-react'
+import { Input, Popup } from 'semantic-ui-react'
 
 import ScreenOverlay from 'components/commons/overlay/ScreenOverlay'
 import AddMediaModal from './AddMediaModal'
@@ -161,12 +161,16 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
                 <Popup
                     content="Attach file"
                     trigger={
-                        <Button
-                            basic
-                            icon="paperclip"
-                            color="blue"
+                        <button
+                            className="ui icon button basic blue my-2"
+                            aria-label="Add media"
                             onClick={handleAddMediaClick}
-                        />
+                        >
+                            <i
+                                aria-hidden="false"
+                                className="icon paperclip"
+                            ></i>
+                        </button>
                     }
                 />
                 <form

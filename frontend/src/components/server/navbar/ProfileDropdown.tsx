@@ -51,7 +51,6 @@ const ProfileDropdown: FunctionComponent<ProfileDropdownProps> = () => {
                                 src={photoUrl}
                                 alt="avatar"
                                 className="rounded-md"
-                                aria-label="profile"
                             />
                         </span>
                     }
