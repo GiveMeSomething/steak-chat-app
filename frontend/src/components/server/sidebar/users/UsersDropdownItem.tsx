@@ -18,7 +18,11 @@ const UsersDropdownItem: FunctionComponent<UsersDropdownItemProps> = ({
         <>
             <div className="flex items-center px-4 py-2">
                 <div className="rounded-md max-h-6 w-6 mr-2 relative">
-                    <img src={user.photoUrl} className="rounded-md" />
+                    <img
+                        src={user.photoUrl}
+                        className="rounded-md"
+                        alt="avatar"
+                    />
                     <StatusIcon
                         userStatus={user.status}
                         size="small"
