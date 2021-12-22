@@ -213,6 +213,7 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
                         src={media}
                         className="max-h-40 h-40 p-2"
                         ref={imageRef}
+                        alt={`${createdBy}'s image`}
                     />
                 )}
             </div>
