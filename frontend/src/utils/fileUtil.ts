@@ -1,4 +1,4 @@
-import { ref, uploadBytesResumable } from '@firebase/storage'
+import { ref, uploadBytesResumable, UploadMetadata } from '@firebase/storage'
 import { MAX_FILE_SIZE_BYTES } from 'constants/appConst'
 import { storage } from 'firebase/firebase'
 import { getDownloadURL } from 'firebase/storage'
@@ -36,11 +36,15 @@ export function useUploadFile() {
     ) => {
         const storageRef = ref(storage, filePath)
 
+        const storageMetadata: UploadMetadata = {
+            cacheControl: 'public, max-age=8000' // About 2 hours
+        }
+
         // Set current form states
         setUploadState('uploading')
 
         // Upload things
-        const result = uploadBytesResumable(storageRef, file)
+        const result = uploadBytesResumable(storageRef, file, storageMetadata)
 
         // Register three observers:
         // 1. 'state_changed' observer, called any time the state changes
