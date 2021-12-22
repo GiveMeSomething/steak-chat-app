@@ -57,10 +57,10 @@ export function useUploadFile() {
                 const progress = Math.round(
                     (snapshot.bytesTransferred / snapshot.totalBytes) * 100
                 )
-                setUploadProgress(progress)
 
-                // Set the state for according UI update
+                // Set the state for UI update
                 setUploadState(snapshot.state)
+                setUploadProgress(progress)
             },
             (err: any) => {
                 // TODO: Handle upload errors more specific if needed
@@ -70,9 +70,8 @@ export function useUploadFile() {
             },
             async () => {
                 // If successfully uploaded, dispatch sendMessage to display and save message to database
-                getDownloadURL(result.snapshot.ref).then(async (downloadUrl) =>
-                    successCallback(downloadUrl)
-                )
+                const imageUrl = await getDownloadURL(result.snapshot.ref)
+                successCallback(imageUrl)
             }
         )
     }
