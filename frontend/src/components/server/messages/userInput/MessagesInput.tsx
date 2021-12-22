@@ -1,4 +1,4 @@
-import React, { FunctionComponent, useEffect, useState } from 'react'
+import React, { FunctionComponent, Suspense, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { useForm } from 'react-hook-form'
 
@@ -14,14 +14,18 @@ import {
 
 import { Undefinable } from 'types/commonType'
 
-import { Button, Input, Popup } from 'semantic-ui-react'
-
-import 'emoji-mart/css/emoji-mart.css'
-import { Picker, Emoji, BaseEmoji } from 'emoji-mart'
+import { Input, Popup } from 'semantic-ui-react'
 
 import ScreenOverlay from 'components/commons/overlay/ScreenOverlay'
 import AddMediaModal from './AddMediaModal'
 import TypingLoader from './TypingLoader'
+
+import 'emoji-mart/css/emoji-mart.css'
+import { BaseEmoji, Emoji } from 'emoji-mart'
+import LoadingOverlay from 'components/commons/overlay/LoadingOverlay'
+const EmojiPicker = React.lazy(
+    () => import('emoji-mart/dist-es/components/picker/picker')
+)
 
 interface MessagesInputProps {}
 
@@ -157,12 +161,16 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
                 <Popup
                     content="Attach file"
                     trigger={
-                        <Button
-                            basic
-                            icon="paperclip"
-                            color="blue"
+                        <button
+                            className="ui icon button basic blue my-2"
+                            aria-label="Add media"
                             onClick={handleAddMediaClick}
-                        />
+                        >
+                            <i
+                                aria-hidden="false"
+                                className="icon paperclip"
+                            ></i>
+                        </button>
                     }
                 />
                 <form
@@ -188,13 +196,14 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
                             onMouseLeave={handleOnMouseLeaveEmojiPicker}
                         >
                             {isEmojiPickerOpen && (
-                                <>
+                                <Suspense fallback={<LoadingOverlay />}>
                                     <div className="absolute bottom-10 right-0">
-                                        <Picker
-                                            set="facebook"
+                                        <EmojiPicker
                                             title="Pick"
                                             perLine={9}
                                             emojiSize={32}
+                                            sheetSize={32}
+                                            native={true}
                                             onSelect={(emoji) =>
                                                 handleSelectEmoji(
                                                     emoji as BaseEmoji
@@ -207,20 +216,20 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
                                             handleSelectEmoji()
                                         }
                                     />
-                                </>
+                                </Suspense>
                             )}
                             <div className="flex items-center justify-center border-slack-sidebar-focus">
                                 {isEmojiPcikerHover ? (
                                     <Emoji
                                         emoji="slightly_smiling_face"
-                                        set="facebook"
                                         size={32}
+                                        native={true}
                                     />
                                 ) : (
                                     <Emoji
                                         emoji="expressionless"
-                                        set="facebook"
                                         size={32}
+                                        native={true}
                                     />
                                 )}
                             </div>

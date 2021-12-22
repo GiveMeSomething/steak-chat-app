@@ -49,7 +49,7 @@ const ProfileDropdown: FunctionComponent<ProfileDropdownProps> = () => {
                         <span className="flex">
                             <img
                                 src={photoUrl}
-                                alt="avt"
+                                alt="avatar"
                                 className="rounded-md"
                             />
                         </span>

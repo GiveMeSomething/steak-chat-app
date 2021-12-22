@@ -47,11 +47,11 @@ i .icon {
 }
 
 .sidebar-dropdown-item__active {
-    @apply bg-slack-sidebar-focus text-slack-text-focus;
+    @apply bg-slack-sidebar-focus text-gray-50;
 }
 
 .sidebar-dropdown-item__inactive {
-    @apply hover:bg-slack-sidebar-hover text-slack-text-blur;
+    @apply hover:bg-slack-sidebar-hover text-gray-500;
 }
 
 .sidebar-dropdown-item__inactive .current-indicator {
