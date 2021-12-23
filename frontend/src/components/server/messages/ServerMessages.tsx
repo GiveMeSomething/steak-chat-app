@@ -1,6 +1,6 @@
 import React, { FunctionComponent } from 'react'
 
-import MessagesHeader from './MessagesHeader'
+import MessagesHeader from './header/MessagesHeader'
 import MessagesInput from './userInput/MessagesInput'
 import MessagesPanel from './MessagesPanel'
 
