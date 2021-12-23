@@ -1,9 +1,10 @@
-import React, { FunctionComponent, Suspense, useState } from 'react'
+import React, { FunctionComponent, Suspense, useEffect, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
 
 import { selectCurrentUser } from 'components/auth/redux/auth.slice'
 import { ChannelInfo } from 'components/server/redux/channels/channels.slice'
 import { selectChannelUsers } from 'components/server/redux/users/users.slice'
+import { selectChannelDetailsStartIndex } from '../redux/metaPanel.slice'
 
 import {
     Accordion,
@@ -35,6 +36,13 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
 
     const currentUser = useAppSelector(selectCurrentUser)
     const channelUsers = useAppSelector(selectChannelUsers)
+    const startIndex = useAppSelector(selectChannelDetailsStartIndex)
+
+    useEffect(() => {
+        if (startIndex) {
+            setActiveIndex(startIndex)
+        }
+    }, [startIndex])
 
     const handleClick = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,

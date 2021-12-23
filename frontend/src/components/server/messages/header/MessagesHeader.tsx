@@ -4,6 +4,7 @@ import { useAppSelector } from 'redux/hooks'
 import { selectCurrentChannel } from 'components/server/redux/channels/channels.slice'
 
 import { Icon } from 'semantic-ui-react'
+import AvatarStack from './AvatarStack'
 
 interface MessagesHeaderProps {}
 
@@ -21,8 +22,7 @@ const MessagesHeader: FunctionComponent<MessagesHeaderProps> = () => {
                     <h4 className="mx-4 leading-none">{currentChannel.desc}</h4>
                 )}
             </div>
-            {/* TODO: Add user avatar stack here */}
-            <div className="px-2">#users</div>
+            <AvatarStack />
         </div>
     )
 }
