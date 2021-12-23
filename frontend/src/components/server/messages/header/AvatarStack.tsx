@@ -46,7 +46,6 @@ const AvatarStack: FunctionComponent<AvatarStackProps> = () => {
                                 style={avatarStyle(index)}
                                 key={user.uid}
                                 data-content={user.username}
-                                className="hover:border-2 hover:border-slack-navbar"
                             >
                                 <Popup
                                     trigger={
