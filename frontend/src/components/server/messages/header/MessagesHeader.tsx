@@ -22,9 +22,7 @@ const MessagesHeader: FunctionComponent<MessagesHeaderProps> = () => {
                     <h4 className="mx-4 leading-none">{currentChannel.desc}</h4>
                 )}
             </div>
-            <div>
-                <AvatarStack />
-            </div>
+            <AvatarStack />
         </div>
     )
 }

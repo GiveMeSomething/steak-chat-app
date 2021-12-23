@@ -2,15 +2,15 @@ import React, { FunctionComponent } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
 import { selectChannelUsers } from 'components/server/redux/users/users.slice'
-
-import { isEmpty } from 'lodash'
-import { Popup } from 'semantic-ui-react'
 import {
     setChannelDetailStartIndex,
     setCurrentMetaPanelData,
     setMetaPanelOpen
 } from 'components/server/metaPanel/redux/metaPanel.slice'
 import { selectCurrentChannel } from 'components/server/redux/channels/channels.slice'
+
+import { isEmpty } from 'lodash'
+import { Popup } from 'semantic-ui-react'
 
 interface AvatarStackProps {}
 

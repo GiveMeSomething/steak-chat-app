@@ -4,6 +4,7 @@ import { useAppSelector } from 'redux/hooks'
 import { selectCurrentUser } from 'components/auth/redux/auth.slice'
 import { ChannelInfo } from 'components/server/redux/channels/channels.slice'
 import { selectChannelUsers } from 'components/server/redux/users/users.slice'
+import { selectChannelDetailsStartIndex } from '../redux/metaPanel.slice'
 
 import {
     Accordion,
@@ -12,7 +13,6 @@ import {
     Segment
 } from 'semantic-ui-react'
 import LoadingOverlay from 'components/commons/overlay/LoadingOverlay'
-import { selectChannelDetailsStartIndex } from '../redux/metaPanel.slice'
 
 const UpdateChannelDescModal = React.lazy(
     () => import('components/server/metaPanel/modal/UpdateChannelDescModal')
