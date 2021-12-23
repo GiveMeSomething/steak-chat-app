@@ -1,4 +1,4 @@
-import React, { FunctionComponent, Suspense, useState } from 'react'
+import React, { FunctionComponent, Suspense, useEffect, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
 
 import { selectCurrentUser } from 'components/auth/redux/auth.slice'
@@ -12,6 +12,7 @@ import {
     Segment
 } from 'semantic-ui-react'
 import LoadingOverlay from 'components/commons/overlay/LoadingOverlay'
+import { selectChannelDetailsStartIndex } from '../redux/metaPanel.slice'
 
 const UpdateChannelDescModal = React.lazy(
     () => import('components/server/metaPanel/modal/UpdateChannelDescModal')
@@ -35,6 +36,13 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
 
     const currentUser = useAppSelector(selectCurrentUser)
     const channelUsers = useAppSelector(selectChannelUsers)
+    const startIndex = useAppSelector(selectChannelDetailsStartIndex)
+
+    useEffect(() => {
+        if (startIndex) {
+            setActiveIndex(startIndex)
+        }
+    }, [startIndex])
 
     const handleClick = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
