@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { useForm } from 'react-hook-form'
 
 import { selectCurrentUser } from 'components/auth/redux/auth.slice'
-import { updateUserProfile } from 'components/auth/redux/auth.thunk'
+import { updateUserProfile } from 'components/auth/redux/user.thunk'
 import {
     selectIsEditProfileOpen,
     setEditProfileOpen

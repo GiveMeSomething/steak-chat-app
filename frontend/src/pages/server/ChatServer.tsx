@@ -37,6 +37,7 @@ import {
     addChannelUser,
     updateChannelUser
 } from 'components/server/redux/users/users.slice'
+import { updateUserStatus } from 'components/auth/redux/user.thunk'
 import {
     addTyper,
     clearTyper,
@@ -58,7 +59,6 @@ import {
 import ServerLayout from 'components/server/ServerLayout'
 import LoadingScreen from 'components/commons/overlay/LoadingScreen'
 import withAuthRedirect from 'components/middleware/withAuthRedirect'
-import { updateUserStatus } from 'components/auth/redux/auth.thunk'
 import { UserStatus } from 'types/appEnum'
 
 interface ChatServerProps {}

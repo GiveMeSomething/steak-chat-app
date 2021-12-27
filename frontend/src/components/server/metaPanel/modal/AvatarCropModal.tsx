@@ -9,7 +9,7 @@ import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { useForm } from 'react-hook-form'
 
 import { selectCurrentUser } from 'components/auth/redux/auth.slice'
-import { updateUserAvatar } from 'components/auth/redux/auth.thunk'
+import { updateUserAvatar } from 'components/auth/redux/user.thunk'
 
 import { Undefinable } from 'types/commonType'
 import { useUploadFile } from 'utils/fileUtil'
