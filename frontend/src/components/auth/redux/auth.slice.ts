@@ -1,14 +1,12 @@
 import { createSlice, isRejected, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from 'redux/store'
 
+import { signin, signup, fetchUser, signout } from './auth.thunk'
 import {
-    signin,
-    signup,
-    fetchUser,
-    signout,
     updateUserStatus,
-    updateUserProfile
-} from './auth.thunk'
+    updateUserProfile,
+    updateUserAvatar
+} from './user.thunk'
 
 import { UserStatus } from 'types/appEnum'
 import { IdAsKeyObject, Undefinable } from 'types/commonType'
@@ -62,11 +60,6 @@ export const userSlice = createSlice({
         },
         removeUserError: (state) => {
             state.userError = undefined
-        },
-        updateAvatar: (state, action) => {
-            if (state.user && action.payload) {
-                state.user = { ...state.user, photoUrl: action.payload }
-            }
         }
     },
     // TODO: See if this part can be refactored
@@ -99,6 +92,12 @@ export const userSlice = createSlice({
             }
         })
 
+        builder.addCase(updateUserAvatar.fulfilled, (state, action) => {
+            if (state.user && action.payload) {
+                state.user = { ...state.user, photoUrl: action.payload }
+            }
+        })
+
         builder.addMatcher(isRejected, (state, action) => {
             if (action.error.message) {
                 state.userError = action.error.message
@@ -113,8 +112,7 @@ export const {
     setCurrentUser,
     removeCurrentUser,
     setUserError,
-    removeUserError,
-    updateAvatar
+    removeUserError
 } = userSlice.actions
 
 export const selectCurrentUser = (state: RootState) => state.user.user

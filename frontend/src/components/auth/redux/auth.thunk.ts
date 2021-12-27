@@ -1,22 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
 
-import {
-    AuthPayload,
-    EditableField,
-    updateAvatar,
-    UserInfo
-} from './auth.slice'
+import { AuthPayload, UserInfo } from './auth.slice'
+import { updateUserStatus } from './user.thunk'
 
-import { database, firebaseApp } from 'firebase/firebase'
-import {
-    ref,
-    update,
-    set,
-    get,
-    DatabaseReference,
-    onDisconnect,
-    child
-} from 'firebase/database'
+import { firebaseApp } from 'firebase/firebase'
+import { set, get, child } from 'firebase/database'
 import {
     createUserWithEmailAndPassword,
     getAuth,
@@ -28,14 +16,11 @@ import {
 } from '@firebase/auth'
 
 import { Undefinable, ThunkState } from 'types/commonType'
+import { USERS_REF } from 'utils/databaseRef'
 import { UserStatus } from 'types/appEnum'
 import md5 from 'md5'
-import { setCurrentMetaPanelData } from 'components/server/metaPanel/redux/metaPanel.slice'
 
 const auth = getAuth(firebaseApp)
-
-const userRef = (userId: string): DatabaseReference =>
-    ref(database, `users/${userId}`)
 
 async function initUserInfo(createdUser: User): Promise<void> {
     if (createdUser && createdUser.email) {
@@ -44,8 +29,10 @@ async function initUserInfo(createdUser: User): Promise<void> {
             createdUser.email
         )}?d=identicon`
 
+        const userRef = child(USERS_REF, createdUser.uid)
+
         // Update user info also update user status
-        await set(userRef(createdUser.uid), {
+        await set(userRef, {
             uid: createdUser.uid,
             username: displayName,
             email: createdUser.email,
@@ -56,22 +43,11 @@ async function initUserInfo(createdUser: User): Promise<void> {
     }
 }
 
-// Accept both userId or reference as parameter
-async function getUser(userId: string): Promise<UserInfo> {
-    const currentUser = await get(userRef(userId))
+export async function getUser(userId: string): Promise<UserInfo> {
+    const userRef = child(USERS_REF, userId)
+    const currentUser = await get(userRef)
     return currentUser.val()
 }
-
-export const updateUserStatus = createAsyncThunk<
-    UserStatus,
-    { userId: string; status: UserStatus }
->('user/updateStatus', async ({ userId, status }) => {
-    await update(userRef(userId), { status })
-
-    // Change user status when user exit app
-    onDisconnect(child(userRef(userId), 'status')).set(UserStatus.AWAY)
-    return status
-})
 
 export const signin = createAsyncThunk<Undefinable<UserInfo>, AuthPayload>(
     'user/signin',
@@ -94,6 +70,14 @@ export const signin = createAsyncThunk<Undefinable<UserInfo>, AuthPayload>(
         return getUser(userCredential.user.uid)
     }
 )
+
+export const fetchUser = createAsyncThunk('user/fetchInfo', async () => {
+    if (auth.currentUser) {
+        return getUser(auth.currentUser.uid)
+    }
+
+    return undefined
+})
 
 export const signup = createAsyncThunk<Undefinable<UserInfo>, AuthPayload>(
     'user/signup',
@@ -134,53 +118,5 @@ export const signout = createAsyncThunk<void, void, ThunkState>(
         }
 
         await signOut(auth)
-    }
-)
-
-export const fetchUser = createAsyncThunk('user/fetchInfo', async () => {
-    if (auth.currentUser) {
-        return getUser(auth.currentUser.uid)
-    }
-
-    return undefined
-})
-
-export const updateUserAvatar = createAsyncThunk<
-    void,
-    { userId: string; photoUrl: string },
-    ThunkState
->('user/updateAvatar', async ({ userId, photoUrl }, { getState, dispatch }) => {
-    const appState = getState()
-
-    await update(userRef(userId), { photoUrl })
-
-    // Set currentUser avatar in Redux store
-    dispatch(updateAvatar(photoUrl))
-
-    // Update currentData for metaPanel if open (currently editing profile)
-    if (appState.metaPanelState.isOpen) {
-        if (appState.user.user) {
-            dispatch(
-                setCurrentMetaPanelData({ ...appState.user.user, photoUrl })
-            )
-        }
-    }
-})
-
-interface UpdateUserPayload extends EditableField {
-    userId: string
-}
-
-export const updateUserProfile = createAsyncThunk<UserInfo, UpdateUserPayload>(
-    'user/updateProfile',
-    async (data) => {
-        const { userId, ...updateInfo } = data
-
-        const updatedUserRef = userRef(userId)
-
-        await update(updatedUserRef, { ...updateInfo })
-
-        const updatedUser = await get(updatedUserRef)
-        return updatedUser.val()
     }
 )
