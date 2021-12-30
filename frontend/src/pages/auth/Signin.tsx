@@ -6,20 +6,14 @@ const Signin = () => {
     return (
         <div className="h-screen max-h-screen">
             <div className="grid md:w-1/2 sm:w-full h-full mx-auto">
-                <div className="row-span-1">
-                    <AuthForm
-                        label="🥩"
-                        submitLabel="Sign in"
-                        action="signin"
-                    />
-                </div>
-                <div className="flex flex-col items-center justify-center border-t-2 row-span-1 py-4 my-4">
+                <AuthForm label="🥩" submitLabel="Sign in" action="signin" />
+                <div className="flex flex-col items-center justify-center my-8 border-t-2">
                     <h4 className="font-bold">Don&apos;t have an account?</h4>
-                    <div className="flex items-center justify-center w-full mt-8 text-xl">
-                        <div className="px-10 py-2 rounded-full capitalize text-white bg-fresh-2-500 hover:bg-yellow-700 cursor-pointer">
+                    <div className="flex items-center justify-center w-full mt-8">
+                        <div className="px-10 py-2 rounded-full bg-yellow-500 hover:bg-yellow-600 cursor-pointer">
                             <Link
                                 to="/auth/signup"
-                                className="no-underline uppercase hover:text-white"
+                                className="text-white uppercase text-xl"
                             >
                                 Sign up
                             </Link>
