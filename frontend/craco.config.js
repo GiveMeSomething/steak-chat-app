@@ -7,10 +7,16 @@ module.exports = {
         }
     },
     webpack: {
-        configure: (webpackConfig, { paths }) => {
-            paths.appBuild = webpackConfig.output.path =
-                path.resolve('../build')
-            return webpackConfig // Important: return the modified config
+        configure: {
+            output: {
+                path: path.resolve(__dirname, '../build'),
+                filename: 'bundle.js'
+            },
+            cache: true,
+            stats: 'minimal',
+            devServer: {
+                compress: true
+            }
         }
     }
 }
