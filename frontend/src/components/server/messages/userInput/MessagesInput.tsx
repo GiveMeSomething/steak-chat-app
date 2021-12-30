@@ -16,13 +16,13 @@ import { Undefinable } from 'types/commonType'
 
 import { Input, Popup } from 'semantic-ui-react'
 
+import LoadingOverlay from 'components/commons/overlay/LoadingOverlay'
 import ScreenOverlay from 'components/commons/overlay/ScreenOverlay'
 import AddMediaModal from './AddMediaModal'
 import TypingLoader from './TypingLoader'
 
 import 'emoji-mart/css/emoji-mart.css'
 import { BaseEmoji, Emoji } from 'emoji-mart'
-import LoadingOverlay from 'components/commons/overlay/LoadingOverlay'
 const EmojiPicker = React.lazy(
     () => import('emoji-mart/dist-es/components/picker/picker')
 )
@@ -53,7 +53,7 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
         }
     }, [currentChannel.id])
 
-    const getTypers = (): string => {
+    const getTypersString = (): string => {
         const numberOfTyper = Object.keys(typers).length
         let result = ''
         if (numberOfTyper === 1) {
@@ -73,6 +73,20 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
         }
 
         return result + ' is typing'
+    }
+
+    const isAnyTypers = () => {
+        const currentTypersId = Object.keys(typers)
+        if (currentUser) {
+            // Not showing on currentUser typing
+            if (Object.keys(typers)[0] === currentUser.uid) {
+                return currentTypersId.length > 1
+            }
+
+            return currentTypersId.length > 0
+        }
+
+        return false
     }
 
     const onSubmit = async ({ message }: FormValues) => {
@@ -151,10 +165,10 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
 
     return (
         <>
-            {Object.keys(typers).length > 0 && (
+            {isAnyTypers() && (
                 <div className="flex items-center px-2 m-0">
                     <TypingLoader />
-                    {getTypers()}
+                    {getTypersString()}
                 </div>
             )}
             <div className="flex mb-4 px-4 mx-auto w-full max-h-15">
