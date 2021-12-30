@@ -11,6 +11,7 @@ import { signup, signin } from './redux/auth.thunk'
 
 import DescMessage from 'components/commons/formDescription/DescMessage'
 import FormInput from './FormInput'
+import { Undefinable } from 'types/commonType'
 
 interface AuthFormProps {
     label: string
@@ -26,9 +27,8 @@ interface FormValues {
 const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
     const [willBeRedirect, setWillBeDirect] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [requestError, setError] = useState<string>('')
+    const [requestError, setRequestError] = useState<Undefinable<string>>()
 
-    // react-hook-form setup
     const {
         register,
         handleSubmit,
@@ -72,11 +72,13 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
                 dispatch(removeUserError)
             }
         } catch (error: any) {
+            console.log(error)
+
             // If not Firebase Authentication Error => assume it's network issue
             if (error.message) {
-                setError(error.message)
+                setRequestError(error.message)
             } else {
-                setError('Service unavailable. Please try again later')
+                setRequestError('Service unavailable. Please try again later')
             }
         } finally {
             // Enable the Signin/signup button
