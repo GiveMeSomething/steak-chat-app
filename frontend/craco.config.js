@@ -10,6 +10,7 @@ module.exports = {
         configure: (webpackConfig, { paths }) => {
             paths.appBuild = webpackConfig.output.path =
                 path.resolve('../build')
+            webpackConfig.cache = true
             return webpackConfig // Important: return the modified config
         }
     }
