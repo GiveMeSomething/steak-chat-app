@@ -1,12 +1,10 @@
 import React, { FunctionComponent, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
-import { database } from 'firebase/firebase'
 import {
     DatabaseReference,
     onChildAdded,
     onChildChanged,
-    ref,
     set,
     onValue,
     query,
@@ -50,6 +48,7 @@ import { removeCurrentUserTyping } from 'components/server/redux/notifications/n
 
 import {
     CHANNELS_REF,
+    DIRECT_MSG_REF,
     MESSAGE_COUNT_REF,
     STARRED_REF,
     TYPING_REF,
@@ -67,27 +66,26 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     const [isMessageLoading, setIsMessageLoading] = useState<boolean>(true)
 
     const dispatch = useAppDispatch()
-
     const currentUser = useAppSelector(selectCurrentUser)
-
     const currentChannel = useAppSelector(selectCurrentChannel)
     const isDirectChannel = useAppSelector(selectIsDirectChannel)
-
     const channelMessageCount = useAppSelector(selectChannelMessageCount)
 
     // Get messageRef based on public or private channel (direct messages)
-    const messagesRef = ((): DatabaseReference => {
-        if (isDirectChannel) {
-            return ref(database, `direct-message/${currentChannel.id}/messages`)
-        } else {
-            return ref(database, `channels/${currentChannel.id}/messages`)
-        }
-    })()
+    const getMessagesRef = (): DatabaseReference => {
+        const messagePath = `${currentChannel.id}/messages`
+        return child(
+            isDirectChannel ? DIRECT_MSG_REF : CHANNELS_REF,
+            messagePath
+        )
+    }
+
+    const getTypingRef = () => child(TYPING_REF, `${currentChannel.id}`)
 
     // Get all messages of currentChannel, order by ascending timestamp
     const fetchChannelMessages = () => {
         onValue(
-            query(messagesRef, orderByChild('timestamp')),
+            query(getMessagesRef(), orderByChild('timestamp')),
             (data) => {
                 const result: any[] = []
                 data.forEach((message) => {
@@ -104,13 +102,14 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
     const updateUserMessageCount = async () => {
         if (currentUser) {
             // Save status to users notifications
-            const userMessageCountPath = `users/${currentUser.uid}/messageCount`
-            const userMessageCountRef = ref(database, userMessageCountPath)
+            const userMessageCountPath = `${currentUser.uid}/messageCount`
+            const userMessageCountRef = child(USERS_REF, userMessageCountPath)
+
             await set(userMessageCountRef, channelMessageCount)
         }
     }
 
-    useEffect(() => {
+    const updateUserStatusAndMessageCount = () => {
         if (currentUser) {
             dispatch(
                 updateUserStatus({
@@ -120,47 +119,9 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
             )
             dispatch(setChannelMessageCount(currentUser?.messageCount))
         }
+    }
 
-        dispatch(clearChannels())
-        dispatch(clearStarredChannel())
-        dispatch(clearChannelUsers())
-
-        const unsubscribeChannels = onChildAdded(CHANNELS_REF, (data) => {
-            dispatch(addChannel(data.val()))
-        })
-
-        const unsubscribeChannelInfoChanged = onChildChanged(
-            CHANNELS_REF,
-            (data) => {
-                dispatch(updateChannelInfo(data.val()))
-            }
-        )
-
-        const unsubscribeChannelUsers = onChildAdded(USERS_REF, (data) => {
-            dispatch(addChannelUser(data.val()))
-        })
-
-        const unsubscribeChannelUsersStatusChanged = onChildChanged(
-            USERS_REF,
-            (data) => {
-                dispatch(updateChannelUser(data.val()))
-            }
-        )
-
-        const unsubscribeStarredChannel = onChildAdded(
-            STARRED_REF(currentUser?.uid),
-            (data) => {
-                dispatch(addStarredChannel(data.val()))
-            }
-        )
-
-        const unsubscribeUnStarChannel = onChildRemoved(
-            STARRED_REF(currentUser?.uid),
-            (data) => {
-                dispatch(unStarChannel(data.val()))
-            }
-        )
-
+    const updateUserNotifications = () => {
         // This run once and auto unsubscribe
         // Update notifications when user first load application
         onValue(
@@ -174,9 +135,80 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
                 onlyOnce: true
             }
         )
+    }
 
-        // This will trigger on single child
-        // This is more efficient than onValue as it run per changed (onValue return whole collection)
+    const refreshChannelsData = () => {
+        dispatch(clearChannels())
+        dispatch(clearStarredChannel())
+        dispatch(clearChannelUsers())
+    }
+
+    const refreshCurrentChannelData = () => {
+        if (currentUser) {
+            dispatch(clearMessages())
+            dispatch(clearSearchMessage())
+            dispatch(clearTyper())
+
+            // Clear on firebase database
+            dispatch(
+                removeCurrentUserTyping({
+                    channelId: currentChannel.id,
+                    userId: currentUser.uid
+                })
+            )
+        }
+    }
+
+    useEffect(() => {
+        // Update when ChatServer loaded
+        updateUserStatusAndMessageCount()
+
+        // Clear redux state about previous channels
+        refreshChannelsData()
+
+        // Watch when user add new channel
+        const unsubscribeChannels = onChildAdded(CHANNELS_REF, (data) => {
+            dispatch(addChannel(data.val()))
+        })
+
+        // Watch when user change channel info
+        const unsubscribeChannelInfoChanged = onChildChanged(
+            CHANNELS_REF,
+            (data) => {
+                dispatch(updateChannelInfo(data.val()))
+            }
+        )
+
+        // Watch when new user enter channel
+        const unsubscribeChannelUsers = onChildAdded(USERS_REF, (data) => {
+            dispatch(addChannelUser(data.val()))
+        })
+
+        // Watch when users' info changed
+        const unsubscribeChannelUsersChanged = onChildChanged(
+            USERS_REF,
+            (data) => {
+                dispatch(updateChannelUser(data.val()))
+            }
+        )
+
+        // Watch when user star channel
+        const unsubscribeStarredChannel = onChildAdded(
+            STARRED_REF(currentUser?.uid),
+            (data) => {
+                dispatch(addStarredChannel(data.val()))
+            }
+        )
+
+        // Watch when user unstar channel
+        const unsubscribeUnStarChannel = onChildRemoved(
+            STARRED_REF(currentUser?.uid),
+            (data) => {
+                dispatch(unStarChannel(data.val()))
+            }
+        )
+
+        // Watch when user update their messageCount (by visiting a new channel)
         const unsubscribeMessageCount = onChildChanged(
             MESSAGE_COUNT_REF,
             (data) => {
@@ -196,35 +228,26 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
         return () => {
             unsubscribeChannels()
             unsubscribeChannelInfoChanged()
-            unsubscribeChannelUsers()
             unsubscribeStarredChannel()
             unsubscribeUnStarChannel()
-            unsubscribeChannelUsersStatusChanged()
+            unsubscribeChannelUsers()
+            unsubscribeChannelUsersChanged()
             unsubscribeMessageCount()
         }
     }, [])
 
     useEffect(() => {
         if (currentChannel && currentUser && currentChannel.id) {
-            // Clear current channel messages in Redux store
-            dispatch(clearMessages())
-            dispatch(clearSearchMessage())
+            // Clear redux about previous channel
+            refreshCurrentChannelData()
+            updateUserMessageCount()
+            updateUserNotifications()
 
-            // Remove currentUser typing tracker (in realtime database)
-            dispatch(
-                removeCurrentUserTyping({
-                    channelId: currentChannel.id,
-                    userId: currentUser.uid
-                })
-            )
-            // Remove all typing tracker (in store)
-            dispatch(clearTyper())
-
-            const typingRef = child(TYPING_REF, `${currentChannel.id}`)
+            // Watch when user typing
             const unsubscribeTypingTrackChanged = onChildAdded(
-                typingRef,
+                getTypingRef(),
                 (data) => {
-                    if (data && data.key) {
+                    if (data.key) {
                         dispatch(
                             addTyper({
                                 userId: data.key,
@@ -235,26 +258,27 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
                 }
             )
 
+            // Watch when user exiting typing
             const unsubscribeTypingTrackRemoved = onChildRemoved(
-                typingRef,
+                getTypingRef(),
                 (data) => {
-                    if (data && data.key) {
+                    if (data.key) {
                         dispatch(removeTyper({ userId: data.key }))
                     }
                 }
             )
 
-            // Add messages listener for current channel
-            // onChildAdded will run for all initial value in database
-            const unsubscribeMessages = onChildAdded(messagesRef, (data) => {
-                dispatch(addMessage(data.val()))
-            })
+            // Watch users add messages
+            const unsubscribeMessages = onChildAdded(
+                getMessagesRef(),
+                (data) => {
+                    dispatch(addMessage(data.val()))
+                }
+            )
 
             // Fetch currentChannel's message with orderBy timestamp
-            // This will override onChildAdded initial result (unordered)
+            // Override onChildAdded result
             fetchChannelMessages()
-
-            updateUserMessageCount()
 
             return () => {
                 unsubscribeMessages()
