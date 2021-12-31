@@ -1,8 +1,10 @@
-import React from 'react'
+import React, { FunctionComponent } from 'react'
 import { Link } from 'react-router-dom'
 import AuthForm from 'components/auth/AuthForm'
 
-const Signin = () => {
+interface SigninProps {}
+
+const Signin: FunctionComponent<SigninProps> = () => {
     return (
         <div className="h-screen max-h-screen">
             <div className="grid md:w-1/2 sm:w-full h-full mx-auto">

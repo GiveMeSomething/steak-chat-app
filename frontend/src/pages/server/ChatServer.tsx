@@ -54,11 +54,11 @@ import {
     TYPING_REF,
     USERS_REF
 } from 'utils/databaseRef'
-
-import ServerLayout from 'components/server/ServerLayout'
-import LoadingScreen from 'components/commons/overlay/LoadingScreen'
-import withAuthRedirect from 'components/middleware/withAuthRedirect'
 import { UserStatus } from 'types/appEnum'
+
+import withAuthRedirect from 'components/middleware/withAuthRedirect'
+import LoadingScreen from 'components/commons/overlay/LoadingScreen'
+import ServerLayout from 'components/server/ServerLayout'
 
 interface ChatServerProps {}
 
