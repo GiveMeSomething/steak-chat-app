@@ -6,7 +6,11 @@ const Signup = () => {
     return (
         <div className="h-screen max-h-screen">
             <div className="grid md:w-1/2 sm:w-full h-full mx-auto">
-                <AuthForm label="🥩" submitLabel="Sign in" action="signin" />
+                <AuthForm
+                    label="🥩"
+                    submitButtonLabel="Sign in"
+                    action="signin"
+                />
                 <div className="flex flex-col items-center justify-center my-8 border-t-2">
                     <h2 className="font-semibold">Have an account?</h2>
                     <div className="flex items-center justify-center w-full mt-8">
