@@ -54,6 +54,7 @@ const AuthForm: FunctionComponent<AuthFormProps> = ({
             user && setRedirect(true)
         })
 
+        // Unsubscribe on component unmount
         return () => unsubscribeAuthStateChanged()
     }, [])
 
@@ -102,53 +103,58 @@ const AuthForm: FunctionComponent<AuthFormProps> = ({
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col items-center justify-center w-full min-h-full"
+            className="flex-full flex-center flex-col min-h-full"
         >
             <h1 className="text-6xl lg:text-9xl capitalize">{label}</h1>
             <div className="container my-2">
-                <div className="bg-white w-full h-full gap-2">
-                    <div>
-                        <FormInput
-                            {...register('email', {
-                                required: 'Email is required',
-                                pattern: {
-                                    value: /^[^@]+@[^@]+\.[^@]+$/,
-                                    message: 'Invalid email address'
-                                }
-                            })}
-                            label="email"
-                            type="text"
+                <div className="bg-white w-full h-full">
+                    <FormInput
+                        {...register('email', {
+                            required: 'Email is required',
+                            pattern: {
+                                value: /^[^@]+@[^@]+\.[^@]+$/,
+                                message: 'Invalid email address'
+                            }
+                        })}
+                        label="email"
+                        type="text"
+                        className="mt-4"
+                    />
+                    {errors.email && (
+                        <DescMessage
+                            error
+                            message={errors.email.message}
+                            className="px-4 mt-1"
                         />
-                        {errors.email && (
-                            <DescMessage error message={errors.email.message} />
-                        )}
-                    </div>
-                    <div>
-                        <FormInput
-                            {...register('password', {
-                                required: 'Password is required',
-                                minLength: {
-                                    value: 6,
-                                    message:
-                                        'Password should be at least 6 characters'
-                                }
-                            })}
-                            label="password"
-                            type="password"
+                    )}
+
+                    <FormInput
+                        {...register('password', {
+                            required: 'Password is required',
+                            minLength: {
+                                value: 6,
+                                message:
+                                    'Password should be at least 6 characters'
+                            }
+                        })}
+                        label="password"
+                        type="password"
+                        className="mt-4"
+                    />
+                    {errors.password && (
+                        <DescMessage
+                            error
+                            message={errors.password.message}
+                            className="px-4 mt-1"
                         />
-                        {errors.password && (
-                            <DescMessage
-                                error
-                                message={errors.password.message}
-                            />
-                        )}
-                    </div>
+                    )}
+
                     {requestError && (
                         <div className="flex justify-center">
                             <DescMessage error message={requestError} />
                         </div>
                     )}
-                    <div className="flex items-center justify-center w-full mt-8">
+                    <div className="flex-full flex-center mt-8">
                         <button
                             type="submit"
                             className="px-10 py-2 rounded-full bg-yellow-500 hover:bg-yellow-600 cursor-pointer disabled:opacity-50"
