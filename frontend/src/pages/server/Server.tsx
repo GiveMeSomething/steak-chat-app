@@ -8,7 +8,7 @@ const ServersPage = () => {
     return (
         <Switch>
             <Route exact path={path}>
-                <div className="flex flex-col items-center justify-center h-screen">
+                <div className="flex-full flex-center flex-col h-screen">
                     Server Picking Page. TODO TODO TODODO
                     <Link
                         to={`${url}/1`}

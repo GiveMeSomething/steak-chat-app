@@ -44,12 +44,11 @@ const AuthForm: FunctionComponent<AuthFormProps> = ({
     const dispatch = useAppDispatch()
     const auth = getAuth(firebaseApp)
 
-    // Set focus to input onload
     useEffect(() => {
-        // Listen to auth changed to redirect to servers page
+        // Focus on 'email' input onload
         setFocus('email')
 
-        // Listen to user authentication state
+        // Listen to auth changed to redirect to servers page
         const unsubscribeAuthStateChanged = onAuthStateChanged(auth, (user) => {
             user && setRedirect(true)
         })
@@ -117,7 +116,7 @@ const AuthForm: FunctionComponent<AuthFormProps> = ({
                             }
                         })}
                         label="email"
-                        type="text"
+                        inputType="text"
                         className="mt-4"
                     />
                     {errors.email && (
@@ -130,15 +129,10 @@ const AuthForm: FunctionComponent<AuthFormProps> = ({
 
                     <FormInput
                         {...register('password', {
-                            required: 'Password is required',
-                            minLength: {
-                                value: 6,
-                                message:
-                                    'Password should be at least 6 characters'
-                            }
+                            required: 'Password is required'
                         })}
                         label="password"
-                        type="password"
+                        inputType="password"
                         className="mt-4"
                     />
                     {errors.password && (
