@@ -76,7 +76,7 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
             setActive={setActive}
             haveAddNewOption={false}
             haveContextMenu={false}
-            label="Channels"
+            label="Users"
             starred={false}
         >
             {Object.values(channelUsers).map((user) => {
