@@ -15,10 +15,10 @@ const ServerNavbar: FunctionComponent<ServerNavbarProps> = () => {
 
     return (
         <div className="w-full bg-slack-navbar py-2">
-            <div className="flex items-center justify-center relative">
+            <div className="flex flex-center relative">
                 <input
                     type="text"
-                    className="bg-slack-searchbar rounded-md w-1/2 text-slack-text-focus col-start-2 fixed placeholder-white px-4 cursor-pointer"
+                    className=" rounded-md w-1/2 col-start-2 fixed px-4 cursor-pointer bg-slack-searchbar text-slack-text-focus placeholder-white"
                     placeholder={`Search something in #${currentChannel.name}`}
                     readOnly={true}
                     onClick={() => setIsSearchModalOpen(true)}
