@@ -45,7 +45,7 @@ const UpdateChannelNameModal: FunctionComponent<
     const currentChannel = useAppSelector(selectCurrentChannel)
 
     const noSpecialCharMessage =
-        'Channel names can’t contain spaces, periods, or most punctuation.'
+        'Channel names cannot contain spaces, periods, or most punctuation.'
 
     const {
         register,

@@ -61,6 +61,7 @@ const SearchModal: FunctionComponent<SearchModalProps> = ({
     ]
 
     // TODO: Regex is very expensive operation, need to find another way
+    // TODO: Cannot search for speacial chars
     const getSearchMessages = (keyword: string): Message[] => {
         const messageRegex = new RegExp(`${keyword}`, 'i')
 
