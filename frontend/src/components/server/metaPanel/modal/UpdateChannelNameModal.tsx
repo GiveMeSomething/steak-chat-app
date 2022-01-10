@@ -14,8 +14,9 @@ import {
     updateChannelName
 } from 'components/server/redux/channels/channels.thunk'
 
-import { BANNED_SPECIAL_CHARACTERS_REGEX } from 'constants/appConst'
 import { findChannelById, formatChannelName } from 'utils/channelUtil'
+import { BANNED_SPECIAL_CHARACTERS_REGEX } from 'constants/appConst'
+import { noSpecialCharMessage } from 'constants/errorMessage'
 
 import { Modal, Button, Icon } from 'semantic-ui-react'
 
@@ -43,9 +44,6 @@ const UpdateChannelNameModal: FunctionComponent<
     const channels = useAppSelector(selectChannels)
     const starred = useAppSelector(selectStarredChannels)
     const currentChannel = useAppSelector(selectCurrentChannel)
-
-    const noSpecialCharMessage =
-        'Channel names cannot contain spaces, periods, or most punctuation.'
 
     const {
         register,
@@ -79,8 +77,15 @@ const UpdateChannelNameModal: FunctionComponent<
         }
     }, [channels, starred])
 
-    const onModalClose = () => {
+    const handleClose = () => {
+        // Reset component state
+        setIsLoading(false)
+        setUpdateError(undefined)
+
+        // Reset form values
         reset()
+
+        // Close modal
         setOpen(false)
     }
 
@@ -107,16 +112,14 @@ const UpdateChannelNameModal: FunctionComponent<
             }
         }
 
-        // Closing modal operations
-        reset()
-        setIsLoading(false)
-        setOpen(false)
+        // Close modal
+        handleClose()
     }
 
     return (
         <Modal
             as="form"
-            onClose={onModalClose}
+            onClose={handleClose}
             size="tiny"
             dimmer="blurring"
             open={isOpen}
@@ -180,7 +183,7 @@ const UpdateChannelNameModal: FunctionComponent<
                 </Modal.Description>
             </Modal.Content>
             <Modal.Actions>
-                <Button color="red" onClick={onModalClose} disabled={isLoading}>
+                <Button color="red" onClick={handleClose} disabled={isLoading}>
                     <Icon name="remove" /> Cancel
                 </Button>
                 <Button

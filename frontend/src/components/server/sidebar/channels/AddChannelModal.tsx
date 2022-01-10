@@ -4,13 +4,13 @@ import { useForm } from 'react-hook-form'
 
 import { addNewChannel } from 'components/server/redux/channels/channels.thunk'
 
+import { BANNED_SPECIAL_CHARACTERS_REGEX } from 'constants/appConst'
 import { formatChannelName } from 'utils/channelUtil'
 
 import { Button, Dropdown, Icon, Modal } from 'semantic-ui-react'
 
 import FormInput from 'components/commons/FormInput'
 import DescMessage from 'components/commons/formDescription/DescMessage'
-import { BANNED_SPECIAL_CHARACTERS_REGEX } from 'constants/appConst'
 import { noSpecialCharMessage } from 'constants/errorMessage'
 
 interface AddChannelModalProps {
@@ -51,7 +51,7 @@ const AddChannelModal: FunctionComponent<AddChannelModalProps> = ({
         // Reset form's fields
         reset()
 
-        // Close the modal
+        // Close modal
         setLoading(false)
         setOpen(false)
     }
@@ -66,6 +66,7 @@ const AddChannelModal: FunctionComponent<AddChannelModalProps> = ({
         // Add new channel to firebase's database
         await dispatch(addNewChannel({ ...data, channelName }))
 
+        // Close modal
         handleClose()
     }
 
