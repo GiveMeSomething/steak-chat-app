@@ -14,7 +14,7 @@ import {
     getDirectChannelId
 } from 'utils/channelUtil'
 
-import ChannelDropdownLayout from '../DropdownLayout'
+import DropdownLayout from '../layout/DropdownLayout'
 import UsersDropdownItem from './UsersDropdownItem'
 
 interface UsersDropdownProps {
@@ -67,7 +67,7 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
     }
 
     return (
-        <ChannelDropdownLayout
+        <DropdownLayout
             isActive={isActive}
             setActive={setActive}
             haveAddNewOption={false}
@@ -91,7 +91,7 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
                     </div>
                 )
             })}
-        </ChannelDropdownLayout>
+        </DropdownLayout>
     )
 }
 
