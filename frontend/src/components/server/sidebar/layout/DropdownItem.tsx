@@ -16,9 +16,9 @@ import ChannelOptions from './ChannelOptions'
 interface DropdownItemProps {
     channel: ChannelInfo
     selectedChannel?: ChannelInfo
-    handleSelectChannel: (channel: ChannelInfo) => void
-    handleOpenChannelMenu: (channel: ChannelInfo) => void
-    handleCloseChannelMenu: () => void
+    selectChannel: (channel: ChannelInfo) => void
+    openMenu: (channel: ChannelInfo) => void
+    closeMenu: () => void
     isStarred: boolean
 }
 
@@ -26,15 +26,15 @@ const DropdownItem: FunctionComponent<DropdownItemProps> = ({
     channel,
     isStarred,
     selectedChannel,
-    handleSelectChannel,
-    handleOpenChannelMenu,
-    handleCloseChannelMenu
+    selectChannel,
+    openMenu,
+    closeMenu
 }) => {
     const currentChannel = useAppSelector(selectCurrentChannel)
     const notifications = useAppSelector(selectChannelNotifications)
 
     const handleItemClick = () => {
-        handleSelectChannel(channel)
+        selectChannel(channel)
     }
 
     const handleItemRightClick = (
@@ -46,7 +46,7 @@ const DropdownItem: FunctionComponent<DropdownItemProps> = ({
         // Prevent event bubbling to onClick
         event.stopPropagation()
 
-        handleOpenChannelMenu(channel)
+        openMenu(channel)
     }
 
     const handleCloseMenu = (event: React.MouseEvent<HTMLDivElement>): void => {
@@ -56,7 +56,7 @@ const DropdownItem: FunctionComponent<DropdownItemProps> = ({
         // Prevent event bubbling to onClick
         event.stopPropagation()
 
-        handleCloseChannelMenu()
+        closeMenu()
     }
 
     const createOptionButton = () => {
@@ -75,12 +75,7 @@ const DropdownItem: FunctionComponent<DropdownItemProps> = ({
                 </>
             )
         } else {
-            return (
-                <Icon
-                    name="ellipsis horizontal"
-                    onClick={handleOpenChannelMenu}
-                />
-            )
+            return <Icon name="ellipsis horizontal" onClick={openMenu} />
         }
     }
 

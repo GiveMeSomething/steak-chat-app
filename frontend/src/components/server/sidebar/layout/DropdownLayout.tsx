@@ -99,15 +99,9 @@ const DropdownLayout: FunctionComponent<DropdownLayoutProps> = ({
                                         channel={channel}
                                         isStarred={starred}
                                         selectedChannel={selectedChannel}
-                                        handleSelectChannel={
-                                            handleSelectChannel
-                                        }
-                                        handleOpenChannelMenu={
-                                            handleOpenChannelMenu
-                                        }
-                                        handleCloseChannelMenu={
-                                            handleCloseChannelMenu
-                                        }
+                                        selectChannel={handleSelectChannel}
+                                        openMenu={handleOpenChannelMenu}
+                                        closeMenu={handleCloseChannelMenu}
                                     />
                                 )
                             }))
