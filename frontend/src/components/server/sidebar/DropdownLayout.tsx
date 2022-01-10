@@ -12,7 +12,7 @@ import { setCurrentChannel } from 'components/server/redux/channels/channels.thu
 import { Accordion, Icon, Label, Popup } from 'semantic-ui-react'
 
 import ScreenOverlay from 'components/commons/overlay/ScreenOverlay'
-import ChannelOptionsDropdown from './channels/ChannelOptionsMenu'
+import ChannelOptions from './channels/ChannelOptions'
 
 interface ChannelDropdownLayoutProps {
     isActive: boolean
@@ -146,7 +146,7 @@ const ChannelDropdownLayout: FunctionComponent<ChannelDropdownLayoutProps> = ({
                                                 channel.id ? (
                                                     <>
                                                         <div className="z-20">
-                                                            <ChannelOptionsDropdown
+                                                            <ChannelOptions
                                                                 starred={
                                                                     starred
                                                                 }

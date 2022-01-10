@@ -19,7 +19,7 @@ interface ChannelOptionsProps {
     starred: boolean
     selectedChannel: Undefinable<ChannelInfo>
     isOpen: boolean
-    closeMenu: Function
+    closeMenu: (event: React.MouseEvent<HTMLDivElement>) => void
 }
 
 const ChannelOptions: FunctionComponent<ChannelOptionsProps> = ({
