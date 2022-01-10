@@ -194,17 +194,17 @@ const ChatServer: FunctionComponent<ChatServerProps> = () => {
 
         // Watch when user star channel
         const unsubscribeStarredChannel = onChildAdded(
-            STARRED_REF(currentUser?.uid),
+            child(STARRED_REF, `${currentUser?.uid}`),
             (data) => {
-                dispatch(addStarredChannel(data.val()))
+                data.key && dispatch(addStarredChannel(data.key))
             }
         )
 
         // Watch when user unstar channel
         const unsubscribeUnStarChannel = onChildRemoved(
-            STARRED_REF(currentUser?.uid),
+            child(STARRED_REF, `${currentUser?.uid}`),
             (data) => {
-                dispatch(unStarChannel(data.val()))
+                data.key && dispatch(unStarChannel(data.key))
             }
         )
 

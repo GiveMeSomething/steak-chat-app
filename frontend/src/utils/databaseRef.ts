@@ -6,8 +6,7 @@ export const DIRECT_MSG_REF = ref(database, 'direct-message')
 export const MESSAGE_COUNT_REF = ref(database, 'messageCount')
 
 // TODO: Refactor this
-export const STARRED_REF = (uid?: string) =>
-    ref(database, `starredChannels${uid ? `/${uid}` : ''}`)
+export const STARRED_REF = ref(database, 'starredChannels')
 
 export const USERS_REF = ref(database, 'users')
 export const TYPING_REF = ref(database, 'typing')

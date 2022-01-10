@@ -99,12 +99,12 @@ const channelSlice = createSlice({
                 }
             }
         },
-        addStarredChannel: (state, action) => {
+        addStarredChannel: (state, action: WithPayload<string>) => {
             if (action.payload) {
-                const starredChannelId = Object.keys(action.payload)[0]
+                const starredChannelId = action.payload
 
                 const starredChannelIndex = state.channels.findIndex(
-                    (channel) => channel.id !== starredChannelId
+                    (channel) => channel.id === starredChannelId
                 )
 
                 // Add channel to starred dropdown
@@ -113,12 +113,12 @@ const channelSlice = createSlice({
                 )
             }
         },
-        unStarChannel: (state, action) => {
+        unStarChannel: (state, action: WithPayload<string>) => {
             if (action.payload) {
-                const starredChannelId = Object.keys(action.payload)[0]
+                const starredChannelId = action.payload
 
                 const starredChannelIndex = state.starred.findIndex(
-                    (channel) => channel.id !== starredChannelId
+                    (channel) => channel.id === starredChannelId
                 )
 
                 // Add channel to channel dropdown

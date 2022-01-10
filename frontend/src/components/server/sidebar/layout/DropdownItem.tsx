@@ -59,14 +59,14 @@ const DropdownItem: FunctionComponent<DropdownItemProps> = ({
         handleCloseChannelMenu()
     }
 
-    const OptionButton: FunctionComponent<{}> = () => {
+    const createOptionButton = () => {
         if (selectedChannel && selectedChannel.id === channel.id) {
             return (
                 <>
                     <div className="z-20">
                         <ChannelOptions
                             starred={isStarred}
-                            selectedChannel={selectedChannel}
+                            selectedChannel={channel}
                             isOpen={true}
                             closeMenu={handleCloseMenu}
                         />
@@ -104,7 +104,7 @@ const DropdownItem: FunctionComponent<DropdownItemProps> = ({
             </div>
             <div className="ml-auto pr-4">
                 <div className="flex items-baseline cursor-pointer">
-                    <OptionButton />
+                    {createOptionButton()}
                 </div>
             </div>
         </div>
