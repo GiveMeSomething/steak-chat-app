@@ -1,19 +1,21 @@
 import React, { FunctionComponent } from 'react'
+import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
+import { setEditProfileOpen } from 'components/server/metaPanel/redux/metaPanel.slice'
 import { selectCurrentUser, UserInfo } from 'components/auth/redux/auth.slice'
 
 import { Button, Dropdown } from 'semantic-ui-react'
-import { useAppDispatch, useAppSelector } from 'redux/hooks'
+
+import ScreenOverlay from 'components/commons/overlay/ScreenOverlay'
 import StatusIcon from 'components/commons/StatusIcon'
-import { setEditProfileOpen } from 'components/server/metaPanel/redux/metaPanel.slice'
 
 interface UserCardProps {
     isOpen: boolean
+    isUpward: boolean
     selectedUser: UserInfo
-    openMetaPanel: Function
-    closeCard: Function
     cardStyle: string
-    upward: boolean
+    openMetaPanel: (user: UserInfo) => void
+    closeCard: (event: React.MouseEvent<any>) => void
 }
 
 const UserCard: FunctionComponent<UserCardProps> = ({
@@ -22,7 +24,7 @@ const UserCard: FunctionComponent<UserCardProps> = ({
     openMetaPanel,
     closeCard,
     cardStyle,
-    upward
+    isUpward
 }) => {
     const dispatch = useAppDispatch()
     const currentUser = useAppSelector(selectCurrentUser)
@@ -48,7 +50,7 @@ const UserCard: FunctionComponent<UserCardProps> = ({
                 icon={null}
                 id="message-user-settings"
                 open={isOpen}
-                upward={upward}
+                upward={isUpward}
                 className={cardStyle}
             >
                 <Dropdown.Menu>
@@ -127,6 +129,7 @@ const UserCard: FunctionComponent<UserCardProps> = ({
                     </div>
                 </Dropdown.Menu>
             </Dropdown>
+            <ScreenOverlay handleOnClick={closeCard} />
         </>
     )
 }

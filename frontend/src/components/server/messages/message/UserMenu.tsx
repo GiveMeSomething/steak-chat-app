@@ -11,23 +11,24 @@ import {
 } from 'utils/channelUtil'
 
 import { Dropdown } from 'semantic-ui-react'
+import ScreenOverlay from 'components/commons/overlay/ScreenOverlay'
 
 interface UserMenuProps {
     isOpen: boolean
+    isUpward: boolean
     selectedUser: UserInfo
-    openMetaPanel: Function
-    closeMenu: Function
     menuStyle: string
-    upward: boolean
+    openMetaPanel: (user: UserInfo) => void
+    closeMenu: (event: React.MouseEvent<any>) => void
 }
 
 const UserMenu: FunctionComponent<UserMenuProps> = ({
     isOpen,
+    isUpward,
     selectedUser,
-    openMetaPanel,
-    closeMenu,
     menuStyle,
-    upward
+    openMetaPanel,
+    closeMenu
 }) => {
     const dispatch = useAppDispatch()
     const currentUser = useAppSelector(selectCurrentUser)
@@ -50,7 +51,11 @@ const UserMenu: FunctionComponent<UserMenuProps> = ({
     }
 
     const directChannelId = (userId: string): string => {
-        return currentUser ? getDirectChannelId(currentUser.uid, userId) : ''
+        if (currentUser) {
+            return getDirectChannelId(currentUser.uid, userId)
+        }
+
+        return ''
     }
 
     const handleOnViewProfileClick = (
@@ -81,28 +86,31 @@ const UserMenu: FunctionComponent<UserMenuProps> = ({
     }
 
     return (
-        <Dropdown
-            icon={null}
-            id="message-user-settings"
-            open={isOpen}
-            upward={upward}
-            className={menuStyle}
-        >
-            <Dropdown.Menu>
-                <Dropdown.Item
-                    {...menuOptions.profile}
-                    onClick={handleOnViewProfileClick}
-                />
-                <Dropdown.Divider />
-                <Dropdown.Item
-                    {...menuOptions.message}
-                    onClick={handleOnMessageClick}
-                />
-                <Dropdown.Divider />
-                <Dropdown.Item {...menuOptions.copyName} />
-                <Dropdown.Item {...menuOptions.copyLink} />
-            </Dropdown.Menu>
-        </Dropdown>
+        <>
+            <Dropdown
+                icon={null}
+                id="message-user-settings"
+                open={isOpen}
+                upward={isUpward}
+                className={menuStyle}
+            >
+                <Dropdown.Menu>
+                    <Dropdown.Item
+                        {...menuOptions.profile}
+                        onClick={handleOnViewProfileClick}
+                    />
+                    <Dropdown.Divider />
+                    <Dropdown.Item
+                        {...menuOptions.message}
+                        onClick={handleOnMessageClick}
+                    />
+                    <Dropdown.Divider />
+                    <Dropdown.Item {...menuOptions.copyName} />
+                    <Dropdown.Item {...menuOptions.copyLink} />
+                </Dropdown.Menu>
+            </Dropdown>
+            <ScreenOverlay handleOnClick={closeMenu} />
+        </>
     )
 }
 
