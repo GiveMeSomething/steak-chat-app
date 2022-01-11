@@ -40,6 +40,14 @@ i .icon {
     @apply w-full h-full;
 }
 
+.flex-full {
+    @apply flex w-full;
+}
+
+.flex-center {
+    @apply items-center justify-center;
+}
+
 /* Override Semantic UI Modal styles */
 .ui.top.dimmer {
     background: none !important;

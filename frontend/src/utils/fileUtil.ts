@@ -2,7 +2,7 @@ import { ref, uploadBytesResumable, UploadMetadata } from '@firebase/storage'
 import { MAX_FILE_SIZE_BYTES } from 'constants/appConst'
 import { storage } from 'firebase/firebase'
 import { getDownloadURL } from 'firebase/storage'
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { Undefinable } from 'types/commonType'
 
 export function extractFileExt(fileName: string): string {
@@ -18,6 +18,48 @@ export function isImageValid(imageFile: File): boolean {
     }
 
     return true
+}
+
+export function useUploadPreviewImage() {
+    const [image, setImage] = useState<File>()
+    const [imageUrl, setImageUrl] = useState<Undefinable<string>>(undefined)
+    const [imageError, setImageError] = useState<Undefinable<string>>(undefined)
+
+    const startUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const reader = new FileReader()
+        const files = event.target.files
+
+        if (files) {
+            if (!isImageValid(files[0])) {
+                setImageError('Image size should not exceed 5MB')
+                return
+            }
+
+            const uploadMedia = files[0]
+            setImage(uploadMedia)
+
+            reader.readAsDataURL(uploadMedia)
+            reader.onloadend = () => {
+                if (reader.result) {
+                    setImageUrl(reader.result as string)
+                }
+            }
+        }
+    }
+
+    const resetState = () => {
+        setImage(undefined)
+        setImageUrl(undefined)
+        setImageError(undefined)
+    }
+
+    return {
+        image,
+        imageUrl,
+        imageError,
+        startUpload,
+        resetState
+    }
 }
 
 // Refs: https://firebase.google.com/docs/storage/web/upload-files#manage_uploads

@@ -2,7 +2,7 @@ import React, { FunctionComponent } from 'react'
 
 import { Button, Icon, SemanticICONS } from 'semantic-ui-react'
 
-interface SearchOptionButtonProps {
+export interface SearchOptionButtonProps {
     buttonLabel: string
     iconName: SemanticICONS
 }

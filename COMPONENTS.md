@@ -1,0 +1,54 @@
+-   [x] auth
+    -   [x] Signin
+    -   [x] Signup
+        -   [x] AuthForm
+            -   [x] FormInput
+-   [ ] server
+    -   [x] Server
+        -   [x] ChatServer
+            -   [ ] ServerLayout
+                -   [ ] navbar
+                    -   [ ] Profile Dropdown
+                    -   [ ] Search Modal
+                    -   [ ] SearchOptionButton
+                    -   [ ] ServerNavbar
+                -   [ ] sidebar
+                    -   [ ] channels
+                        -   [ ] AddChannelModal
+                        -   [ ] ChannelsDropdown
+                        -   [ ] StarredDropdown
+                    -   [ ] users
+                        -   [ ] UserDropdown
+                        -   [ ] UserDropdownItem
+                    -   [ ] layout
+                        -   [ ] DropdownLayout
+                        -   [ ] DropdownItem
+                        -   [ ] AddNewChannelButton
+                        -   [ ] ChannelOptions
+                    -   [ ] ServerSidebar
+                -   [ ] ServerMessages
+                    -   [ ] header
+                        -   [ ] MessagesHeader
+                        -   [ ] AvatarStack
+                        -   [ ] AvatarPopup
+                    -   [ ] message
+                        -   [ ] Message
+                        -   [ ] UserCard
+                        -   [ ] UserMenu
+                    -   [ ] input
+                        -   [ ] AddMediaModal
+                        -   [ ] ProgressBar
+                        -   [ ] TypingLoader
+                        -   [ ] MessageInput
+                    -   [ ] MessagePanel
+                    -   [ ] ServerMessages
+                -   [ ] MetaPanel
+                    -   [ ] modal
+                        -   [ ] AvatarCropModal
+                        -   [ ] UpdateChannelDescModal
+                        -   [ ] UpdateChannelNameModal
+                        -   [ ] UpdateProfileModal
+                    -   [ ] panel
+                        -   [ ] ChannelDetailModal
+                        -   [ ] UserDetailModal
+                    -   [ ] MetaPanel

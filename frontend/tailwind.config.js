@@ -3,9 +3,7 @@ const aspectRatio = require('@tailwindcss/aspect-ratio')
 
 module.exports = {
     important: true,
-    mode: 'jit',
     purge: ['./src/**/*.tsx'],
-    darkMode: false, // or 'media' or 'class'
     theme: {
         colors: {
             transparent: 'transparent',

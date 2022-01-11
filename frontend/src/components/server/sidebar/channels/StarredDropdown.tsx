@@ -3,7 +3,7 @@ import { useAppSelector } from 'redux/hooks'
 
 import { selectStarredChannels } from 'components/server/redux/channels/channels.slice'
 
-import ChannelDropdownLayout from '../DropdownLayout'
+import DropdownLayout from '../layout/DropdownLayout'
 
 interface StarredDropdownProps {
     isActive: boolean
@@ -17,7 +17,7 @@ const StarredDropdown: FunctionComponent<StarredDropdownProps> = ({
     const starredChannel = useAppSelector(selectStarredChannels)
 
     return (
-        <ChannelDropdownLayout
+        <DropdownLayout
             isActive={isActive}
             setActive={setActive}
             haveAddNewOption={false}

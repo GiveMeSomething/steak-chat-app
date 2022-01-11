@@ -4,12 +4,14 @@ import { useForm } from 'react-hook-form'
 
 import { addNewChannel } from 'components/server/redux/channels/channels.thunk'
 
+import { BANNED_SPECIAL_CHARACTERS_REGEX } from 'constants/appConst'
 import { formatChannelName } from 'utils/channelUtil'
 
 import { Button, Dropdown, Icon, Modal } from 'semantic-ui-react'
 
 import FormInput from 'components/commons/FormInput'
 import DescMessage from 'components/commons/formDescription/DescMessage'
+import { noSpecialCharMessage } from 'constants/errorMessage'
 
 interface AddChannelModalProps {
     isOpen: boolean
@@ -44,11 +46,12 @@ const AddChannelModal: FunctionComponent<AddChannelModalProps> = ({
     }, [isOpen])
 
     const handleClose = () => {
-        // Reset form state
+        // Clear form's errors
         clearErrors()
+        // Reset form's fields
         reset()
 
-        // Close the modal
+        // Close modal
         setLoading(false)
         setOpen(false)
     }
@@ -61,8 +64,9 @@ const AddChannelModal: FunctionComponent<AddChannelModalProps> = ({
         const channelName = formatChannelName(data.channelName)
 
         // Add new channel to firebase's database
-        await dispatch(addNewChannel({ ...data, channelName: channelName }))
+        await dispatch(addNewChannel({ ...data, channelName }))
 
+        // Close modal
         handleClose()
     }
 
@@ -93,12 +97,30 @@ const AddChannelModal: FunctionComponent<AddChannelModalProps> = ({
                                     value: 6,
                                     message:
                                         'Channel name must be longer than 6 characters'
+                                },
+                                maxLength: {
+                                    value: 80,
+                                    message:
+                                        'Channel name must not exceeds 80 characters'
+                                },
+                                validate: {
+                                    noSpecialChar: (value: string) =>
+                                        !value.match(
+                                            BANNED_SPECIAL_CHARACTERS_REGEX
+                                        )
                                 }
                             })}
                             label="Channel Name"
                             type="text"
                             autoComplete="off"
                         />
+                        {errors.channelName &&
+                            errors.channelName.type === 'noSpecialChar' && (
+                                <DescMessage
+                                    error
+                                    message={noSpecialCharMessage}
+                                />
+                            )}
                         {errors.channelName && (
                             <DescMessage
                                 error

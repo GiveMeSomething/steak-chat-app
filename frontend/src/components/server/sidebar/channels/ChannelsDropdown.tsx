@@ -4,7 +4,7 @@ import { useAppSelector } from 'redux/hooks'
 import { selectChannels } from 'components/server/redux/channels/channels.slice'
 
 import AddChannelModal from './AddChannelModal'
-import ChannelDropdownLayout from '../DropdownLayout'
+import DropdownLayout from '../layout/DropdownLayout'
 
 interface ChannelsDropdownProps {
     isActive: boolean
@@ -29,7 +29,7 @@ const ChannelsDropdown: FunctionComponent<ChannelsDropdownProps> = ({
 
     return (
         <>
-            <ChannelDropdownLayout
+            <DropdownLayout
                 isActive={isActive}
                 setActive={setActive}
                 haveAddNewOption={true}

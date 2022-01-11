@@ -14,7 +14,7 @@ import {
     getDirectChannelId
 } from 'utils/channelUtil'
 
-import ChannelDropdownLayout from '../DropdownLayout'
+import DropdownLayout from '../layout/DropdownLayout'
 import UsersDropdownItem from './UsersDropdownItem'
 
 interface UsersDropdownProps {
@@ -32,7 +32,7 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
     const channelUsers = useAppSelector(selectChannelUsers)
     const currentChannel = useAppSelector(selectCurrentChannel)
 
-    const directChannelId = (userId: string) => {
+    const directChannelId = (userId: string): string => {
         if (currentUser) {
             return getDirectChannelId(currentUser.uid, userId)
         }
@@ -42,15 +42,11 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
 
     // Check selected direct channel to highlight it in UI
     const isCurrentUserActive = (userId: string): boolean => {
-        if (currentChannel.id === directChannelId(userId)) {
-            return true
-        }
-
-        return false
+        return currentChannel.id === directChannelId(userId)
     }
 
     // Change currentChannel and switch to directChannel mode
-    const handleOnChannelUserClick = (user: UserInfo) => {
+    const handleOnChannelUserClick = (user: UserInfo): void => {
         if (currentUser) {
             const channelId = directChannelId(user.uid)
 
@@ -71,12 +67,12 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
     }
 
     return (
-        <ChannelDropdownLayout
+        <DropdownLayout
             isActive={isActive}
             setActive={setActive}
             haveAddNewOption={false}
             haveContextMenu={false}
-            label="Channels"
+            label="Users"
             starred={false}
         >
             {Object.values(channelUsers).map((user) => {
@@ -91,14 +87,11 @@ const UsersDropdown: FunctionComponent<UsersDropdownProps> = ({
                         key={user.uid}
                         onClick={() => handleOnChannelUserClick(user)}
                     >
-                        <UsersDropdownItem
-                            user={user}
-                            currentUser={currentUser}
-                        />
+                        <UsersDropdownItem user={user} />
                     </div>
                 )
             })}
-        </ChannelDropdownLayout>
+        </DropdownLayout>
     )
 }
 

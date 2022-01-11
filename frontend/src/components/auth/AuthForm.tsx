@@ -9,12 +9,14 @@ import { getAuth, onAuthStateChanged } from '@firebase/auth'
 import { removeUserError } from './redux/auth.slice'
 import { signup, signin } from './redux/auth.thunk'
 
+import { Undefinable } from 'types/commonType'
+
 import DescMessage from 'components/commons/formDescription/DescMessage'
 import FormInput from './FormInput'
 
 interface AuthFormProps {
     label: string
-    submitLabel: string
+    submitButtonLabel: string
     action: 'signin' | 'signup'
 }
 
@@ -23,12 +25,15 @@ interface FormValues {
     password: string
 }
 
-const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
-    const [willBeRedirect, setWillBeDirect] = useState<boolean>(false)
+const AuthForm: FunctionComponent<AuthFormProps> = ({
+    label,
+    submitButtonLabel,
+    action
+}) => {
+    const [needRedirect, setRedirect] = useState<boolean>(false)
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [requestError, setError] = useState<string>('')
+    const [requestError, setRequestError] = useState<Undefinable<string>>()
 
-    // react-hook-form setup
     const {
         register,
         handleSubmit,
@@ -37,116 +42,122 @@ const AuthForm: FunctionComponent<AuthFormProps> = (props: AuthFormProps) => {
     } = useForm<FormValues>()
 
     const dispatch = useAppDispatch()
-
     const auth = getAuth(firebaseApp)
 
-    // Set focus to input onload
     useEffect(() => {
-        // Listen to auth changed to redirect to servers page
+        // Focus on 'email' input onload
         setFocus('email')
 
-        const unsubscribe = onAuthStateChanged(auth, (user) => {
-            if (user) {
-                setWillBeDirect(true)
-            }
+        // Listen to auth changed to redirect to servers page
+        const unsubscribeAuthStateChanged = onAuthStateChanged(auth, (user) => {
+            user && setRedirect(true)
         })
 
-        return () => unsubscribe()
+        // Unsubscribe on component unmount
+        return () => unsubscribeAuthStateChanged()
     }, [])
 
+    // Dispatch action based on 'action' passed in
+    const authenticateUser = async (userCredentials: FormValues) => {
+        let currentUser
+        if (action === 'signup') {
+            currentUser = await dispatch(signup(userCredentials)).unwrap()
+        } else {
+            currentUser = await dispatch(signin(userCredentials)).unwrap()
+        }
+
+        // Remove errors when finish authenticating
+        currentUser && dispatch(removeUserError)
+    }
+
+    const setMessageByError = (error: any) => {
+        // TODO: Maybe build a custom message generator based on FirebaseError
+        // If not FirebaseError => assume it's network issue
+        if (error.message) {
+            setRequestError(error.message)
+        } else {
+            setRequestError('Service unavailable. Please try again later')
+        }
+    }
+
     const onSubmit = async (data: FormValues) => {
-        // Diable Signin/signup button
+        // Disable 'Signin' or 'Signup' button
         setIsLoading(true)
 
-        // Run handle submit based on props.action passed from parents
         try {
-            let user
-            if (props.action === 'signup') {
-                user = await dispatch(signup(data)).unwrap()
-            } else {
-                user = await dispatch(signin(data)).unwrap()
-            }
-
-            if (user) {
-                // Remove last user-related error (wrong-password, user-not-found, etc...)
-                dispatch(removeUserError)
-            }
+            await authenticateUser(data)
         } catch (error: any) {
-            // If not Firebase Authentication Error => assume it's network issue
-            if (error.message) {
-                setError(error.message)
-            } else {
-                setError('Service unavailable. Please try again later')
-            }
+            setMessageByError(error)
         } finally {
-            // Enable the Signin/signup button
+            // Enable 'Signin' or 'Signup' button whatever the result
             setIsLoading(false)
         }
     }
 
-    if (willBeRedirect) {
+    // Use react-router to redirect to 'servers' page when use logged in
+    if (needRedirect) {
         return <Redirect to="/servers" />
     }
 
     return (
         <form
             onSubmit={handleSubmit(onSubmit)}
-            className="flex flex-col items-center justify-center w-full min-h-full"
+            className="flex-full flex-center flex-col min-h-full"
         >
-            <div className="flex justify-center items-center">
-                <h1 className="text-6xl lg:text-9xl capitalize">
-                    {props.label}
-                </h1>
-            </div>
-            <div className="container text-xl m-2 flex flex-col items-start justify-start">
+            <h1 className="text-6xl lg:text-9xl capitalize">{label}</h1>
+            <div className="container my-2">
                 <div className="bg-white w-full h-full">
-                    <div className="flex flex-col items-start justify-start p-2 w-full">
-                        <FormInput
-                            {...register('email', {
-                                required: 'Email is required',
-                                pattern: {
-                                    value: /^[^@]+@[^@]+\.[^@]+$/,
-                                    message: 'Invalid email address'
-                                }
-                            })}
-                            label="email"
-                            type="text"
+                    <FormInput
+                        {...register('email', {
+                            required: 'Email is required',
+                            pattern: {
+                                value: /^[^@]+@[^@]+\.[^@]+$/,
+                                message: 'Invalid email address'
+                            }
+                        })}
+                        label="email"
+                        inputType="text"
+                        className="mt-4"
+                    />
+                    {errors.email && (
+                        <DescMessage
+                            error
+                            message={errors.email.message}
+                            className="px-4 mt-1"
                         />
-                        {errors.email && (
-                            <DescMessage error message={errors.email.message} />
-                        )}
-                    </div>
-                    <div className="flex flex-col items-start justify-start p-2 w-full">
-                        <FormInput
-                            {...register('password', {
-                                required: 'Password is required',
-                                minLength: {
-                                    value: 6,
-                                    message:
-                                        'Password should be at least 6 characters'
-                                }
-                            })}
-                            label="password"
-                            type="password"
+                    )}
+
+                    <FormInput
+                        {...register('password', {
+                            required: 'Password is required'
+                        })}
+                        label="password"
+                        inputType="password"
+                        className="mt-4"
+                    />
+                    {errors.password && (
+                        <DescMessage
+                            error
+                            message={errors.password.message}
+                            className="px-4 mt-1"
                         />
-                        {errors.password && (
-                            <DescMessage
-                                error
-                                message={errors.password.message}
-                            />
-                        )}
-                    </div>
-                    <div className="flex flex-col items-center justify-center w-full mt-8">
+                    )}
+
+                    {requestError && (
+                        <div className="flex justify-center">
+                            <DescMessage error message={requestError} />
+                        </div>
+                    )}
+                    <div className="flex-full flex-center mt-8">
                         <button
                             type="submit"
-                            className="px-10 py-2 rounded-full uppercase text-white bg-fresh-2-500 hover:bg-yellow-700 cursor-pointer disabled:opacity-50"
+                            className="px-10 py-2 rounded-full bg-yellow-500 hover:bg-yellow-600 cursor-pointer disabled:opacity-50"
                             disabled={isLoading}
                         >
-                            {props.submitLabel}
+                            <div className="uppercase text-white text-xl">
+                                {submitButtonLabel}
+                            </div>
                         </button>
-                        {requestError && (
-                            <DescMessage error message={requestError} />
-                        )}
                     </div>
                 </div>
             </div>

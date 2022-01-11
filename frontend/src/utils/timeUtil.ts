@@ -12,7 +12,9 @@ export function getDateString(time: number): string {
     } else if (diffDay === 1 && diffMonth === 0 && diffYear === 0) {
         return 'Yesterday at '
     } else {
-        return `${messageTime.getDate()}/${messageTime.getMonth()}/${messageTime.getFullYear()} at `
+        return `${messageTime.getDate()}/${
+            messageTime.getMonth() + 1
+        }/${messageTime.getFullYear()}`
     }
 }
 

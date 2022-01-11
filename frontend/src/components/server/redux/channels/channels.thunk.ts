@@ -1,5 +1,5 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { set, ref, remove, update, get } from 'firebase/database'
+import { set, ref, remove, update, get, child } from 'firebase/database'
 import { database } from 'firebase/firebase'
 import { v4 as uuid } from 'uuid'
 import { ThunkState, IdAsKeyObject, Undefinable } from 'types/commonType'
@@ -13,7 +13,7 @@ import {
     ChannelInfoPayload,
     UpdateChannelInfoPayload
 } from './channels.slice'
-import { MESSAGE_COUNT_REF } from 'utils/databaseRef'
+import { MESSAGE_COUNT_REF, STARRED_REF } from 'utils/databaseRef'
 import { UserInfo } from 'components/auth/redux/auth.slice'
 
 const addChannel = async ({ id, name, desc, createdBy }: ChannelInfo) => {
@@ -72,14 +72,15 @@ export const starSelectedChannel = createAsyncThunk<
     const appState = getState()
     const currentUser = appState.user.user
 
-    // Save starred channel to starredChannels with userId as key
-    const starredChannelRef = ref(
-        database,
-        `starredChannels/${currentUser?.uid}`
-    )
-    await set(starredChannelRef, {
-        [channelInfo.id]: true
-    })
+    if (currentUser) {
+        // Save starred channel to starredChannels with userId as key
+        const starredChannelRef = child(
+            STARRED_REF,
+            `${currentUser.uid}/${channelInfo.id}`
+        )
+
+        await set(starredChannelRef, true)
+    }
 })
 
 export const unStarSelectedChannel = createAsyncThunk<
@@ -90,12 +91,14 @@ export const unStarSelectedChannel = createAsyncThunk<
     const appState = getState()
     const currentUser = appState.user.user
 
-    // Remove starred channel
-    const starredChannelRef = ref(
-        database,
-        `starredChannels/${channelInfo.id}/${currentUser?.uid}`
-    )
-    await remove(starredChannelRef)
+    if (currentUser) {
+        // Remove starred channel
+        const starredChannelRef = child(
+            STARRED_REF,
+            `${currentUser.uid}/${channelInfo.id}`
+        )
+        await remove(starredChannelRef)
+    }
 })
 
 export const updateChannelName = createAsyncThunk<

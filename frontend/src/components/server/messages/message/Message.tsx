@@ -12,7 +12,6 @@ import { getDateString, getTimeString } from 'utils/timeUtil'
 import { CARD_HEIGHT, MENU_HEIGHT } from 'constants/appConst'
 import { Undefinable } from 'types/commonType'
 
-import ScreenOverlay from 'components/commons/overlay/ScreenOverlay'
 import UserMenu from './UserMenu'
 import UserCard from './UserCard'
 
@@ -21,6 +20,10 @@ interface MessageComponentProps {
     timestamp?: object
     media?: string
     createdBy: UserInfo
+}
+
+interface ClickMenuProp {
+    component: ClickableComponent
 }
 
 type ClickableComponent = 'avatar' | 'username'
@@ -51,11 +54,11 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
     // So we need to manually cast to number
     const serverTime = timestamp as unknown as number
 
-    const messageTime = `${getDateString(serverTime)}${getTimeString(
+    const messageTime = `${getDateString(serverTime)} at ${getTimeString(
         serverTime
     )}`
 
-    const menuStyle = (): string => {
+    const getMenuStyle = (): string => {
         if (selectedComponent === 'username') {
             return 'z-20 -top-6 -left-6'
         } else {
@@ -144,40 +147,36 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
         setIsCardOpen(false)
     }
 
-    const menuWithOverlay = () => {
-        return (
-            selectedUser && (
-                <>
+    // To skip passing a lot of through one more component
+    const ClickMenu: FunctionComponent<ClickMenuProp> = ({ component }) => {
+        if (selectedUser) {
+            if (shouldMenuShowHere(component)) {
+                return (
                     <UserMenu
                         isOpen={isMenuOpen}
+                        isUpward={isComponentUpward}
                         selectedUser={selectedUser}
+                        menuStyle={getMenuStyle()}
                         openMetaPanel={handleOpenUserMetaPanel}
                         closeMenu={handleCloseMenu}
-                        menuStyle={menuStyle()}
-                        upward={isComponentUpward}
                     />
-                    <ScreenOverlay handleOnClick={handleCloseMenu} />
-                </>
-            )
-        )
-    }
+                )
+            }
 
-    const cardWithOverlay = () => {
-        return (
-            selectedUser && (
-                <>
+            if (shouldCardShowHere(component)) {
+                return (
                     <UserCard
                         isOpen={isCardOpen}
+                        isUpward={isComponentUpward}
                         selectedUser={selectedUser}
+                        cardStyle={getMenuStyle()}
                         openMetaPanel={handleOpenUserMetaPanel}
                         closeCard={handleCloseMenu}
-                        cardStyle={menuStyle()}
-                        upward={isComponentUpward}
                     />
-                    <ScreenOverlay handleOnClick={handleCloseMenu} />
-                </>
-            )
-        )
+                )
+            }
+        }
+        return null
     }
 
     return (
@@ -190,21 +189,21 @@ const MessageComponent: FunctionComponent<MessageComponentProps> = ({
                     src={createdBy.photoUrl}
                     alt="avt"
                     className="rounded-md h-12 w-12 cursor-pointer"
-                    onMouseUp={(e) => handleComponentClick(e, 'avatar')}
+                    onMouseUp={(event) => handleComponentClick(event, 'avatar')}
                 />
-                {shouldCardShowHere('avatar') && cardWithOverlay()}
-                {shouldMenuShowHere('avatar') && menuWithOverlay()}
+                <ClickMenu component="avatar" />
             </span>
             <div className="ml-4">
                 <div className="flex items-baseline pb-1">
                     <h3
                         className="font-bold hover:underline cursor-pointer"
-                        onMouseDown={(e) => handleComponentClick(e, 'username')}
+                        onMouseDown={(event) =>
+                            handleComponentClick(event, 'username')
+                        }
                     >
                         {createdBy.username}
                     </h3>
-                    {shouldCardShowHere('username') && cardWithOverlay()}
-                    {shouldMenuShowHere('username') && menuWithOverlay()}
+                    <ClickMenu component="username" />
                     <h5 className="text-slack-text-blur px-2">{messageTime}</h5>
                 </div>
                 {content && <h5 className="text-lg">{content}</h5>}

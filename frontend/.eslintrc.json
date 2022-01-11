@@ -25,17 +25,17 @@
     "rules": {
         // note you must disable the base rule as it can report incorrect errors
         "indent": "off",
-        "@typescript-eslint/indent": "off",
-        "comma-dangle": "off",
         "no-use-before-define": "off",
-        "@typescript-eslint/no-use-before-define": 1,
-        "space-before-function-paren": "off",
+        "no-unused-vars": "off",
+        "@typescript-eslint/indent": "off",
+        "@typescript-eslint/no-use-before-define": "warn",
+        "@typescript-eslint/no-unused-vars": "warn",
         "react/display-name": "off",
         "react/prop-types": "off",
-        "react/no-unescaped-entities": [1],
-        "no-unused-vars": "off",
-        "@typescript-eslint/no-unused-vars": "error",
+        "react/no-unescaped-entities": "off",
+        "comma-dangle": "off",
+        "space-before-function-paren": "off",
         "multiline-ternary": "off",
-        "no-console": "error"
+        "no-console": "warn"
     }
 }

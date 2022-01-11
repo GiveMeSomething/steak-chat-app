@@ -1,8 +1,8 @@
 import React, { FunctionComponent, Suspense, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
-import { UserInfo } from 'components/auth/redux/auth.slice'
 import { ChannelInfo } from 'components/server/redux/channels/channels.slice'
+import { UserInfo } from 'components/auth/redux/auth.slice'
 import {
     selectMetaPanelCurrentData,
     setMetaPanelOpen,
@@ -12,6 +12,7 @@ import {
 import { Undefinable } from 'types/commonType'
 
 import { Button } from 'semantic-ui-react'
+
 import LoadingOverlay from 'components/commons/overlay/LoadingOverlay'
 
 const ChannelDetailPanel = React.lazy(
@@ -55,7 +56,7 @@ const MetaPanel: FunctionComponent<MetaPanelProps> = () => {
         }
     }, [currentMetaPanelData])
 
-    const handleOnCloseClick = () => {
+    const handleClose = () => {
         dispatch(setMetaPanelOpen(false))
 
         dispatch(clearCurrentMetaPanelData())
@@ -94,7 +95,7 @@ const MetaPanel: FunctionComponent<MetaPanelProps> = () => {
                         color="red"
                         id="custom-no-outline-button"
                         size="tiny"
-                        onClick={handleOnCloseClick}
+                        onClick={handleClose}
                     />
                 </div>
                 <div

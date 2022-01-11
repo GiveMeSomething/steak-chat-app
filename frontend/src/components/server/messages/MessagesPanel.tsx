@@ -1,18 +1,18 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react'
 import { useAppSelector } from 'redux/hooks'
 
+import { selectCurrentChannel } from '../redux/channels/channels.slice'
+import { selectChannelUsers } from '../redux/users/users.slice'
+import { UserInfo } from 'components/auth/redux/auth.slice'
 import {
     Message,
     selectIsSearching,
     selectMessages,
     selectSearchMessages
 } from 'components/server/redux/messages/messages.slice'
-import { selectChannelUsers } from '../redux/users/users.slice'
-import { selectCurrentChannel } from '../redux/channels/channels.slice'
-import { UserInfo } from 'components/auth/redux/auth.slice'
 
-import MessageComponent from './message/Message'
 import LoadingOverlay from 'components/commons/overlay/LoadingOverlay'
+import MessageComponent from './message/Message'
 
 interface MessagePanelProps {}
 
@@ -58,13 +58,17 @@ const MessagesPanel: FunctionComponent<MessagePanelProps> = () => {
 
         const creator = usersMap.get(createdBy.uid)
 
-        return creator ? (
-            <MessageComponent
-                {...messageInfo}
-                key={messageInfo.id}
-                createdBy={creator}
-            />
-        ) : null
+        if (creator) {
+            return (
+                <MessageComponent
+                    {...messageInfo}
+                    key={messageInfo.id}
+                    createdBy={creator}
+                />
+            )
+        }
+
+        return null
     }
 
     // Display messages based on searchMessages and messages
@@ -72,6 +76,7 @@ const MessagesPanel: FunctionComponent<MessagePanelProps> = () => {
         if (!currentChannel.id || currentChannel.id === '') {
             return <h3>Create your first channel to start messaging</h3>
         }
+
         if (isSearching) {
             if (searchMessages.length > 0) {
                 return searchMessages.map((message) =>

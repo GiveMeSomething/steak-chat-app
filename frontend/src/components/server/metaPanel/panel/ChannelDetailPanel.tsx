@@ -12,6 +12,7 @@ import {
     Icon,
     Segment
 } from 'semantic-ui-react'
+
 import LoadingOverlay from 'components/commons/overlay/LoadingOverlay'
 
 const UpdateChannelDescModal = React.lazy(
@@ -44,10 +45,11 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
         }
     }, [startIndex])
 
-    const handleClick = (
+    // Change between tab operations
+    const handleTabClick = (
         event: React.MouseEvent<HTMLDivElement, MouseEvent>,
         titleProps: AccordionTitleProps
-    ) => {
+    ): void => {
         event.stopPropagation()
 
         const { index } = titleProps
@@ -77,7 +79,7 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
                 <Accordion.Title
                     active={activeIndex === 0}
                     index={0}
-                    onClick={handleClick}
+                    onClick={handleTabClick}
                 >
                     <Icon name="dropdown" />
                     <Icon name="info circle" />
@@ -146,7 +148,7 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
                 <Accordion.Title
                     active={activeIndex === 1}
                     index={1}
-                    onClick={handleClick}
+                    onClick={handleTabClick}
                 >
                     <Icon name="dropdown" />
                     <Icon name="edit" />
@@ -186,7 +188,7 @@ const ChannelDetailPanel: FunctionComponent<ChannelDetailPanelProps> = ({
                 <Accordion.Title
                     active={activeIndex === 2}
                     index={2}
-                    onClick={handleClick}
+                    onClick={handleTabClick}
                 >
                     <Icon name="dropdown" />
                     <Icon name="setting" />

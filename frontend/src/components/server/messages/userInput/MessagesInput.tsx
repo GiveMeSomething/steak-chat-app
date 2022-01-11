@@ -59,6 +59,7 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
         if (numberOfTyper === 1) {
             result = Object.values(typers)[0]
         } else {
+            // Construct message string based on numbers of typers
             result = Object.values(typers).reduce(
                 (previousValue, currentValue, currentIndex) => {
                     if (currentIndex === 0) {
@@ -76,14 +77,13 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
     }
 
     const isAnyTypers = () => {
-        const currentTypersId = Object.keys(typers)
         if (currentUser) {
             // Not showing on currentUser typing
-            if (Object.keys(typers)[0] === currentUser.uid) {
-                return currentTypersId.length > 1
+            if (typers[currentUser.uid]) {
+                return Object.keys(typers).length > 1
             }
 
-            return currentTypersId.length > 0
+            return Object.keys(typers).length > 0
         }
 
         return false
@@ -125,7 +125,8 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
         setAddMediaModalOpen(true)
     }
 
-    const handleInputKeyup = () => {
+    // Track user's inputing status, then update to database
+    const handleUserInputBehavior = () => {
         if (!currentUser) {
             return
         }
@@ -199,7 +200,7 @@ const MessagesInput: FunctionComponent<MessagesInputProps> = () => {
                             {...register('message')}
                             className="w-full"
                             autoComplete="off"
-                            onKeyUp={handleInputKeyup}
+                            onKeyUp={handleUserInputBehavior}
                         />
                     </Input>
                     <div>

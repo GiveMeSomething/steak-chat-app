@@ -1,14 +1,14 @@
 import React, { FunctionComponent } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
-import { selectCurrentUser } from 'components/auth/redux/auth.slice'
-import { signout } from 'components/auth/redux/auth.thunk'
-
-import { Dropdown } from 'semantic-ui-react'
 import {
     setCurrentMetaPanelData,
     setMetaPanelOpen
 } from '../metaPanel/redux/metaPanel.slice'
+import { selectCurrentUser } from 'components/auth/redux/auth.slice'
+import { signout } from 'components/auth/redux/auth.thunk'
+
+import { Dropdown } from 'semantic-ui-react'
 
 interface ProfileDropdownProps {}
 
