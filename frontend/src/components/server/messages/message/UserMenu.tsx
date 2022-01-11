@@ -11,6 +11,7 @@ import {
 } from 'utils/channelUtil'
 
 import { Dropdown } from 'semantic-ui-react'
+
 import ScreenOverlay from 'components/commons/overlay/ScreenOverlay'
 
 interface UserMenuProps {
