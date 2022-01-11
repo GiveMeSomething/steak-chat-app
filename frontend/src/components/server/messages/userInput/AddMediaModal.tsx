@@ -4,8 +4,11 @@ import { useForm } from 'react-hook-form'
 
 import { sendMessage } from 'components/server/redux/messages/messages.thunk'
 
-import { extractFileExt, isImageValid, useUploadFile } from 'utils/fileUtil'
-import { Undefinable } from 'types/commonType'
+import {
+    extractFileExt,
+    useUploadFile,
+    useUploadPreviewImage
+} from 'utils/fileUtil'
 import { v4 as uuid } from 'uuid'
 
 import { Modal, Button, Icon } from 'semantic-ui-react'
@@ -31,12 +34,14 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
 }) => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
-    const [userMedia, setUserMedia] = useState<File>()
-    const [mediaUrl, setMediaUrl] = useState<Undefinable<string>>(undefined)
-    const [imageError, setImageError] = useState<Undefinable<string>>(undefined)
-
     const { handleSubmit, register, reset, setFocus, setValue } =
         useForm<FormValues>()
+
+    const { image, imageUrl, imageError, ...previewUploader } =
+        useUploadPreviewImage()
+
+    const { uploadState, uploadProgress, uploadError, ...fileUploader } =
+        useUploadFile()
 
     const dispatch = useAppDispatch()
 
@@ -47,42 +52,25 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
         }
     }, [isOpen])
 
-    const { startUpload, uploadState, uploadProgress, uploadError } =
-        useUploadFile()
-
     // This will show a preview before pushing the userMedia to Firebase Database
     const uploadFileToPreview = (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
-        const reader = new FileReader()
-        const files = event.target.files
-
-        if (files) {
-            if (!isImageValid(files[0])) {
-                setImageError('Image size should not exceed 5MB')
-                return
-            }
-
-            const userUploadMedia = files[0]
-
-            setUserMedia(userUploadMedia)
-
-            reader.readAsDataURL(userUploadMedia)
-            reader.onloadend = () => {
-                if (reader.result) {
-                    setMediaUrl(reader.result as string)
-                }
-            }
-        }
+        previewUploader.startUpload(event)
     }
 
     const handleClose = () => {
         // Set modal state back to intial state
         setIsLoading(false)
-        setMediaUrl(undefined)
 
         // Reset form values
         reset()
+
+        // Reset imagePreviewUpload hook
+        previewUploader.resetState()
+
+        // Reset imageUpload hook
+        fileUploader.resetState()
 
         // Close modal
         setOpen(false)
@@ -103,10 +91,10 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
             handleClose()
         }
 
-        if (userMedia) {
-            await startUpload(
-                userMedia,
-                `chat/public/${uuid()}.${extractFileExt(userMedia.name)}`,
+        if (image) {
+            await fileUploader.startUpload(
+                image,
+                `chat/public/${uuid()}.${extractFileExt(image.name)}`,
                 onUploadFinish
             )
         }
@@ -128,8 +116,8 @@ const AddMediaModal: FunctionComponent<AddMediaModalProps> = ({
                 {
                     // Show preview image if user upload valid image
                     // Else show upload image option
-                    mediaUrl && userMedia ? (
-                        <img src={mediaUrl} className="max-h-40" />
+                    imageUrl ? (
+                        <img src={imageUrl} className="max-h-40" />
                     ) : (
                         <div className="flex flex-col items-center justify-center bg-slack-sidebar-blur py-10">
                             <label
