@@ -1,9 +1,10 @@
-import { selectCurrentUser, UserInfo } from 'components/auth/redux/auth.slice'
 import React, { FunctionComponent } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 
 import { setIsDirectChannel } from 'components/server/redux/channels/channels.slice'
 import { setCurrentChannel } from 'components/server/redux/channels/channels.thunk'
+import { selectCurrentUser, UserInfo } from 'components/auth/redux/auth.slice'
+import { setEditProfileOpen } from '../redux/metaPanel.slice'
 
 import { UserStatus } from 'types/appEnum'
 import {
@@ -12,7 +13,6 @@ import {
 } from 'utils/channelUtil'
 
 import { Button, Icon } from 'semantic-ui-react'
-import { setEditProfileOpen } from '../redux/metaPanel.slice'
 
 interface UserDetailPanelProps {
     data: UserInfo
