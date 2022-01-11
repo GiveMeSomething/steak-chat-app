@@ -15,18 +15,22 @@
                 -   [ ] sidebar
                     -   [ ] channels
                         -   [ ] AddChannelModal
-                        -   [ ] ChannelsOptionsMenu
                         -   [ ] ChannelsDropdown
                         -   [ ] StarredDropdown
                     -   [ ] users
                         -   [ ] UserDropdown
                         -   [ ] UserDropdownItem
-                    -   [ ] DropdownLayout
+                    -   [ ] layout
+                        -   [ ] DropdownLayout
+                        -   [ ] DropdownItem
+                        -   [ ] AddNewChannelButton
+                        -   [ ] ChannelOptions
                     -   [ ] ServerSidebar
                 -   [ ] ServerMessages
                     -   [ ] header
                         -   [ ] MessagesHeader
                         -   [ ] AvatarStack
+                        -   [ ] AvatarPopup
                     -   [ ] message
                         -   [ ] Message
                         -   [ ] UserCard

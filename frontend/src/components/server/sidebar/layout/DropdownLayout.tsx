@@ -15,7 +15,7 @@ import { setCurrentChannel } from 'components/server/redux/channels/channels.thu
 
 import { Accordion, Icon } from 'semantic-ui-react'
 
-import AddNewButton from './AddNewButton'
+import AddNewChannelButton from './AddNewChannelButton'
 import DropdownItem from './DropdownItem'
 
 interface DropdownLayoutProps {
@@ -83,7 +83,7 @@ const DropdownLayout: FunctionComponent<DropdownLayoutProps> = ({
                         <h4>{label}</h4>
                     </div>
                     {haveAddNewOption && (
-                        <AddNewButton onAddClick={onAddClick} />
+                        <AddNewChannelButton onAddClick={onAddClick} />
                     )}
                 </div>
             </Accordion.Title>

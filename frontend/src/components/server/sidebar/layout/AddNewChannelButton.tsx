@@ -1,11 +1,13 @@
 import React, { FunctionComponent, MouseEventHandler } from 'react'
 import { Popup } from 'semantic-ui-react'
 
-interface AddNewButtonProps {
+interface AddNewChannelButtonProps {
     onAddClick?: MouseEventHandler<HTMLDivElement>
 }
 
-const AddNewButton: FunctionComponent<AddNewButtonProps> = ({ onAddClick }) => {
+const AddNewChannelButton: FunctionComponent<AddNewChannelButtonProps> = ({
+    onAddClick
+}) => {
     return (
         <Popup
             content="Add new channel"
@@ -21,4 +23,4 @@ const AddNewButton: FunctionComponent<AddNewButtonProps> = ({ onAddClick }) => {
     )
 }
 
-export default AddNewButton
+export default AddNewChannelButton
