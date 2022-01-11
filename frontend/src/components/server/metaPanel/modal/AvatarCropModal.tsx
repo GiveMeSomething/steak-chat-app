@@ -1,10 +1,4 @@
-import React, {
-    FunctionComponent,
-    useCallback,
-    useEffect,
-    useRef,
-    useState
-} from 'react'
+import React, { FunctionComponent, useEffect, useRef, useState } from 'react'
 import { useAppDispatch, useAppSelector } from 'redux/hooks'
 import { useForm } from 'react-hook-form'
 
@@ -25,15 +19,15 @@ import ProgressBar from 'components/server/messages/userInput/ProgressBar'
 
 interface AvatarCropModalProps {
     isOpen: boolean
-    setOpen: React.Dispatch<React.SetStateAction<boolean>>
     imageSrc: string
-    onAvatarCropClose: Function
+    setOpen: React.Dispatch<React.SetStateAction<boolean>>
+    onAvatarCropClose: () => void
 }
 
 const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
     isOpen,
-    setOpen,
     imageSrc,
+    setOpen,
     onAvatarCropClose
 }) => {
     const imageRef = useRef<HTMLImageElement | null>(null)
@@ -107,7 +101,7 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
         height: 128
     }
 
-    const onModalClose = () => {
+    const handleClose = (): void => {
         setIsLoading(false)
 
         setCrop(cropSetting)
@@ -116,13 +110,6 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
         setOpen(false)
         onAvatarCropClose()
     }
-
-    const onLoad = useCallback((img) => {
-        resetState()
-        setCrop(cropSetting)
-
-        imageRef.current = img
-    }, [])
 
     const uploadCroppedImage = async () => {
         if (!canvasRef.current || !crop || !currentUser) {
@@ -134,13 +121,11 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
             await dispatch(
                 updateUserAvatar({ userId: currentUser.uid, photoUrl })
             )
-
-            onModalClose()
+            handleClose()
         }
 
         // Upload Blob to Firebase Storage
-        const canvas = canvasRef.current
-        canvas.toBlob(async (blob) => {
+        canvasRef.current.toBlob(async (blob) => {
             if (blob) {
                 await startUpload(
                     blob,
@@ -151,23 +136,28 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
         })
     }
 
-    const handleOnCropChange = (crop: Crop) => {
+    const handleAvatarSubmit = async (): Promise<void> => {
+        setIsLoading(true)
+        await uploadCroppedImage()
+    }
+
+    const handleOnCropChange = (crop: Crop): void => {
         setCrop(crop)
         setCompletedCrop(crop)
     }
 
-    const handleAvatarSubmit = async () => {
-        setIsLoading(true)
+    // Set reference to image when image was loaded in canvas
+    const handleImageLoad = (image: HTMLImageElement): void => {
+        resetState()
+        setCrop(cropSetting)
 
-        await uploadCroppedImage()
-
-        setIsLoading(false)
+        imageRef.current = image
     }
 
     return (
         <Modal
             as="form"
-            onClose={onModalClose}
+            onClose={handleClose}
             size="tiny"
             dimmer="blurring"
             open={isOpen}
@@ -177,14 +167,14 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
                 <div className="flex items-center justify-between w-full">
                     <div
                         className="flex items-start cursor-pointer"
-                        onClick={onModalClose}
+                        onClick={handleClose}
                     >
                         <Icon name="chevron left" />
                         <h1 className="leading-none">Crop your photo</h1>
                     </div>
                     <div
                         className="flex justify-end cursor-pointer"
-                        onClick={onModalClose}
+                        onClick={handleClose}
                     >
                         <Icon name="x" />
                     </div>
@@ -198,7 +188,7 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
                                 src={imageSrc}
                                 crop={crop}
                                 circularCrop={true}
-                                onImageLoaded={onLoad}
+                                onImageLoaded={handleImageLoad}
                                 onChange={handleOnCropChange}
                                 style={cropperStyle}
                             />
@@ -220,7 +210,7 @@ const AvatarCropModal: FunctionComponent<AvatarCropModalProps> = ({
                 </div>
             </Modal.Content>
             <Modal.Actions>
-                <Button color="red" disabled={isLoading} onClick={onModalClose}>
+                <Button color="red" disabled={isLoading} onClick={handleClose}>
                     <Icon name="remove" /> Cancel
                 </Button>
                 <Button

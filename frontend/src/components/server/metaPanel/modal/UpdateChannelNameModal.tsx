@@ -47,11 +47,11 @@ const UpdateChannelNameModal: FunctionComponent<
 
     const {
         register,
-        formState: { errors },
         setFocus,
         setValue,
         reset,
-        handleSubmit
+        handleSubmit,
+        formState: { errors }
     } = useForm<FormValues>()
 
     useEffect(() => {
@@ -103,16 +103,15 @@ const UpdateChannelNameModal: FunctionComponent<
                         content: channelName
                     })
                 )
-            } catch (e: any) {
-                if (e.message) {
-                    setUpdateError(e.message)
+            } catch (error: any) {
+                if (error.message) {
+                    setUpdateError(error.message)
                 } else {
                     setUpdateError('Network Error. Please try again later')
                 }
             }
         }
 
-        // Close modal
         handleClose()
     }
 

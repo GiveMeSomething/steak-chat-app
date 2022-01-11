@@ -45,11 +45,11 @@ const UpdateChannelDescModal: FunctionComponent<
 
     const {
         register,
-        formState: { errors },
         setFocus,
         setValue,
         reset,
-        handleSubmit
+        handleSubmit,
+        formState: { errors }
     } = useForm<FormValues>()
 
     useEffect(() => {
@@ -75,7 +75,11 @@ const UpdateChannelDescModal: FunctionComponent<
         }
     }, [channels, starred])
 
-    const onModalClose = () => {
+    const handleClose = () => {
+        // Reset component state
+        setIsLoading(false)
+        setUpdateError(undefined)
+
         reset()
         setOpen(false)
     }
@@ -93,24 +97,21 @@ const UpdateChannelDescModal: FunctionComponent<
                     content: data.channelDesc
                 })
             )
-        } catch (e: any) {
-            if (e.message) {
-                setUpdateError(e.message)
+        } catch (error: any) {
+            if (error.message) {
+                setUpdateError(error.message)
             } else {
                 setUpdateError('Network Error. Please try again later')
             }
         }
 
-        // Closing modal operations
-        reset()
-        setIsLoading(false)
-        setOpen(false)
+        handleClose()
     }
 
     return (
         <Modal
             as="form"
-            onClose={onModalClose}
+            onClose={handleClose}
             size="tiny"
             dimmer="blurring"
             open={isOpen}
@@ -152,7 +153,7 @@ const UpdateChannelDescModal: FunctionComponent<
                 </Modal.Description>
             </Modal.Content>
             <Modal.Actions>
-                <Button color="red" onClick={onModalClose} disabled={isLoading}>
+                <Button color="red" onClick={handleClose} disabled={isLoading}>
                     <Icon name="remove" /> Cancel
                 </Button>
                 <Button

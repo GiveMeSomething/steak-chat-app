@@ -10,16 +10,14 @@ import {
 } from '../redux/metaPanel.slice'
 
 import toast from 'react-hot-toast'
-import { Undefinable } from 'types/commonType'
 import { VIETNAMESE_PHONENUM_REGEX } from 'constants/appConst'
-import { isImageValid } from 'utils/fileUtil'
-import { isEmpty } from 'lodash'
 
 import { Modal, Button, Icon } from 'semantic-ui-react'
 
 import FormInput from 'components/commons/FormInput'
 import DescMessage from 'components/commons/formDescription/DescMessage'
 import LoadingOverlay from 'components/commons/overlay/LoadingOverlay'
+import { useUploadPreviewImage } from 'utils/fileUtil'
 const AvatarCropModal = React.lazy(() => import('./AvatarCropModal'))
 
 interface UpdateProfileModalProps {}
@@ -34,19 +32,13 @@ interface FormValues {
 const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
 
-    const [mediaUrl, setMediaUrl] = useState<Undefinable<string>>(undefined)
-    const [imageError, setImageError] = useState<Undefinable<string>>(undefined)
-
+    // To decide to keep current content or not (keep editing content if returning from crop avatar)
     const [keepFormContent, setKeepFormContent] = useState<boolean>(false)
 
     const [isAvatarCropOpen, setIsAvatarCropOpen] = useState<boolean>(false)
 
     const dispatch = useAppDispatch()
-
-    const isOpen = useAppSelector(selectIsEditProfileOpen)
-    const setOpen = (isOpen: boolean) => {
-        dispatch(setEditProfileOpen(isOpen))
-    }
+    const isEditProfileOpen = useAppSelector(selectIsEditProfileOpen)
 
     const selectedUser = useAppSelector(selectCurrentUser)
 
@@ -59,8 +51,11 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
         formState: { errors }
     } = useForm<FormValues>()
 
+    const { imageUrl, imageError, ...previewUploader } = useUploadPreviewImage()
+
     useEffect(() => {
-        if (isOpen && selectedUser) {
+        // Initialize form value
+        if (isEditProfileOpen && selectedUser) {
             if (!keepFormContent) {
                 setValue('fullname', selectedUser.fullname || '')
                 setValue('username', selectedUser.username)
@@ -72,60 +67,35 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
 
             setFocus('fullname')
         }
-    }, [isOpen])
+    }, [isEditProfileOpen])
 
     // This will show a preview before pushing the userMedia to Firebase Database
     const uploadFileToPreview = (
         event: React.ChangeEvent<HTMLInputElement>
     ) => {
-        if (isLoading) {
-            return
-        }
+        previewUploader.startUpload(event)
 
-        const reader = new FileReader()
-        const files = event.target.files
+        // Keep edit profile content and open edit avatar modal
+        setKeepFormContent(true)
+        dispatch(setEditProfileOpen(false))
 
-        if (files && !isEmpty(files)) {
-            if (!isImageValid(files[0])) {
-                setImageError('Image size should not exceed 5MB')
-                return
-            }
-
-            reader.readAsDataURL(files[0])
-            reader.onloadend = () => {
-                if (reader.result) {
-                    setMediaUrl(reader.result as string)
-
-                    // Keep edit profile content and open edit avatar modal
-                    setKeepFormContent(true)
-                    setOpen(false)
-
-                    setIsAvatarCropOpen(true)
-                }
-            }
-        }
-
-        event.target.value = ''
+        setIsAvatarCropOpen(true)
     }
 
-    const resetModalState = () => {
-        setMediaUrl(undefined)
+    const handleClose = () => {
         setIsLoading(false)
-    }
-
-    const onModalClose = () => {
-        resetModalState()
+        previewUploader.resetState()
 
         if (!keepFormContent) {
             reset()
         }
 
-        setOpen(false)
+        dispatch(setEditProfileOpen(false))
     }
 
     const onAvatarCropClose = () => {
-        resetModalState()
-        setOpen(true)
+        setIsLoading(false)
+        dispatch(setEditProfileOpen(true))
     }
 
     const onSubmit = async (data: FormValues) => {
@@ -145,7 +115,7 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
             }
         })
 
-        setOpen(false)
+        dispatch(setEditProfileOpen(false))
     }
 
     /* Rendering */
@@ -157,10 +127,10 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
         <>
             <Modal
                 as="form"
-                onClose={onModalClose}
+                onClose={handleClose}
                 size="small"
                 dimmer="blurring"
-                open={isOpen}
+                open={isEditProfileOpen}
                 onSubmit={handleSubmit(onSubmit)}
                 className="relative"
             >
@@ -284,7 +254,7 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
                                 {imageError && (
                                     <DescMessage error message={imageError} />
                                 )}
-                                <div className="w-full flex flex-col items-center">
+                                <div className="flex-full flex-col items-center">
                                     <label
                                         htmlFor="upload-avatar"
                                         className="w-full font-semibold py-2 text-slack-text-dark mt-2 hover:bg-gray-100 border-2 border-gray-300 rounded-md text-center"
@@ -309,7 +279,7 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
                 <Modal.Actions>
                     <Button
                         color="red"
-                        onClick={onModalClose}
+                        onClick={handleClose}
                         disabled={isLoading}
                     >
                         <Icon name="remove" /> Cancel
@@ -327,11 +297,11 @@ const UpdateProfileModal: FunctionComponent<UpdateProfileModalProps> = () => {
                 </Modal.Actions>
             </Modal>
             <Suspense fallback={<LoadingOverlay />}>
-                {mediaUrl && (
+                {imageUrl && (
                     <AvatarCropModal
                         isOpen={isAvatarCropOpen}
                         setOpen={setIsAvatarCropOpen}
-                        imageSrc={mediaUrl}
+                        imageSrc={imageUrl}
                         onAvatarCropClose={onAvatarCropClose}
                     />
                 )}
